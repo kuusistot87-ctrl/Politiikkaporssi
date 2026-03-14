@@ -389,7 +389,7 @@ pointer-events:none;z-index:30;width:250px;
 .dc-tag.live{border-color:var(--gr);color:var(--gr);background:rgba(0,230,118,.1);}
 .dc-tag.ai{border-color:#cc44ff;color:#cc44ff;background:rgba(204,68,255,.1);}
 .dc-score-ring{width:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-left:1px solid rgba(232,16,42,.25);background:radial-gradient(circle,rgba(232,16,42,.1),transparent 70%);flex-shrink:0;position:relative;}
-.dc-score-ring::before{content:'RISKI-TASO';font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1.5px;color:rgba(232,16,42,.6);position:absolute;top:10px;}
+.dc-score-ring::before{content:var(--risk-lbl,'RISKI-TASO');font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1.5px;color:rgba(232,16,42,.6);position:absolute;top:10px;}
 .dc-score-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:36px;color:var(--red);line-height:1;text-shadow:0 0 20px rgba(232,16,42,.5);}
 .dc-score-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:rgba(232,16,42,.7);margin-top:2px;}
 .dc-stat-row{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid rgba(0,229,255,.1);background:rgba(0,0,0,.3);}
@@ -484,6 +484,57 @@ box-shadow:0 0 32px rgba(255,214,0,.6),0 4px 16px rgba(255,214,0,.3),inset 0 1px
 @keyframes esite-glow{
 0%,100%{box-shadow:0 0 18px rgba(255,214,0,.35),inset 0 1px 0 rgba(255,255,255,.25);}
 50%{box-shadow:0 0 28px rgba(255,214,0,.55),0 0 50px rgba(255,214,0,.15),inset 0 1px 0 rgba(255,255,255,.25);}
+}
+.lang-sw{display:flex;align-items:center;gap:3px;margin-left:8px;}
+.lb2{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--td);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:6px 12px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.lb2:hover{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.4);color:var(--cy);}
+.lb2.lang-active{background:rgba(0,229,255,.15);border-color:var(--cy);color:var(--cy);box-shadow:0 0 12px rgba(0,229,255,.2);}
+/* ── MUTTA MIKSI button ── */
+.why-btn{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:11px;letter-spacing:2.5px;
+  color:#000;text-transform:uppercase;
+  background:linear-gradient(135deg,#ffd600 0%,#ffb300 35%,#ffe566 55%,#ffb300 75%,#ffd600 100%);
+  background-size:300% 100%;
+  border:none;padding:14px 24px;cursor:pointer;position:relative;
+  clip-path:polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%);
+  transition:all .3s ease;white-space:nowrap;overflow:hidden;
+  animation:why-glow 2.5s ease-in-out infinite, why-shimmer 4s ease-in-out infinite;
+  box-shadow:0 0 28px rgba(255,214,0,.5),0 6px 24px rgba(255,170,0,.35),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.15);
+}
+/* shine sweep — always running */
+.why-btn::before{
+  content:'';position:absolute;top:0;left:-80%;width:55%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:skewX(-18deg);
+  animation:why-sweep 2.6s ease-in-out infinite;
+  pointer-events:none;
+}
+/* arrow indicator */
+.why-btn::after{
+  content:'↓';font-size:14px;margin-left:10px;display:inline-block;vertical-align:middle;
+  animation:why-bounce 1.3s ease-in-out infinite;
+}
+.why-btn:hover{
+  background-position:100% 0;
+  transform:translateY(-5px) scale(1.08);
+  box-shadow:0 0 60px rgba(255,214,0,.85),0 10px 36px rgba(255,170,0,.6),inset 0 1px 0 rgba(255,255,255,.45);
+  letter-spacing:4px;
+}
+.why-btn:active{transform:translateY(-1px) scale(1.02);}
+.why-btn-dot{display:none;}
+@keyframes why-glow{
+  0%,100%{box-shadow:0 0 28px rgba(255,214,0,.5),0 6px 24px rgba(255,170,0,.35),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.15);}
+  50%{box-shadow:0 0 50px rgba(255,214,0,.78),0 8px 36px rgba(255,170,0,.5),0 0 90px rgba(255,214,0,.18),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(0,0,0,.15);}
+}
+@keyframes why-shimmer{
+  0%{background-position:0% 0;}60%,100%{background-position:100% 0;}
+}
+@keyframes why-sweep{
+  0%{left:-80%;}55%,100%{left:130%;}
+}
+@keyframes why-bounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(5px);}
 }
 .sec-nav{
 display:grid;
@@ -741,8 +792,8 @@ flex:1;
 .civic-box-verdict{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;color:var(--go);border-top:1px solid rgba(255,214,0,.2);padding-top:16px;line-height:1.7;}
 .acc-sec{padding:80px 0;background:var(--s2);position:relative;overflow:hidden;border-top:1px solid var(--bb);border-bottom:1px solid var(--bb);}
 .acc-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 100% 40%,rgba(255,214,0,.05),transparent 60%);}
-.acc-in{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:0 80px;}
-.pfield{position:relative;height:520px;}
+.acc-in{display:flex;flex-direction:column;gap:40px;position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 80px;}
+.pfield{position:relative;height:320px;width:100%;}
 .pcvs{position:absolute;inset:0;background:var(--s1);border:1px solid var(--bb);overflow:hidden;}
 .pcvs::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(0,229,255,.3) 1px,transparent 1px);background-size:28px 28px;opacity:.2;}
 .pcvs::after{content:'';position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cy),transparent);animation:scan 6s linear infinite;opacity:.3;}
@@ -1109,7 +1160,7 @@ padding-top:60px!important;padding-bottom:60px!important;
 .duel-ico{font-size:72px!important;}
 .civic-sec{padding:40px 18px!important;}
 .civic-in{grid-template-columns:1fr!important;gap:32px!important;}
-.acc-in{grid-template-columns:1fr;padding:0 18px;}
+.acc-in{padding:0 18px;}
 .pfield{height:300px;}
 .cmp-grid{grid-template-columns:1fr;gap:0;}
 .cdiv{display:none;}
@@ -1218,6 +1269,13 @@ pointer-events:none;
 transform:translateY(-4px);
 box-shadow:0 8px 32px rgba(0,0,0,.5);
 }
+.ist-tick-link:hover{
+border-left-width:3px;
+box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 0 1px rgba(0,229,255,.15);
+}
+.ist-tick-link:hover .ist-tick-title{color:var(--cy);}
+.ist-tick-link .ist-tick-cta{color:var(--cy);}
+a.ist-tick-card{display:flex;color:inherit;}
 .ist-tick-inner{padding:12px 14px;display:flex;flex-direction:column;gap:6px;flex:1;}
 .ist-tick-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .ist-tick-badges{display:flex;gap:4px;flex-wrap:wrap;}
@@ -1354,7 +1412,310 @@ box-shadow:0 0 5px rgba(200,0,30,.45),0 1px 0 rgba(255,255,255,.08) inset;
 .session-info-val{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--tb);}
 .session-info-val.cy{color:var(--cy);}
 .session-info-val.gr{color:var(--gr);}
-.session-info-val.wa{color:var(--wa);}</style>
+.session-info-val.wa{color:var(--wa);}
+/* ══ GAMEPANEL REDESIGN ══ */
+.gp-sec{padding:60px 80px;position:relative;}
+.gp-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:32px;margin-bottom:36px;}
+.gp-streak{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(255,214,0,.12),rgba(255,100,0,.08));border:2px solid rgba(255,214,0,.5);padding:16px 22px;position:relative;overflow:hidden;animation:strkp 2s ease-in-out infinite;}
+.gp-streak::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,214,0,.06),transparent);animation:gp-shimmer 2s ease-in-out infinite;}
+@keyframes gp-shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.gp-streak-fire{font-size:44px;animation:strkf .4s ease-in-out infinite alternate;filter:drop-shadow(0 0 12px #ff6600);}
+.gp-streak-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:36px;color:var(--go);line-height:1;text-shadow:0 0 20px rgba(255,214,0,.8);}
+.gp-streak-lbl{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;color:rgba(255,214,0,.7);margin-top:2px;}
+.gp-streak-info{display:flex;flex-direction:column;}
+.gp-total-xp{text-align:right;}
+.gp-xp-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:42px;color:var(--gr);line-height:1;text-shadow:0 0 30px rgba(0,230,118,.7);}
+.gp-xp-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--td);margin-top:2px;}
+.gp-xp-rank{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--go);letter-spacing:2px;margin-top:6px;}
+.gp-xpbar-wrap{margin-bottom:40px;}
+.gp-xpbar-labels{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);margin-bottom:8px;letter-spacing:1px;}
+.gp-xpbar-nums{color:var(--cy);}
+.gp-xpbar-track{position:relative;height:14px;background:rgba(255,255,255,.06);overflow:hidden;}
+.gp-xpbar-fill{height:100%;background:linear-gradient(90deg,#00b4d8,#00e5ff,#00e676);position:relative;transition:width 1.2s ease;}
+.gp-xpbar-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4));animation:xp-shine 1.8s ease-in-out infinite;}
+@keyframes xp-shine{0%,100%{opacity:0;}50%{opacity:1;}}
+.gp-xpbar-next{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-top:6px;letter-spacing:1px;}
+.gp-main{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;margin-bottom:40px;}
+.gp-panel{background:rgba(255,255,255,.02);border:1px solid var(--bb);overflow:hidden;}
+.gp-panel-hdr{display:flex;align-items:center;gap:12px;padding:16px 20px;background:rgba(0,0,0,.3);border-bottom:1px solid var(--bb);}
+.gp-panel-ico{font-size:20px;}
+.gp-panel-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;color:var(--tb);flex:1;}
+.gp-panel-tag{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--cy);background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);padding:3px 8px;}
+.gp-tasks{display:flex;flex-direction:column;gap:0;padding:8px 0;}
+.gp-task{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s;cursor:pointer;}
+.gp-task:last-child{border-bottom:none;}
+.gp-task:hover{background:rgba(255,255,255,.03);}
+.gp-task-ico{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;transition:transform .2s;}
+.gp-task:hover .gp-task-ico{transform:scale(1.1) rotate(-3deg);}
+.gp-task-info{flex:1;min-width:0;}
+.gp-task-name{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--tb);margin-bottom:6px;letter-spacing:.5px;}
+.gp-task.done .gp-task-name{color:var(--td);text-decoration:line-through;}
+.gp-task.locked .gp-task-name{color:var(--td);}
+.gp-task-bar-wrap{height:6px;background:rgba(255,255,255,.06);overflow:hidden;}
+.gp-task-bar{height:100%;transition:width 1s ease;}
+.gp-task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.gp-task-check{font-size:18px;color:var(--gr);text-shadow:0 0 10px var(--gr);}
+.gp-task-prog{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;color:var(--td);}
+.gp-task-xp{font-family:'Orbitron',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;color:var(--td);background:rgba(255,255,255,.06);padding:2px 7px;}
+.gp-task-xp.done{color:var(--gr);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);}
+.gp-task-xp.epic{color:var(--go);background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.3);animation:strkp 1.5s ease-in-out infinite;}
+.gp-chest-wrap{padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;}
+.gp-chest{position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;}
+.gp-chest-body{position:relative;z-index:2;}
+.gp-chest-lid{width:110px;height:50px;background:linear-gradient(135deg,#8B6914,#ffd600,#8B6914);border:3px solid #ffd600;display:flex;align-items:center;justify-content:center;transform-origin:bottom;transition:transform .4s;font-size:28px;box-shadow:0 0 20px rgba(255,214,0,.5);}
+.gp-chest:hover .gp-chest-lid{transform:rotateX(-45deg) translateY(-8px);}
+.gp-chest-base{width:110px;height:70px;background:linear-gradient(180deg,#5c4008,#3a2800);border:3px solid #a07820;border-top:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.gp-chest-lock{font-size:20px;}
+.gp-chest-lbl{font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;letter-spacing:2px;color:var(--go);text-align:center;}
+.gp-chest-sublbl{font-family:'Share Tech Mono',monospace;font-size:7px;color:rgba(255,214,0,.5);text-align:center;}
+.gp-chest-glow{position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,214,0,.15),transparent 60%);pointer-events:none;animation:chest-pulse 2s ease-in-out infinite;}
+@keyframes chest-pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+.gp-chest-reward{display:none;text-align:center;}
+.gp-chest-reward.open{display:block;animation:reward-pop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes reward-pop{from{transform:scale(0) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+.gp-chest-reward-ico{font-size:48px;margin-bottom:8px;}
+.gp-chest-reward-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:var(--go);letter-spacing:2px;text-shadow:0 0 20px rgba(255,214,0,.8);}
+.gp-chest-reward-xp{font-family:'Orbitron',sans-serif;font-weight:700;font-size:28px;color:var(--gr);margin:4px 0;text-shadow:0 0 20px rgba(0,230,118,.8);}
+.gp-chest-reward-badge{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--t);letter-spacing:1px;}
+.gp-chest-particles{position:absolute;inset:0;pointer-events:none;overflow:visible;}
+.gp-weekly{padding:0 20px 16px;display:flex;flex-direction:column;gap:6px;}
+.gp-weekly-row{display:flex;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--t);padding:8px 10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);}
+.gp-weekly-row.done{background:rgba(0,230,118,.04);border-color:rgba(0,230,118,.15);}
+.gp-weekly-row.done span:nth-child(2){color:var(--td);text-decoration:line-through;}
+.gp-weekly-row span:nth-child(2){flex:1;}
+.gp-weekly-xp{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:var(--gr);letter-spacing:1px;}
+.gp-weekly-xp.epic{color:var(--go);}
+.gp-badges-wrap{border-top:1px solid var(--bb);padding-top:32px;}
+.gp-badges-hdr{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.gp-badges{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;}
+.gp-badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 12px 16px;background:var(--bg);border:2px solid var(--bc);text-align:center;transition:all .25s;cursor:pointer;overflow:hidden;}
+.gp-badge.earned{box-shadow:0 0 20px rgba(0,0,0,.3),inset 0 0 30px var(--bg);}
+.gp-badge.earned:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 30px var(--bc),inset 0 0 30px var(--bg);}
+.gp-badge.locked{opacity:.55;filter:grayscale(.6);}
+.gp-badge.locked:hover{opacity:.8;filter:grayscale(.2);transform:translateY(-3px);}
+.gp-badge-ico{font-size:36px;transition:transform .2s;}
+.gp-badge.earned .gp-badge-ico{filter:drop-shadow(0 0 8px var(--bc));}
+.gp-badge.earned:hover .gp-badge-ico{transform:scale(1.2) rotate(-5deg);}
+.gp-badge-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:8px;letter-spacing:1px;color:var(--tb);line-height:1.3;}
+.gp-badge.earned .gp-badge-name{color:var(--bc);}
+.gp-badge-sub{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--td);letter-spacing:.5px;line-height:1.4;}
+.gp-badge-lock{position:absolute;top:6px;right:6px;font-size:11px;opacity:.6;}
+.gp-title-block{min-width:0;}
+/* ══ POLITIIKKAPASSI ══ */
+.pp-sec{background:var(--bg);border-top:1px solid var(--bb);padding:70px 80px;position:relative;overflow:hidden;}
+.pp-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.pp-inner{position:relative;z-index:1;max-width:1600px;margin:0 auto;}
+.pp-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:20px;}
+.pp-header-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.pp-season-timer{text-align:right;}
+.pp-timer-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:48px;color:var(--red);line-height:1;text-shadow:0 0 30px rgba(232,16,42,.6);}
+.pp-timer-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--td);margin-top:2px;}
+.pp-owned-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gr);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.4);padding:6px 14px;}
+.pp-season-bar{margin-bottom:28px;}
+.pp-sbar-labels{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-bottom:8px;letter-spacing:1px;}
+.pp-sbar-xp{color:var(--cy);}
+.pp-sbar-track{position:relative;height:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);overflow:visible;}
+.pp-sbar-fill{height:100%;background:linear-gradient(90deg,#00b4d8,#00e5ff 60%,#00e676);position:relative;}
+.pp-sbar-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35));animation:xp-shine 1.8s ease-in-out infinite;}
+.pp-sbar-markers{position:absolute;inset:0;pointer-events:none;}
+.pp-sbar-mk{position:absolute;top:-4px;bottom:-4px;width:2px;background:rgba(255,255,255,.2);transform:translateX(-50%);}
+.pp-sbar-mk-special{background:var(--go);box-shadow:0 0 8px var(--go);width:3px;}
+.pp-sbar-mk-you{background:#fff;width:3px;box-shadow:0 0 10px #fff;}
+.pp-sbar-you-lbl{position:absolute;top:-22px;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:#fff;letter-spacing:1px;white-space:nowrap;}
+.pp-tabs{display:flex;align-items:center;gap:4px;margin-bottom:20px;flex-wrap:wrap;}
+.pp-tab{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--td);cursor:pointer;transition:all .2s;}
+.pp-tab:hover{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.3);color:var(--cy);}
+.pp-tab.active{background:rgba(0,229,255,.12);border-color:var(--cy);color:var(--cy);}
+.pp-tab.premium{border-color:rgba(255,214,0,.3);color:rgba(255,214,0,.6);}
+.pp-tab.premium.active{background:rgba(255,214,0,.12);border-color:var(--go);color:var(--go);}
+.pp-tab-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);letter-spacing:1px;margin-left:12px;}
+.pp-track{margin-bottom:40px;}
+.pp-track-hidden{display:none;}
+.pp-track-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--td);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.pp-track-label-premium{color:rgba(255,214,0,.7);}
+.pp-track-ico{font-size:14px;}
+.pp-tiers{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;}
+.pp-tier{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 10px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);position:relative;transition:all .2s;cursor:pointer;min-height:130px;}
+.pp-tier:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);transform:translateY(-3px);}
+.pp-tier-lvl{font-family:'Orbitron',sans-serif;font-weight:900;font-size:11px;color:var(--td);letter-spacing:1px;}
+.pp-lvl-active{color:var(--cy);text-shadow:0 0 10px var(--cy);}
+.pp-lvl-prem{color:var(--go);}
+.pp-lvl-locked{opacity:.5;}
+.pp-lvl-prem-lock{color:rgba(255,214,0,.4);}
+.pp-lvl-special{color:var(--go);font-size:13px;text-shadow:0 0 12px var(--go);}
+.pp-lvl-prem-special{color:var(--go);font-size:13px;text-shadow:0 0 12px var(--go);}
+.pp-lvl-finale{font-size:15px;color:var(--go);text-shadow:0 0 20px var(--go),0 0 40px var(--go);}
+.pp-lvl-prem-finale{font-size:15px;color:var(--go);text-shadow:0 0 20px var(--go),0 0 40px var(--go);}
+.pp-reward-ico{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.pp-r-cyan{background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(0,229,255,.05));border:1px solid rgba(0,229,255,.3);filter:drop-shadow(0 0 6px rgba(0,229,255,.4));}
+.pp-r-green{background:linear-gradient(135deg,rgba(0,230,118,.2),rgba(0,230,118,.05));border:1px solid rgba(0,230,118,.3);filter:drop-shadow(0 0 6px rgba(0,230,118,.4));}
+.pp-r-gold{background:linear-gradient(135deg,rgba(255,214,0,.25),rgba(255,214,0,.05));border:1px solid rgba(255,214,0,.4);filter:drop-shadow(0 0 8px rgba(255,214,0,.5));}
+.pp-r-purple{background:linear-gradient(135deg,rgba(204,68,255,.2),rgba(204,68,255,.05));border:1px solid rgba(204,68,255,.3);filter:drop-shadow(0 0 6px rgba(204,68,255,.4));}
+.pp-r-red{background:linear-gradient(135deg,rgba(255,102,128,.2),rgba(255,102,128,.05));border:1px solid rgba(255,102,128,.3);filter:drop-shadow(0 0 6px rgba(255,102,128,.4));}
+.pp-r-rainbow{background:linear-gradient(135deg,rgba(255,214,0,.3),rgba(255,102,128,.2),rgba(204,68,255,.2));border:1px solid rgba(255,214,0,.5);animation:pp-rainbow 3s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(255,214,0,.7));}
+@keyframes pp-rainbow{0%,100%{filter:drop-shadow(0 0 12px rgba(255,214,0,.7));}33%{filter:drop-shadow(0 0 12px rgba(255,102,128,.7));}66%{filter:drop-shadow(0 0 12px rgba(204,68,255,.7));}}
+.pp-r-dim{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);filter:grayscale(.8);opacity:.5;}
+.pp-reward-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:7px;letter-spacing:.8px;color:var(--tb);text-align:center;line-height:1.3;margin-top:2px;}
+.pp-reward-name-sub{font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--cy);text-align:center;}
+.pp-reward-type{font-family:'Share Tech Mono',monospace;font-size:6px;color:var(--td);text-align:center;letter-spacing:.5px;}
+.pp-tier-check{position:absolute;top:6px;right:6px;font-size:14px;color:var(--gr);text-shadow:0 0 8px var(--gr);}
+.pp-check-gold{color:var(--go);text-shadow:0 0 8px var(--go);}
+.pp-tier-lock{position:absolute;top:6px;right:6px;font-size:11px;opacity:.4;}
+.pp-tier-arrow{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--cy);animation:pp-arrow 1s ease-in-out infinite alternate;}
+.pp-arrow-gold{color:var(--go);}
+@keyframes pp-arrow{from{transform:translateX(0);}to{transform:translateX(4px);}}
+.pp-tier-special{border-color:rgba(255,214,0,.3);background:rgba(255,214,0,.04);}
+.pp-tier-special:hover{border-color:rgba(255,214,0,.6);}
+.pp-tier-finale{border-color:rgba(255,214,0,.5);background:linear-gradient(180deg,rgba(255,214,0,.08),rgba(255,102,128,.04));animation:chest-pulse 2s ease-in-out infinite;}
+.pp-tier-finale:hover{border-color:var(--go);box-shadow:0 0 30px rgba(255,214,0,.3);}
+.pp-reward-pulse .pp-reward-ico{animation:chest-pulse 1.5s ease-in-out infinite;}
+.pp-earned{border-color:rgba(0,230,118,.2);background:rgba(0,230,118,.03);}
+.pp-earned .pp-reward-name{color:var(--gr);}
+.pp-current{border-color:var(--cy);background:rgba(0,229,255,.06);box-shadow:0 0 20px rgba(0,229,255,.15);}
+.pp-prem-earned{border-color:rgba(255,214,0,.2);background:rgba(255,214,0,.03);}
+.pp-prem-earned .pp-reward-name{color:var(--go);}
+.pp-prem-current{border-color:var(--go);background:rgba(255,214,0,.06);box-shadow:0 0 20px rgba(255,214,0,.2);}
+.pp-prem-locked{opacity:.6;}
+.pp-earn{border-top:1px solid var(--bb);padding-top:32px;}
+.pp-earn-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;color:var(--tb);margin-bottom:16px;}
+.pp-earn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.pp-earn-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);transition:background .2s;}
+.pp-earn-row:hover{background:rgba(255,255,255,.05);}
+.pp-earn-bonus{border-color:rgba(255,214,0,.15);background:rgba(255,214,0,.03);}
+.pp-earn-ico{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pp-earn-act{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--t);flex:1;letter-spacing:.3px;}
+.pp-earn-xp{font-family:'Orbitron',sans-serif;font-weight:700;font-size:9px;letter-spacing:1px;white-space:nowrap;}
+@media(max-width:1200px){.pp-tiers{grid-template-columns:repeat(6,1fr);}.pp-earn-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){.pp-sec{padding:40px 18px;}.pp-tiers{grid-template-columns:repeat(4,1fr);}.pp-earn-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.pp-tiers{grid-template-columns:repeat(3,1fr);}.pp-earn-grid{grid-template-columns:1fr;}}
+@media(max-width:1200px){.gp-badges{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.gp-main{grid-template-columns:1fr;}.gp-header{grid-template-columns:1fr 1fr;}.gp-total-xp{grid-column:1/-1;text-align:left;}.gp-sec{padding:40px 18px;}.gp-badges{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.gp-badges{grid-template-columns:repeat(2,1fr);}}
+
+/* ── TASOPALKINNOT ── */
+.gp-levels-wrap{border-top:1px solid var(--bb);padding-top:32px;margin-top:8px;}
+.gp-levels-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.gp-lvl-card{position:relative;background:var(--s1);border:1px solid var(--bb);padding:18px 14px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:all .25s;overflow:hidden;}
+.gp-lvl-card::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);pointer-events:none;}
+.gp-lvl-card.earned{border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.04);}
+.gp-lvl-card.earned:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 20px rgba(0,229,255,.15);}
+.gp-lvl-card.current{border-color:var(--go);border-width:2px;background:rgba(255,214,0,.05);box-shadow:0 0 30px rgba(255,214,0,.15),inset 0 0 20px rgba(255,214,0,.04);animation:aloita-pulse 2s ease-in-out infinite;}
+.gp-lvl-card.current:hover{transform:translateY(-4px);}
+.gp-lvl-card.locked{opacity:.6;filter:grayscale(.4);}
+.gp-lvl-card.locked:hover{opacity:.85;filter:grayscale(.1);transform:translateY(-3px);}
+.gp-lvl-card.finale{border-color:rgba(255,214,0,.6);background:rgba(255,214,0,.06);}
+.gp-lvl-card.finale:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(255,214,0,.3);}
+.gp-lvl-current-badge{position:absolute;top:0;left:0;right:0;background:var(--go);color:#000;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;letter-spacing:2px;padding:3px 0;text-align:center;}
+.gp-lvl-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:28px;color:var(--cy);line-height:1;margin-top:4px;}
+.gp-lvl-card.current .gp-lvl-num{color:var(--go);margin-top:18px;}
+.gp-lvl-ico{font-size:30px;margin:2px 0;}
+.gp-lvl-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:8px;color:var(--tb);letter-spacing:1px;line-height:1.3;margin-bottom:2px;}
+.gp-lvl-xp{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--cy);letter-spacing:1px;margin-bottom:6px;}
+.gp-lvl-card.current .gp-lvl-xp{color:var(--go);}
+.gp-lvl-rewards{list-style:none;text-align:left;width:100%;display:flex;flex-direction:column;gap:4px;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;margin-top:2px;flex:1;}
+.gp-lvl-rewards li{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td);letter-spacing:.3px;line-height:1.4;}
+.gp-lvl-card.earned .gp-lvl-rewards li{color:var(--t);}
+.gp-lvl-card.current .gp-lvl-rewards li{color:var(--tb);}
+.gp-lvl-status{font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;letter-spacing:1.5px;padding:4px 8px;margin-top:8px;width:100%;text-align:center;}
+.earned-lbl{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);color:var(--cy);}
+.current-lbl{background:rgba(255,214,0,.15);border:1px solid rgba(255,214,0,.5);color:var(--go);}
+.locked-lbl{background:rgba(255,255,255,.04);border:1px solid var(--bb);color:var(--td);}
+.finale-lbl{background:rgba(255,214,0,.2);border:1px solid var(--go);color:var(--go);text-shadow:0 0 10px rgba(255,214,0,.5);}
+@media(max-width:1200px){.gp-levels-grid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.gp-levels-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.gp-levels-grid{grid-template-columns:repeat(2,1fr);}}
+/* ══ TASK CARDS (chest-style) ══ */
+@property --spin-c1{syntax:'<color>';inherits:false;initial-value:#00e5ff;}
+@property --spin-c2{syntax:'<color>';inherits:false;initial-value:#00e676;}
+.gp-task-cards{display:flex;flex-direction:column;gap:8px;padding:12px;}
+.gpc-card{position:relative;display:flex;align-items:center;gap:14px;padding:16px 18px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07);overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer;}
+.gpc-card:hover{transform:translateY(-2px);}
+.gpc-done{border-color:rgba(0,230,118,.25);background:rgba(0,230,118,.04);}
+.gpc-active{border-color:rgba(255,255,255,.12);}
+.gpc-active:hover{box-shadow:0 6px 30px rgba(0,0,0,.5);}
+.gpc-locked{border-color:rgba(255,255,255,.06);opacity:.85;}
+.gpc-special{border-color:rgba(204,68,255,.25);background:rgba(204,68,255,.04);}
+/* spinning conic border on active/locked cards */
+.gpc-border-spin{position:absolute;inset:-2px;z-index:0;border-radius:0;background:conic-gradient(from var(--a,0deg),transparent 75%,var(--spin-c1,#00e5ff) 85%,var(--spin-c2,#00e676) 90%,transparent 100%);animation:gpc-spin 3s linear infinite;pointer-events:none;}
+@keyframes gpc-spin{to{--a:360deg;}}
+.gpc-card>*{position:relative;z-index:1;}
+.gpc-card::before{content:'';position:absolute;inset:1px;background:var(--bg);z-index:0;}
+/* scan line */
+.gpc-scan{position:absolute;inset:0;z-index:1;pointer-events:none;}
+.gpc-active .gpc-scan::after,.gpc-locked .gpc-scan::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);animation:gpc-scanline 3s ease-in-out infinite;}
+@keyframes gpc-scanline{0%{top:0;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:100%;opacity:0;}}
+/* special AI badge */
+.gpc-special-badge{position:absolute;top:8px;right:8px;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;letter-spacing:2px;color:#cc44ff;background:rgba(204,68,255,.15);border:1px solid rgba(204,68,255,.4);padding:2px 6px;z-index:2;animation:strkp 2s ease-in-out infinite;}
+/* ico */
+.gpc-ico{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;transition:transform .2s;}
+.gpc-card:hover .gpc-ico{transform:scale(1.1) rotate(-4deg);}
+.gpc-done .gpc-ico{filter:brightness(.7);}
+/* mid */
+.gpc-mid{flex:1;min-width:0;}
+.gpc-title{font-family:'Orbitron',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;color:var(--tb);margin-bottom:3px;}
+.gpc-done .gpc-title{color:var(--td);text-decoration:line-through;}
+.gpc-desc{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-bottom:7px;letter-spacing:.3px;line-height:1.5;}
+.gpc-bar-wrap{height:5px;background:rgba(255,255,255,.06);overflow:hidden;}
+.gpc-bar{height:100%;transition:width 1s ease;}
+/* right */
+.gpc-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;min-width:80px;}
+.gpc-check{font-size:22px;color:var(--gr);text-shadow:0 0 12px var(--gr);}
+.gpc-prog{font-family:'Orbitron',sans-serif;font-weight:700;font-size:14px;color:var(--td);}
+.gpc-xp{font-family:'Orbitron',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;color:var(--td);background:rgba(255,255,255,.06);padding:2px 8px;border:1px solid rgba(255,255,255,.1);}
+.gpc-xp-done{color:var(--gr);background:rgba(0,230,118,.12);border-color:rgba(0,230,118,.3);}
+.gpc-xp-special{color:#cc44ff;background:rgba(204,68,255,.12);border-color:rgba(204,68,255,.3);animation:strkp 1.8s ease-in-out infinite;}
+.gpc-xp-epic{color:var(--go);background:rgba(255,214,0,.12);border-color:rgba(255,214,0,.3);animation:strkp 1.5s ease-in-out infinite;}
+.gpc-btn{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:1px;padding:4px 10px;border:1px solid;background:transparent;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.gpc-card:hover .gpc-btn{filter:brightness(1.3);box-shadow:0 0 12px currentColor;}
+/* completion flash */
+.gpc-flash{animation:gpc-complete-flash .5s ease-out forwards;}
+@keyframes gpc-complete-flash{0%{filter:brightness(1);}30%{filter:brightness(2.5);}100%{filter:brightness(1);}}
+
+/* ── Chamber live button ── */
+.chamber-live-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:7px;letter-spacing:1.5px;
+  color:#000;text-transform:uppercase;
+  background:linear-gradient(135deg,#ffd600 0%,#ffb300 40%,#ffe566 60%,#ffb300 100%);
+  background-size:300% 100%;
+  border:none;padding:5px 10px 5px 8px;cursor:pointer;
+  position:relative;overflow:hidden;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  transition:all .25s ease;
+  animation:clb-pulse 2.2s ease-in-out infinite, clb-shimmer 3.5s ease-in-out infinite;
+  box-shadow:0 0 20px rgba(255,214,0,.5),0 3px 14px rgba(255,170,0,.35),inset 0 1px 0 rgba(255,255,255,.4);
+  flex-shrink:0;
+}
+.chamber-live-btn::before{
+  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-18deg);animation:clb-sweep 3s ease-in-out infinite;pointer-events:none;
+}
+.chamber-live-btn:hover{
+  transform:translateY(-3px) scale(1.06);
+  box-shadow:0 0 40px rgba(255,214,0,.8),0 6px 24px rgba(255,170,0,.5),inset 0 1px 0 rgba(255,255,255,.4);
+  background-position:100% 0;
+}
+.chamber-live-btn:active{transform:translateY(-1px) scale(1.02);}
+.clb-bars{display:flex;align-items:center;gap:2px;height:10px;flex-shrink:0;}
+.clb-bars span{display:block;width:2px;border-radius:2px;background:#000;opacity:.7;animation:clb-bar 0.9s ease-in-out infinite;}
+.clb-bars span:nth-child(1){height:3px;animation-delay:0s;}
+.clb-bars span:nth-child(2){height:7px;animation-delay:.15s;}
+.clb-bars span:nth-child(3){height:10px;animation-delay:.3s;}
+.clb-bars span:nth-child(4){height:5px;animation-delay:.1s;}
+.clb-dot{width:5px;height:5px;border-radius:50%;background:#000;opacity:.6;flex-shrink:0;animation:clb-dot-pulse 1.1s ease-in-out infinite;}
+.clb-label{flex:1;}
+.clb-arrow{font-size:10px;opacity:.7;flex-shrink:0;}
+@keyframes clb-pulse{
+  0%,100%{box-shadow:0 0 20px rgba(255,214,0,.5),0 3px 14px rgba(255,170,0,.35),inset 0 1px 0 rgba(255,255,255,.4);}
+  50%{box-shadow:0 0 36px rgba(255,214,0,.78),0 5px 22px rgba(255,170,0,.52),0 0 60px rgba(255,214,0,.14),inset 0 1px 0 rgba(255,255,255,.4);}
+}
+@keyframes clb-shimmer{0%{background-position:0% 0;}60%,100%{background-position:100% 0;}}
+@keyframes clb-sweep{0%{left:-80%;}55%,100%{left:130%;}}
+@keyframes clb-bar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(.35);}}
+@keyframes clb-dot-pulse{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.7);opacity:1;}}
+
+</style>
 </head>
 <body>
 
@@ -1368,52 +1729,16 @@ box-shadow:0 0 5px rgba(200,0,30,.45),0 1px 0 rgba(255,255,255,.08) inset;
   <div class="esite-modal">
     <div class="esite-modal-hdr">
       <div class="esite-modal-title">
-        <span class="esite-modal-tag">ESITE</span>
-        Politiikkapörssi — Demokratia digitaaliselle aikakaudelle
+        <span class="esite-modal-tag" data-i18n="esiteTag">ESITE</span>
+        <span data-i18n="esiteModalTitle">Politiikkapörssi — Demokratia digitaaliselle aikakaudelle</span>
       </div>
       <button class="esite-close" onclick="closeEsiteBtn()">✕</button>
     </div>
-    <div class="esite-modal-body">
-      <p>Valtio kerää tietoa kansalaisista. Viranomaisrekisterit kasvavat, digitaalinen tunnistautuminen laajenee ja verkon sääntely tiukentuu. Samaan aikaan teknologiajätit rakentavat yksityiskohtaisia profiileja käyttäjistä: heidän kulutustottumuksistaan, verkossa viettämästään ajasta ja jopa ajattelunsa ennustettavista kaavoista.</p>
-      <p>Jos yhteiskunta hyväksyy tämän yksisuuntaisen tiedonkeruun, syntyy väistämätön kysymys: <strong>missä kulkee kansalaisten oikeus tarkastella vallankäyttöä samalla tarkkuudella?</strong></p>
-      <p>Politiikkapörssi perustuu tähän periaatteeseen. Se on alusta, joka tuo politiikan, vallankäytön ja julkisen datan yhteen paikkaan. Jos viranomaisilla on oikeus analysoida kansalaisia, kansalaisilla on vastaavasti oikeus tarkastella, mitä heidän antamallaan valtakirjalla tehdään.</p>
-      <div class="esite-concept">
-        <div class="esite-concept-lbl">KÄSITE</div>
-        <p>Tämä ajatus liittyy käsitteeseen <em>sousveillance</em>. Siinä missä perinteinen valvonta kulkee ylhäältä alaspäin, sousveillance kääntää näkökulman: kansalaiset tarkkailevat valtaa. Digitaalisessa yhteiskunnassa tämä ei enää tarkoita pelkkää journalistista paljastusta tai yksittäistä protestia. Se voi tarkoittaa järjestelmällistä, datavetoista politiikan seurantaa.</p>
-        <p><strong>Politiikkapörssi rakentaa tätä infrastruktuuria.</strong></p>
-      </div>
-      <p>Alusta kokoaa yhteen julkisia tietolähteitä ja tekee näkyväksi poliittisen toiminnan keskeiset ulottuvuudet. Kansalaiset voivat tarkastella esimerkiksi:</p>
-      <ul class="esite-list">
-        <li>poliitikkojen äänestyskäyttäytymistä ja lakialoitteita</li>
-        <li>poliittisten lupausten toteutumista</li>
-        <li>sidonnaisuuksia ja verkostoja</li>
-        <li>julkisten hankintojen rakenteita</li>
-        <li>lobbausverkostoja ja vaikutuskanavia</li>
-        <li>puoluerahoitusta ja kampanjarahoituksen lähteitä</li>
-        <li>poliittisia nimityksiä ja virkanimitysten verkostoja</li>
-        <li>päätöksenteon aikajanaa ja vaikutusketjuja</li>
-      </ul>
-      <p>Tällainen analyysi tekee näkyväksi myös ilmiöitä, joita on perinteisesti ollut vaikea tarkastella systemaattisesti: hyvä veli -verkostoja, poliittisia vastapalveluksia, pyöröovi-ilmiötä julkisen ja yksityisen sektorin välillä, sekä erilaisia korruption ja eturistiriitojen muotoja.</p>
-      <p>Kun nämä tiedot tuodaan samaan paikkaan ja esitetään ymmärrettävästi, politiikka muuttuu seurattavaksi kokonaisuudeksi eikä hajanaiseksi uutisvirraksi.</p>
-      <div class="esite-concept">
-        <div class="esite-concept-lbl">PERIAATE</div>
-        <p>Politiikkapörssi toimii <em>vahvan tunnistautumisen</em> periaatteella. Jokaisella osallistujalla on yksi identiteetti ja yksi ääni. Tämä tekee järjestelmästä aidosti demokraattisen — ei bottiverkkojen tai anonyymien kampanjoiden kenttä, vaan kansalaisosallistumisen infrastruktuuri.</p>
-        <p>Keskeinen periaate on <em>continuous accountability</em>. Demokratia ei rajoitu vaalipäivään neljän vuoden välein. Politiikan tulee olla jatkuvasti arvioitavissa. Kansalaisilla on oikeus tarkastella vallankäyttöä reaaliajassa, analysoida päätöksiä ja muodostaa kollektiivinen näkemys siitä, miten heidän palkkaamansa julkiset virkamiehet toimivat.</p>
-      </div>
-      <div class="esite-future">
-        <div class="esite-future-lbl">● SEURAAVA VAIHE</div>
-        <p>Politiikkapörssi on vasta ensimmäinen askel. Seuraava vaihe laajentaa analyysin kansallisen politiikan ulkopuolelle Euroopan unionin tasolle. EU-instituutioiden päätöksenteko, lobbausverkostot, sääntelyprosessit ja poliittiset vaikutuskanavat voidaan tuoda samaan avoimeen tarkasteluun.</p>
-        <p>Kun julkinen data yhdistetään analytiikkaan ja kansalaisten osallistumiseen, syntyy järjestelmä, joka kykenee tarkastelemaan vallankäyttöä perusteellisesti ja reaaliaikaisesti.</p>
-      </div>
-      <div class="esite-closing">
-        <p>Demokratia syntyi aikana, jolloin tieto liikkui hitaasti ja vallan tarkastelu oli rajallista.</p>
-        <p><strong>Digitaalinen aikakausi mahdollistaa jotain uutta: kansalaiset voivat rakentaa oman näkymänsä valtaan.</strong></p>
-        <p>Politiikkapörssi on askel kohti läpinäkyvämpää politiikkaa. Kohti yhteiskuntaa, jossa valtaa ei ainoastaan käytetä kansalaisten nimissä, vaan sitä myös seurataan heidän toimesta.</p>
-      </div>
+    <div class="esite-modal-body" id="esiteModalBody">
     </div>
     <div class="esite-modal-ftr">
-      <span class="esite-ftr-tag">KONSEPTIEHDOTUS 2026</span>
-      <button class="esite-close-btn" onclick="closeEsiteBtn()">SULJE ✕</button>
+      <span class="esite-ftr-tag" data-i18n="esiteFtrTag">KONSEPTIEHDOTUS 2026</span>
+      <button class="esite-close-btn" data-i18n="esiteClose" onclick="closeEsiteBtn()">SULJE ✕</button>
     </div>
   </div>
 </div>
@@ -1422,22 +1747,25 @@ box-shadow:0 0 5px rgba(200,0,30,.45),0 1px 0 rgba(255,255,255,.08) inset;
 
 <script>
 
-const SEC_CONFIG = {
-  aloita:  { label:'NÄIN SE TOIMISI KÄYTÄNNÖSSÄ',  color:'#ffffff', sections:['gallery','ominaisuudet'] },
-  syote:   { label:'POLIITTINEN TAPAHTUMASYÖTE',   color:'#00e5ff', sections:['istunto'] },
-  duel:    { label:'JÄÄKIEKKO VS POLITIIKKA',       color:'#ff6680', sections:['vertailu'] },
-  julkinen:{ label:'KAIKKI JULKINEN TIETO',         color:'#ffd600', sections:['tietokanta','scoreboard','accountability'] },
-  ai:      { label:'AI SKANNAA POLIITIKOT',         color:'#cc44ff', sections:['ai-xray'] },
-  ranking: { label:'KANSALAISEN PELIPANEELI',        color:'#00e676', sections:['gamepanel'] },
-  chat:    { label:'KANSALAISCHAT',                  color:'#00e5ff', sections:['kansalaischat','osallistuminen','kansalaisyhteistyo'] },
-};
+function getSEC_CONFIG() {
+  const t = LANG[L] || LANG.fi;
+  return {
+    aloita:  { label: t.secNavStartLabel.toUpperCase(), color:'#ffffff', sections:['gallery','ominaisuudet'] },
+    syote:   { label: t.secNavLiveTitle.toUpperCase(),  color:'#00e5ff', sections:['istunto'] },
+    duel:    { label: t.secNavDuelTitle.toUpperCase(),  color:'#ff6680', sections:['vertailu'] },
+    julkinen:{ label: t.secNavDataTitle.toUpperCase(),  color:'#ffd600', sections:['tietokanta','scoreboard','accountability'] },
+    ai:      { label: t.secNavAiTitle.toUpperCase(),    color:'#cc44ff', sections:['ai-xray'] },
+    ranking: { label: t.secNavGameTitle.toUpperCase(),  color:'#00e676', sections:['gamepanel','politiikkapassi'] },
+    chat:    { label: t.secNavChatTitle.toUpperCase(),  color:'#00e5ff', sections:['kansalaischat','osallistuminen','kansalaisyhteistyo'] },
+  };
+}
 
 let currentPanel = null;
 
 const sectionStore = {};
 
 function initSecPanels() {
-  const allIds = ['gallery','istunto','vertailu','tietokanta','accountability','scoreboard','ominaisuudet','ai-xray','gamepanel','osallistuminen','kansalaisyhteistyo','kansalaischat'];
+  const allIds = ['gallery','istunto','vertailu','tietokanta','accountability','scoreboard','ominaisuudet','ai-xray','gamepanel','politiikkapassi','osallistuminen','kansalaisyhteistyo','kansalaischat'];
   allIds.forEach(id => {
     const el = document.getElementById(id);
     if (el && !sectionStore[id] && el.closest('#secPanelContent') === null) {
@@ -1448,7 +1776,7 @@ function initSecPanels() {
 }
 
 window.toggleSecPanel = function(key, cardEl) {
-  const cfg = SEC_CONFIG[key];
+  const cfg = getSEC_CONFIG()[key];
   if (!cfg) return;
 
   const wrap = document.getElementById('secPanelWrap');
@@ -1461,7 +1789,7 @@ window.toggleSecPanel = function(key, cardEl) {
   }
 
   if (currentPanel) {
-    const oldCfg = SEC_CONFIG[currentPanel];
+    const oldCfg = getSEC_CONFIG()[currentPanel];
     oldCfg.sections.forEach(id => {
       const el = content.querySelector('#'+id);
       if (el) { sectionStore[id] = el; }
@@ -1505,15 +1833,18 @@ window.toggleSecPanel = function(key, cardEl) {
 
 /* ── NEXT PANEL NAVIGATION ── */
 const PANEL_ORDER = ['aloita','duel','julkinen','syote','ai','ranking','chat'];
-const PANEL_NAMES = {
-  aloita:  'Katso kortit',
-  duel:    'VS Vertailu — Jääkiekko vs Politiikka',
-  julkinen:'Kaikki julkinen tieto',
-  syote:   'Poliittinen Tapahtumasyöte',
-  ai:      'AI skannaa poliitikot',
-  ranking: 'Kansalaisen pelipaneeli',
-  chat:    'Kansalaischat',
-};
+function getPANEL_NAMES() {
+  const t = LANG[L] || LANG.fi;
+  return {
+    aloita:  t.secNavStartTitle,
+    duel:    t.secNavDuelBadge + ' — ' + t.secNavDuelTitle,
+    julkinen:t.secNavDataTitle,
+    syote:   t.secNavLiveTitle,
+    ai:      t.secNavAiTitle,
+    ranking: t.secNavGameTitle,
+    chat:    t.secNavChatTitle,
+  };
+}
 
 function injectNextBtn(key) {
   const content = document.getElementById('secPanelContent');
@@ -1525,7 +1856,7 @@ function injectNextBtn(key) {
   if (idx === -1 || idx === PANEL_ORDER.length - 1) return;
 
   const nextKey = PANEL_ORDER[idx + 1];
-  const nextName = PANEL_NAMES[nextKey];
+  const nextName = getPANEL_NAMES()[nextKey];
 
   const wrap = document.createElement('div');
   wrap.className = 'sec-next-btn-wrap';
@@ -1539,10 +1870,10 @@ function injectNextBtn(key) {
         <div class="ap" style="left:72%;bottom:0;--d:3.5s;--delay:.2s;--tx:10px;--ty:-48px;"></div>
         <div class="ap" style="left:88%;bottom:0;--d:2.9s;--delay:1s;--tx:-6px;--ty:-52px;"></div>
       </div>
-      <div class="sec-next-label">JATKA TÄNNE</div>
+      <div class="sec-next-label" data-i18n="secNextLabel">JATKA TÄNNE</div>
       <div class="sec-next-title">${nextName}</div>
       <div class="sec-next-arrow-wrap">
-        <div class="sec-next-arrow-lbl">SEURAAVA</div>
+        <div class="sec-next-arrow-lbl" data-i18n="secNextArrow">SEURAAVA</div>
         <div class="sec-next-arrow-ico">▶</div>
       </div>
     </div>`;
@@ -1559,7 +1890,7 @@ window.closeSecPanel = function() {
   const content = document.getElementById('secPanelContent');
 
   if (currentPanel) {
-    const cfg = SEC_CONFIG[currentPanel];
+    const cfg = getSEC_CONFIG()[currentPanel];
     cfg.sections.forEach(id => {
       const el = content.querySelector('#'+id);
       if (el) { sectionStore[id] = el; content.removeChild(el); }
@@ -1808,6 +2139,10 @@ const LANG = { fi: {
     dcTitleEm: 'visuaalisessa kortissa',
     dcLead: 'PolitiikkaPörssi kerää kansanedustajasta tietoa <strong style="color:var(--tb);">kaikista julkisista lähteistä</strong> yhteen tietokantaan automaattisesti: valtakunnalliset uutiset, kansainväliset sidonnaisuudet, lobbaustapahtumat, rikkomukset, luottamusindeksi, äänestyskäyttäytyminen lupauksiin nähden, oikeudenkäynnit, istunto-osallistumiset, puheenvuorot, ideologia-analyysi, tuomiot, perhesuhteet, lähisukulaisten ja läheisten hillotolppa-asemat, väärinkäyttöepäilyt, hallituspaikat, järjestötoiminta, sometilit, sijoitusrahastot ja verotiedot. <strong style="color:var(--cy);">Kaikki yhdessä visuaalisessa kortissa.</strong> Korttiin on kytketty tekoälyohjattu ominaisuus, jolla kansalainen voi esittää haluamansa kysymyksen kansanedustajasta — ja saada vastauksen usealta eri tekoälyjärjestelmältä samanaikaisesti.',
     dcCardTerm: 'Vaalikausi 2023–2027',
+    chamberLiveBtn: 'Kuuntele puheenvuoro suorana',
+    dcThreatBanner: 'KORKEA RISKI · LOBBAUS · SIDONNAISUUDET · PYÖRÖOVI-VAARA',
+    dcScoreRingLbl: 'RISKI-TASO',
+    dcTrustLbl: 'LUOTTAMUSINDEKSI', dcTrustLow: 'MATALA', dcTrustMid: 'KOHTALAINEN', dcTrustHigh: 'KORKEA',
     dcTagRisk: 'KORKEA RISKI', dcTagAi: 'AI-ANALYYSI',
     dcStat1: 'Lupaukset', dcStat2: 'Läsnäolo', dcStat3: 'Lobbaus/v', dcStat4: 'Rahoitus', dcStat5: 'Ideologia',
     dcB1title: 'Uutiset & media', dcB1i1: 'HS: Sidonnaisuuskiista, 12.3.2026', dcB1i2: 'YLE: Lobbaustapaaminen julkistui', dcB1i3: 'Reuters: EU-äänestysanalyysi',
@@ -1844,7 +2179,508 @@ const LANG = { fi: {
     civicBoxTitle: 'Avoimuus on valitun edustajan velvollisuus',
     civicBoxBody: 'Kansanedustaja saa mandaattinsa kansalaisilta. On luontevaa odottaa, että julkista luottamustehtävää hoitava henkilö sitoutuu avoimuuteen ja asettaa itsensä kansalaisten arvioitavaksi. Kieltäytyminen palveluun kirjautumisesta tai tietojen luovuttamisesta on viesti, jonka kansalaiset voivat tulkita haluamallaan tavalla.',
     civicBoxVerdict: 'Kansanedustaja, joka ei suostu avoimuuteen julkisessa tehtävässään — antaa itse vastauksen siihen, miksi ei.',
-  } };
+    gpStreakLbl: 'PÄIVÄN PUTKI',
+    gpEyebrow: '🎮 KANSALAISEN PELIPANEELI',
+    gpTitle: 'Aktiviisuudesta',
+    gpTitleEm: 'palkitaan',
+    gpXpLbl: 'PISTETTÄ YHTEENSÄ',
+    gpXpRank: '⭐ TASO 4',
+    gpXpLevel: 'TASO 4 —',
+    gpXpLevelName: 'AKTIIVINEN KANSALAINEN',
+    gpXpNums: '4 820 / 6 000 XP',
+    gpXpNext: '1 180 XP seuraavaan tasoon:',
+    gpXpNextName: 'KANSALAISVALVOJA ⬆',
+    gpTaskHdr: 'PÄIVÄN TEHTÄVÄT',
+    gpTaskCounter: '1/5 SUORITETTU',
+    gpWeekHdr: 'VIIKKOBONUS',
+    gpWeekTag: 'PÄÄTTYY 2 PV',
+    gpChestLbl: 'AVAA LAHJA',
+    gpChestSub: 'Suorita 5/5 tehtäviä',
+    gpRewardTitle: 'VIIKKOPALKKIO!',
+    gpRewardXp: '+500 XP',
+    gpRewardBadge: '+ UUSI MERKKI:',
+    gpRewardBadgeName: 'VIIKKOAKTIIVI 🌟',
+    gpWeeklyRows: [
+      {done:true, txt:'Kirjaudu 7 päivänä peräkkäin', xp:'+200 XP'},
+      {done:true, txt:'Tutki 10 kansanedustajaa', xp:'+150 XP'},
+      {done:true, txt:'Jaa 3 tietoa somessa', xp:'+100 XP'},
+      {done:false, txt:'Allekirjoita 2 aloitetta', xp:'+200 XP'},
+      {done:false, txt:'Raportoi 1 puuttuva tieto', xp:'+350 XP', epic:true},
+    ],
+    gpBadgesHdr: 'ANSAITUT MERKIT',
+    gpBadgesList: [
+      {earned:true, bc:'#00e5ff', bg:'rgba(0,229,255,.12)', ico:'🔍', name:'TUTKIJA', sub:'Tutkinut 10 ed.'},
+      {earned:true, bc:'#00e676', bg:'rgba(0,230,118,.12)', ico:'📢', name:'TIEDONJAKAJA', sub:'Jaettu 5 kertaa'},
+      {earned:true, bc:'#ffd600', bg:'rgba(255,214,0,.12)', ico:'🔥', name:'7 PV PUTKI', sub:'Viikon aktiivi'},
+      {earned:false, bc:'#b0c4de', bg:'rgba(176,196,222,.05)', ico:'👁️', name:'VALVOJA', sub:'Taso 5 vaaditaan'},
+      {earned:false, bc:'#cc44ff', bg:'rgba(204,68,255,.05)', ico:'🕵️', name:'KORRUPTION­METSÄSTÄJÄ', sub:'Raportoi 5 tapausta'},
+      {earned:false, bc:'#ff6680', bg:'rgba(255,102,128,.05)', ico:'⚡', name:'SALAMATUTKIJA', sub:'10 tutkimusta/pv'},
+      {earned:false, bc:'#ffd600', bg:'rgba(255,214,0,.05)', ico:'👑', name:'DEMOKRATIAN VARTIJA', sub:'Taso 10 vaaditaan'},
+    ],
+    gpTasks: [
+      {id:0, done:true, grad:'linear-gradient(135deg,#00e676,#009944)', glow:'rgba(0,230,118,.6)', ico:'📢', title:'Jaa tieto somessa', desc:'Jaa kansanedustajan tietoja sosiaalisessa mediassa', bar:100, barColor:'var(--gr)', xp:'+30 XP', xpClass:'gpc-xp-done'},
+      {id:1, done:false, active:true, grad:'linear-gradient(135deg,#00e5ff,#006699)', glow:'rgba(0,229,255,.6)', spin1:'#00e5ff', spin2:'#00e676', ico:'🔍', title:'Tutki kansanedustaja', desc:'Avaa poliitikon profiili ja lue tiedot', bar:60, barColor:'var(--cy)', prog:'3/5', progColor:'var(--cy)', xp:'+50 XP', btn:'AVAA →', btnColor:'var(--cy)', completeLbl:'Kansanedustaja tutkittu!'},
+      {id:2, done:false, active:true, special:true, grad:'linear-gradient(135deg,#cc44ff,#660088)', glow:'rgba(204,68,255,.7)', spin1:'#cc44ff', spin2:'#00e5ff', ico:'🤖', titleColor:'#cc44ff', title:'Katso AI-tiivistelmä uutisesta', desc:'Tekoäly analysoi poliitikon viimeisimmän uutisen — lue analyysi', bar:0, barColor:'#cc44ff', prog:'0/1', xp:'+80 XP', xpClass:'gpc-xp-special', btn:'LUKU →', btnColor:'#cc44ff', aiBadge:true, completeLbl:'AI-tiivistelmä luettu!'},
+      {id:3, done:false, active:true, grad:'linear-gradient(135deg,#ffd600,#ff6600)', glow:'rgba(255,214,0,.6)', spin1:'#ffd600', spin2:'#ff6600', ico:'🗳️', title:'Allekirjoita kansalaisaloite', desc:'Tue kansalaisaloitetta eduskunnassa', bar:33, barColor:'var(--wa)', prog:'1/3', progColor:'var(--wa)', xp:'+75 XP', btn:'ALLEKIRJOITA →', btnColor:'var(--wa)', completeLbl:'Aloite allekirjoitettu!'},
+      {id:4, done:false, grad:'linear-gradient(135deg,#ff1744,#880022)', glow:'rgba(232,16,42,.5)', spin1:'#ff1744', spin2:'#ff6680', ico:'⚠️', title:'Raportoi puuttuva tieto', desc:'Huomasit puuttuvan tiedon poliitikon profiilissa?', bar:0, barColor:'var(--red)', prog:'0/1', xp:'+100 XP', xpClass:'gpc-xp-epic', btn:'RAPORTOI →', btnColor:'var(--red)', completeLbl:'Puuttuva tieto raportoitu!'},
+      {id:5, done:false, grad:'linear-gradient(135deg,#cc44ff,#660088)', glow:'rgba(204,68,255,.5)', spin1:'#cc44ff', spin2:'#6600cc', ico:'💬', title:'Kommentoi lupauksen toteutus', desc:'Arvioi onko edustaja pitänyt vaalilupauksen', bar:0, barColor:'#cc44ff', prog:'0/2', xp:'+60 XP', btn:'KOMMENTOI →', btnColor:'#cc44ff', completeLbl:'Kommentti lisätty!'},
+    ],
+    ppSeason: '🏟️ KAUSI 1 · MAALISKUU 2026',
+    ppTitle: 'POLITIIKKA',
+    ppTitleHl: 'PASSI',
+    ppSub: 'Suorita tehtäviä · Nouse tasoilla · Ansaitse palkintoja',
+    ppDaysLbl: 'PÄIVÄÄ JÄLJELLÄ',
+    ppOwnedBadge: '✅ PASSI AKTIIVINEN',
+    ppBarLbl: 'KAUDEN EDISTYMINEN',
+    ppBarXp: '4 820 / 10 000 XP',
+    ppTabFree: 'ILMAINEN POLKU',
+    ppTabPremium: '⭐ PREMIUM-POLKU',
+    ppTabNote: 'Vaihdat polkua klikkaamalla',
+    ppFreeLbl: '🆓 ILMAINEN POLKU — kaikille kansalaisille',
+    ppPremLbl: '⭐ PREMIUM-POLKU — eksklusiiviset palkinnot',
+    ppFreeTiers: [
+      {lvl:'1',ico:'🔍',cls:'pp-r-cyan',name:'TUTKIJA-MERKKI',type:'Profiilimerkki',state:'earned'},
+      {lvl:'5',ico:'📊',cls:'pp-r-green',name:'DATA-TEEMA',type:'Käyttöliittymäteema',state:'earned'},
+      {lvl:'10',ico:'🔥',cls:'pp-r-gold',name:'7 PV PUTKI',type:'Animoitu merkki',state:'earned'},
+      {lvl:'15',ico:'📡',cls:'pp-r-cyan',name:'LIVE-HÄLYTYKSET',type:'Ominaisuus avattu',state:'earned'},
+      {lvl:'20',ico:'🤖',cls:'pp-r-purple',name:'AI-KYSELYT +5',type:'Bonus kyselyt/pv',state:'earned'},
+      {lvl:'48',ico:'⭐',cls:'pp-r-gold',name:'AKTIIVI-KEHYS',type:'Profiiilikehys',state:'current'},
+      {lvl:'50',ico:'🏅',cls:'pp-r-dim',name:'HOPEA-TASO',type:'Tittelipalkinto',state:'locked'},
+      {lvl:'60',ico:'👁️',cls:'pp-r-dim',name:'VALVOJA',type:'Erikoismerkki',state:'locked'},
+      {lvl:'70',ico:'⚡',cls:'pp-r-red',name:'SALAMATUTKIJA',type:'ERIKOISPALKKIO',state:'locked',special:true},
+      {lvl:'80',ico:'🕵️',cls:'pp-r-dim',name:'ETSIVÄ-TEEMA',type:'Käyttöliittymäteema',state:'locked'},
+      {lvl:'90',ico:'🌐',cls:'pp-r-dim',name:'VERKOSTO-NÄKYMÄ',type:'Ominaisuus avattu',state:'locked'},
+      {lvl:'100',ico:'👑',cls:'pp-r-rainbow',name:'DEMOKRATIAN VARTIJA',type:'GRAND FINALE',state:'locked',finale:true},
+    ],
+    ppPremTiers: [
+      {lvl:'1',ico:'🎖️',cls:'pp-r-gold',name:'KULTA-KEHYS',type:'Animoitu kehys',state:'prem-earned'},
+      {lvl:'10',ico:'🔆',cls:'pp-r-gold',name:'NEON-TEEMA',type:'Ekslusiivinen teema',state:'prem-earned'},
+      {lvl:'20',ico:'🎯',cls:'pp-r-gold',name:'TARKKAILIJA',sub:'+10 AI-kyselyä/pv',type:'Bonus ominaisuus',state:'prem-earned'},
+      {lvl:'30',ico:'🏆',cls:'pp-r-rainbow',name:'KULTA-TROFEE',type:'ERIKOISPALKKIO',state:'prem-earned',special:true},
+      {lvl:'48',ico:'🔮',cls:'pp-r-purple',name:'KRISTALLIPALLO',type:'Animoitu avatar',state:'prem-current'},
+      {lvl:'50',ico:'🌟',cls:'pp-r-dim',name:'TÄHTIKENTTÄ-TAUSTA',type:'Profiilitausta',state:'prem-locked'},
+      {lvl:'60',ico:'🛡️',cls:'pp-r-dim',name:'KILPI-MERKKI',type:'Ekslusiivinen merkki',state:'prem-locked'},
+      {lvl:'70',ico:'💎',cls:'pp-r-rainbow',name:'TIMANTTI-STATUS',type:'ERIKOISPALKKIO',state:'prem-locked',special:true},
+      {lvl:'80',ico:'🎪',cls:'pp-r-dim',name:'AREENA-PÄÄSY',type:'Erikoisominaisuus',state:'prem-locked'},
+      {lvl:'90',ico:'🌈',cls:'pp-r-dim',name:'PRISM-TEEMA',type:'Ekslusiivinen teema',state:'prem-locked'},
+      {lvl:'100',ico:'🌠',cls:'pp-r-rainbow',name:'KANSALAIS­LEGENDA',type:'GRAND FINALE · EKSKLUSIIVINEN',state:'prem-locked',finale:true},
+    ],
+    ppEarnTitle: '⚡ KUINKA ANSAITA XP',
+    ppEarnRows: [
+      {grad:'linear-gradient(135deg,#00e5ff,#006699)',ico:'🔍',act:'Tutki kansanedustaja',xp:'+10 XP / tutk.',xpColor:'var(--cy)'},
+      {grad:'linear-gradient(135deg,#00e676,#009944)',ico:'📢',act:'Jaa tieto somessa',xp:'+30 XP',xpColor:'var(--gr)'},
+      {grad:'linear-gradient(135deg,#ffd600,#ff6600)',ico:'🗳️',act:'Allekirjoita kansalaisaloite',xp:'+75 XP',xpColor:'var(--wa)'},
+      {grad:'linear-gradient(135deg,#ff1744,#880022)',ico:'⚠️',act:'Raportoi puuttuva tieto',xp:'+100 XP',xpColor:'var(--red)'},
+      {grad:'linear-gradient(135deg,#cc44ff,#660088)',ico:'💬',act:'Kommentoi lupauksen toteutus',xp:'+60 XP',xpColor:'#cc44ff'},
+      {grad:'linear-gradient(135deg,#ffd600,#ff9100)',ico:'🔥',act:'Päivittäinen kirjautumisbonus',xp:'+50 XP',xpColor:'var(--go)',bonus:true},
+      {grad:'linear-gradient(135deg,#ffd600,#a07000)',ico:'⭐',act:'Viikkobonus (7 pv putki)',xp:'+500 XP BONUS',xpColor:'var(--go)',bonus:true},
+      {grad:'linear-gradient(135deg,#00e676,#00ff88)',ico:'🏅',act:'Suorita kaikki päivän tehtävät',xp:'+200 XP BONUS',xpColor:'var(--gr)',bonus:true},
+    ],
+    whyBtn: 'Mutta miksi?',
+    esiteTag: 'ESITE',
+    esiteModalTitle: 'Politiikkapörssi — Demokratia digitaaliselle aikakaudelle',
+    esiteConceptLbl: 'KÄSITE',
+    esitePrincipleLbl: 'PERIAATE',
+    esiteFtrTag: 'KONSEPTIEHDOTUS 2026',
+    esiteBody: [
+      {type:'p', html:'Valtio kerää tietoa kansalaisista. Viranomaisrekisterit kasvavat, digitaalinen tunnistautuminen laajenee ja verkon sääntely tiukentuu. Samaan aikaan teknologiajätit rakentavat yksityiskohtaisia profiileja käyttäjistä: heidn kulutustottumuksistaan, verkossa viettämästään ajasta ja jopa ajattelunsa ennustettavista kaavoista.'},
+      {type:'p', html:'Jos yhteiskunta hyväksyy tämän yksisuuntaisen tiedonkeruun, syntyy väistämätön kysymys: <strong>missä kulkee kansalaisten oikeus tarkastella vallankäyttöä samalla tarkkuudella?</strong>'},
+      {type:'p', html:'Politiikkapörssi perustuu tähän periaatteeseen. Se on alusta, joka tuo politiikan, vallankäytön ja julkisen datan yhteen paikkaan. Jos viranomaisilla on oikeus analysoida kansalaisia, kansalaisilla on vastaavasti oikeus tarkastella, mitä heidn antamallaan valtakirjalla tehdään.'},
+      {type:'concept', lbl:'KÄSITE', items:[
+        'Tämä ajatus liittyy käsitteeseen <em>sousveillance</em>. Siinä missä perinteinen valvonta kulkee ylhäältä alaspin, sousveillance kääntää näkökulman: kansalaiset tarkkailevat valtaa. Digitaalisessa yhteiskunnassa tämä ei enää tarkoita pelkkää journalistista paljastusta tai yksittäistä protestia. Se voi tarkoittaa järjestelmällistä, datavetoista politiikan seurantaa.',
+        '<strong>Politiikkapörssi rakentaa tätä infrastruktuuria.</strong>'
+      ]},
+      {type:'p', html:'Alusta kokoaa yhteen julkisia tietolähteitä ja tekee näkyväksi poliittisen toiminnan keskeiset ulottuvuudet. Kansalaiset voivat tarkastella esimerkiksi:'},
+      {type:'list', items:['poliitikkojen äänestyskäyttäytymistä ja lakialoitteita','poliittisten lupausten toteutumista','sidonnaisuuksia ja verkostoja','julkisten hankintojen rakenteita','lobbausverkostoja ja vaikutuskanavia','puoluerahoitusta ja kampanjarahoituksen lähteitä','poliittisia nimityksiä ja virkanimitysten verkostoja','päätöksenteon aikajanaa ja vaikutusketjuja']},
+      {type:'p', html:'Tällainen analyysi tekee näkyväksi myös ilmiöitä, joita on perinteisesti ollut vaikea tarkastella systemaattisesti: hyvä veli -verkostoja, poliittisia vastapalveluksia, pyöröovi-ilmiötä julkisen ja yksityisen sektorin välillä, sekä erilaisia korruption ja eturistiriitojen muotoja.'},
+      {type:'p', html:'Kun nämä tiedot tuodaan samaan paikkaan ja esitetään ymmärrettävästi, politiikka muuttuu seurattavaksi kokonaisuudeksi eikä hajanaiseksi uutisvirraksi.'},
+      {type:'concept', lbl:'PERIAATE', items:[
+        'Politiikkapörssi toimii <em>vahvan tunnistautumisen</em> periaatteella. Jokaisella osallistujalla on yksi identiteetti ja yksi ääni. Tämä tekee järjestelmästä aidosti demokraattisen — ei bottiverkkojen tai anonyymien kampanjoiden kenttä, vaan kansalaisosallistumisen infrastruktuuri.',
+        'Keskeinen periaate on <em>continuous accountability</em>. Demokratia ei rajoitu vaalipäivään neljän vuoden välein. Politiikan tulee olla jatkuvasti arvioitavissa. Kansalaisilla on oikeus tarkastella vallankäyttöä reaaliajassa, analysoida päätöksiä ja muodostaa kollektiivinen näkemys siitä, miten heidn palkkaamansa julkiset virkamiehet toimivat.'
+      ]},
+      {type:'future', lbl:'● SEURAAVA VAIHE', items:[
+        'Politiikkapörssi on vasta ensimmäinen askel. Seuraava vaihe laajentaa analyysin kansallisen politiikan ulkopuolelle Euroopan unionin tasolle. EU-instituutioiden päätöksenteko, lobbausverkostot, sääntelyprosessit ja poliittiset vaikutuskanavat voidaan tuoda samaan avoimeen tarkasteluun.',
+        'Kun julkinen data yhdistetään analytiikkaan ja kansalaisten osallistumiseen, syntyy järjestelmä, joka kykenee tarkastelemaan vallankäyttöä perusteellisesti ja reaaliaikaisesti.'
+      ]},
+      {type:'closing', items:[
+        'Demokratia syntyi aikana, jolloin tieto liikkui hitaasti ja vallan tarkastelu oli rajallista.',
+        '<strong>Digitaalinen aikakausi mahdollistaa jotain uutta: kansalaiset voivat rakentaa oman näkymänsä valtaan.</strong>',
+        'Politiikkapörssi on askel kohti läpinäkyvämpää politiikkaa. Kohti yhteiskuntaa, jossa valtaa ei ainoastaan käytetä kansalaisten nimissä, vaan sitä myös seurataan heidn toimesta.'
+      ]},
+    ],
+    secNextLabel: 'JATKA TÄNNE',
+    secNextArrow: 'SEURAAVA',
+    esiteClose: 'SULJE ✕',
+    esiteFutureLbl: '● SEURAAVA VAIHE',
+    kcVerified: '✓ vahvistettu',
+    kcMsg1Name: 'Sanna L.',
+    kcMsg1: 'Äänestyskoneiden läpinäkyvyys on kriittinen kysymys.',
+    kcMsg2Name: 'Paavo K.',
+    kcMsg2: 'Miten saadaan lisää nuoria ehdokkaiksi kuntavaaleissa?',
+    kcMsgOwn: 'Äänestysprosentti pitää saada nousuun!',
+    kcMsgOwnName: 'Sinä',
+    kcModalClose: '✕ SULJE',
+  },
+  en: {
+    code: 'en',
+    secNavStartLabel: 'START HERE',
+    secNavStartTitle: 'View Cards',
+    secNavStartSub: '',
+    secNavDuelBadge: 'VS COMPARE',
+    secNavDuelTitle: 'Hockey vs Politics',
+    secNavDuelSub: 'The Transparency Gap',
+    secNavDataBadge: '🗄️ DATA',
+    secNavDataTitle: 'All Public Data',
+    secNavDataSub: 'In One Place',
+    secNavLiveBadge: '📡 LIVE',
+    secNavLiveTitle: 'Political Event Feed',
+    secNavLiveSub: 'LIVE · Real-Time',
+    secNavAiBadge: '🤖 AI',
+    secNavAiTitle: 'AI Scans Politicians',
+    secNavAiSub: 'Made Transparent',
+    secNavGameBadge: '🎮 GAME',
+    secNavGameTitle: 'Citizen Game Panel',
+    secNavGameSub: 'XP · Missions · Badges',
+    secNavChatBadge: '💬 CHAT',
+    secNavChatTitle: 'CitizenChat',
+    secNavChatSub: 'Verified · Democratic',
+    secPanelLabel: 'SECTION',
+    secPanelClose: '✕ CLOSE',
+    tickerLabel: '● MONITOR',
+    tickerExpandOpen: '▼ ALL',
+    tickerExpandClose: '▲ CLOSE',
+    tickerPanelClose: '▲ CLOSE PANEL',
+    navEsite: '📄 BROCHURE',
+    cardOpenBtn: 'Open profile',
+    cardProfileTitle: 'PROFILE',
+    cardBackBtn: 'BACK TO CARD',
+    cardProfileLeft: [
+      {icon:'⚖️',label:'Trials & convictions',tag:'0'},
+      {icon:'📰',label:'Written articles',tag:'142'},
+      {icon:'🏛️',label:'Session attendance',tag:'85%'},
+      {icon:'🤖',label:'Real-time AI analysis',tag:'LIVE'},
+      {icon:'🏴',label:'Party status',tag:'NCP'},
+      {icon:'💥',label:'Linked scandals',tag:'3'},
+      {icon:'🎓',label:'Education',tag:'LLM'},
+      {icon:'📋',label:'Initiatives',tag:'47'},
+      {icon:'🗳️',label:'Voting behaviour',tag:'85%'},
+    ],
+    cardProfileRight: [
+      {icon:'⚖️',label:'Trials & convictions',tag:'0'},
+      {icon:'📰',label:'Written articles',tag:'89'},
+      {icon:'🏛️',label:'Session attendance',tag:'91%'},
+      {icon:'🤖',label:'Real-time AI analysis',tag:'LIVE'},
+      {icon:'🏴',label:'Party status',tag:'SDP'},
+      {icon:'💥',label:'Linked scandals',tag:'1'},
+      {icon:'🎓',label:'Education',tag:'MSc'},
+      {icon:'📋',label:'Initiatives',tag:'31'},
+      {icon:'🗳️',label:'Voting behaviour',tag:'91%'},
+    ],
+    nav: ['Player Cards','Accountability','Features','Session Tracker','Scoreboard','💬 CitizenChat','Join →'],
+    navLinks: ['#cards','#accountability','#ominaisuudet','#istunto','#scoreboard','#kansalaischat','#toiminta'],
+    tickerItems: [
+      ['PROMISE SCORE','VIRTANEN P.','up','▲ 74%'],['DEPENDENCIES','KORHONEN M.','warn','⚠ 7'],
+      ['VOTES TODAY','','up','12'],['REVOLVING DOOR','','down','↑ 2 NEW'],
+      ['COMMITTEE LIVE','','up','● 3 ACTIVE'],['LOBBY REGISTER','','warn','UPDATED 14:32'],
+      ['MATCH-FIX RISK','','down','NEW REPORT'],['NEPOTISM ALERT','','warn','⚠ CHECKING'],
+      ['CITIZENS INITIATIVE','','up','APPROVED ✓'],['PROMISE SCORE','MÄKINEN S.','down','▼ 41%'],
+    ],
+    heroEyebrow: "Democracy's Digital Upgrade",
+    heroTitle: 'POLITICAL',
+    heroTitleHl: 'PLAYER CARDS',
+    heroSub: "Transparency is democracy's superpower",
+    heroBody: 'In ice hockey, every pass, tackle and goal is tracked to the second. In politics, an MP\'s real actions are often buried under campaign promises and political jargon.',
+    heroBodyStrong: "Why don't we follow politics as transparently as ice hockey?",
+    heroCta1: 'View player cards →',
+    heroCta2: 'Support the project',
+    arenaTitle: '● ELECTION FIT CARDS™ // LIVE',
+    cardVirtRole: 'Right · NCP',
+    cardKorhRole: 'Left · Left Alliance',
+    cardStatVoteLbl: 'Votes',
+    cardStatPromiseLbl: 'Promises',
+    cardStatDepLbl: 'Depend.',
+    cardStatLobbyLbl: 'Lobbyists',
+    cardPromiseLbl: 'Promise score',
+    cardInitiative: '+12 initiatives',
+    cardEthicsRisk: '⚠ RISK',
+    cardEthicsOk: '✓ OK',
+    cardTagline: 'WHO KEEPS PROMISES? TRACK · COMPARE · ACT',
+    galleryEyebrow: 'Sample Cards',
+    galleryTitle: 'How it would work in practice',
+    galleryLead: 'Political player cards – every MP as their own statistics card. Compare, evaluate, vote with knowledge.',
+    galleryLbl1: '🔵 Election Fit Card™ – Player comparison',
+    galleryLbl2: '🔴 Open data – Track · Compare · Act',
+    accountEyebrow: 'Accountability',
+    accountTitle: 'Your MP is',
+    accountTitleEm: 'working for you',
+    accountBody: "On construction sites and factories, every movement is monitored with access cards. Every minute of a warehouse worker is logged in the system.",
+    accountBodyStrong: 'Why should our MPs be allowed to vacation in the Maldives on taxpayer money or receive pharma company benefits in secret?',
+    accountBody2: "An MP is not a lord's post – it is a",
+    accountBody2Em: 'public service role',
+    accountBody2End: 'for citizens. The salary comes from taxpayers. The power comes from voters.',
+    accountBody2Strong: 'Accountability belongs to everyone.',
+    accCards: [
+      {type:'type-a',icon:'🎰',title:'Cabinet Deals',body:'Major parties make mutual agreements out of public view: voting for each other\'s laws in exchange for reciprocal support. In sports this is corruption. In politics it\'s called "coalition work".<br><br><strong>Democracy is not democracy if party discipline and backroom deals force MPs to vote against what they promised their voters.</strong>'},
+      {type:'type-b',icon:'🔄',title:'Revolving Door',body:"An MP decides pharmaceutical regulation – and moves to a pharma company's board the following year. In sports this would be corruption. In politics it's a 'natural career transition'."},
+      {type:'type-c',icon:'👨‍👩‍👦',title:'Nepotism',body:"Relatives into positions, friends onto boards, party contacts into subsidy decisions. PolitiikkaPörssi reveals connections you'd otherwise never see – automatically and in real time."},
+      {type:'type-d',icon:'💊',title:'Pharma & Lobbying',body:'An MP votes for the pharma pricing law. Lobby meetings: 14 pharma representatives per year. Campaign donor: pharma industry association. Coincidence? The data speaks.'},
+    ],
+    morphEyebrow: 'Why not?',
+    morphTitle: 'Same transparency.\nDifferent arena.',
+    morphSportLbl: 'Ice Hockey',
+    morphPoliticsLbl: 'Politics',
+    morphItems: [
+      {icon:'📊',title:'Real-time statistics',body:"In the NHL every puck is tracked. In parliament every vote should be equally easy to follow – and linkable to campaign promises."},
+      {icon:'👕',title:'Sponsor logos visible',body:"A Formula driver's suit shows all sponsors. A politician's decisions should show just as clearly who paid for them."},
+      {icon:'🏆',title:'Scoreboard and ranking',body:'In sports the best rise. Citizens should have the data to decide for themselves who deserves to rise.'},
+    ],
+    compareEyebrow: 'Current state vs. goal',
+    compareTitle: 'The Transparency Gap',
+    compareBadSport: 'Politics today',
+    compareBadTitle: 'Closed system',
+    compareBadItems: ['Campaign promises without systematic tracking','Dependencies scattered across different registers','Lobbying relationships unclear or hidden','Revolving door phenomenon nearly invisible','Cabinet deals outside the public view','Nepotism hard to prove','Participation only in elections every 4 years'],
+    compareGoodSport: 'Ice Hockey – already now',
+    compareGoodTitle: 'Full transparency',
+    compareGoodItems: ['Every pass, tackle and goal tracked','Sponsor logos visible on every uniform','Performance history openly available to all','Match-fixing leads to immediate consequences','Real-time statistics and analytics','Fans follow and comment every game','Contracts and salaries often public'],
+    featEyebrow: 'What the card contains',
+    featTitle: 'All public data\nin one place',
+    featLead: 'PolitiikkaPörssi automatically gathers data on every MP from all public sources into a single visual card.',
+    features: [
+      {icon:'📰',title:'National news',body:'All media-published data about the MP gathered in chronological order. News, interviews, scandals — one view.',tag:'tag-sponsor',tagLbl:'Media monitoring'},
+      {icon:'🧠',title:'Ideology analysis & trust',body:'AI analyses voting history, speeches and statements — and calculates an ideological profile and citizen trust index.',tag:'tag-promise',tagLbl:'AI profiling'},
+      {icon:'👨‍👩‍👦',title:'Family ties & cronyism',body:'Board seats, official positions and trustee roles of close relatives mapped automatically. See who benefits.',tag:'tag-revolving',tagLbl:'Network analysis'},
+      {icon:'📱',title:'Social media & public comms',body:"All public social accounts monitored. Communication analysis reveals what's said to voters vs. what's done in parliament.",tag:'tag-data',tagLbl:'Social analysis'},
+      {icon:'📈',title:'Investment funds & tax data',body:'Public wealth data, investment targets and tax info in one view. Automatic detection of financial conflicts of interest.',tag:'tag-revolving',tagLbl:'Wealth data'},
+      {icon:'🤖',title:'Multi-AI query automatically',body:'The card is connected to automatic queries across multiple AI systems simultaneously. ChatGPT, Claude, Gemini, Grok and Perplexity respond — you see all perspectives.',tag:'tag-ai',tagLbl:'AI multi-source'},
+    ],
+    scoreEyebrow: 'Live scoreboard',
+    scoreTitle: "MPs' transparency\nranking",
+    scoreColRank: '#',
+    scoreColName: 'MP',
+    scoreColPromise: 'Promise score',
+    scoreColDep: 'Dependencies',
+    scoreColEthics: 'Ethics',
+    scoreDepLabel: 'dep.',
+    scoreLeftLabel: 'Left',
+    scoreRightLabel: 'Right',
+    scoreNote: "* Sample data. The real platform would use official registers and parliament's open APIs.",
+    partEyebrow: 'New forms of participation',
+    partTitle: "Democracy doesn't end\non election day",
+    partItems: [
+      {icon:'🗳',title:'Track your vote',body:'Follow in real time how your representative uses your mandate. Did their actions match their promise?'},
+      {icon:'🌉',title:'Direct influence',body:"The platform acts as a bridge between citizens' initiatives, feedback and parliamentary decision-making – continuously."},
+      {icon:'⚖',title:'Democratising decisions',body:'AI translates legal text into plain language. Politics no longer belongs only to experts.'},
+    ],
+    termTitle: 'POLITIIKKAPÖRSSI // REAL-TIME MONITORING',
+    quoteText: "It's time to make the political system",
+    quoteEm: 'a transparent tool for every citizen',
+    quoteEnd: '. The technology already exists.',
+    quoteSub: "This is not about surveillance – it's about accountability. Democracy only works when citizens can check what their decision-makers are doing.",
+    questions: [
+      {strong:'Would our leaders dare to face this kind of transparency?',body:'The same transparency that is already everyday in sports could be the norm in decision-making too.'},
+      {strong:'Why would an elected representative fear public monitoring?',body:'If actions match campaign promises, openness strengthens trust – it does not weaken it.'},
+      {strong:'Is there political will for change?',body:'A system that makes decision-makers accountable will only emerge if citizens demand it.'},
+    ],
+    hashtags: ['#politics','#transparency','#ai','#democracy','#finland','#openness','#participation','#nepotism','#backroomdeals','#accountability'],
+    ctaTitle: 'DEMAND',
+    ctaTitleAccent: 'TRANSPARENCY.',
+    ctaBody: "PolitiikkaPörssi doesn't replace the current political system – it upgrades it for the digital age. The technology exists. We just need the will.",
+    ctaBtn1: 'Sign the initiative →',
+    ctaBtn2: 'Share forward',
+    voteLabel: 'CITIZEN POLL // LIVE',
+    voteQ: 'Should politicians be monitored as transparently as athletes?',
+    voteYes: 'YES',
+    voteNo: 'NO',
+    footNote1: 'A concept proposal for democratic transparency — 2026\nThe technology exists. We need the will.',
+    footNote2: 'Non-partisan. For all citizens.',
+    dcEyebrow: 'Public sources · One card',
+    dcTitle: 'All data together',
+    dcTitleEm: 'in a visual card',
+    dcLead: 'PolitiikkaPörssi automatically gathers data on every MP from <strong style="color:var(--tb);">all public sources</strong> into a single database: national news, international dependencies, lobbying events, violations, trust index, voting behaviour vs. promises, trials, session attendance, speeches, ideology analysis, convictions, family ties, cronyism positions of close relatives, misconduct suspicions, board seats, civic activities, social accounts, investment funds and tax data. <strong style="color:var(--cy);">All in one visual card.</strong> The card is equipped with an AI-powered feature allowing citizens to ask any question about an MP — and receive answers from multiple AI systems simultaneously.',
+    dcCardTerm: 'Term 2023–2027',
+    chamberLiveBtn: 'Listen to speech live',
+    dcThreatBanner: 'HIGH RISK · LOBBYING · AFFILIATIONS · REVOLVING DOOR',
+    dcScoreRingLbl: 'RISK LEVEL',
+    dcTrustLbl: 'TRUST INDEX', dcTrustLow: 'LOW', dcTrustMid: 'MODERATE', dcTrustHigh: 'HIGH',
+    dcTagRisk: 'HIGH RISK', dcTagAi: 'AI ANALYSIS',
+    dcStat1: 'Promises', dcStat2: 'Attendance', dcStat3: 'Lobby/yr', dcStat4: 'Funding', dcStat5: 'Ideology',
+    dcB1title: 'News & media', dcB1i1: 'HS: Dependency dispute, 12.3.2026', dcB1i2: 'YLE: Lobbying meeting revealed', dcB1i3: 'Reuters: EU vote analysis',
+    dcB2title: 'Votes vs. promises', dcB2b1: 'Promises kept', dcB2b2: 'Session attendance', dcB2b3: 'Party discipline',
+    dcB3title: 'Lobbying & dependencies', dcB3i1: '14 lobby meetings / year', dcB3i2: '7 dependency declarations', dcB3i3: 'Pharma funding: €18,400', dcB3i4: 'Business link: 3 meetings',
+    dcB4title: 'Trials & violations', dcB4i1: 'Convictions: 0', dcB4i2: 'Misconduct suspicion: 1 (2022, pending)', dcB4i3: 'Ethics violation: 0',
+    dcB5title: 'International dependencies', dcB5i1: 'EU lobby register: 2 entries', dcB5i2: "Int'l conferences: 4 / year", dcB5i3: 'Foreign funding: under review',
+    dcB6title: 'Inner circle & cronyism', dcB6i1: 'Spouse: Board seat Pharma Ltd', dcB6i2: 'Brother: State subsidy decision 2024', dcB6i3: 'Relative to official post: 1 case',
+    dcB7title: 'Board seats & investments', dcB7i1: 'Board seats: 3 companies', dcB7i2: 'Investment funds: 4 (value n/a)', dcB7i3: 'Tax data 2023: public',
+    dcB8title: 'Civic activities & social', dcB8i1: 'Organisations: 6 memberships', dcB8i2: 'Twitter/X: 12,400 followers', dcB8i3: 'Social analysis: right-wing populism ↑',
+    dcB9title: 'Parliamentary speeches', dcB9i1: 'Speeches 2024: 47', dcB9i2: 'Initiatives: 12', dcB9i3: 'Ideology index: right 78%',
+    dcAiTitle: 'AI QUERY — Automatic multi-source search',
+    dcAiDone: 'RESPONDED', dcAiLoading: 'SEARCHING...',
+    dcAiQuery: 'Query: "Evaluate Pekka Virtanen\'s work as an MP — lobbying, promises and ethical risks"',
+    dcAiAns1: 'Virtanen\'s promise score (64%) is below the parliamentary average. Lobbying frequency (14×/yr) is statistically significant relative to pharma-sector decisions. Revolving door risk: high.',
+    dcAiAns2: 'Based on public data, funding links and voting history correlate in 3 significant laws. Nepotism suspicion ongoing — no convictions. Transparency index: moderate.',
+    dcAiAns3: 'Session attendance (85%) is strong. Number of dependency declarations (7) exceeds party average by 2.4×. International links require further investigation.',
+    dcSourcesTitle: 'Data sources',
+    dcSrc1: "Parliament's open data", dcSrc2: 'National news', dcSrc3: 'International dependencies',
+    dcSrc4: 'Lobby register', dcSrc5: 'Court records', dcSrc6: 'Voting history',
+    dcSrc7: 'Parliamentary speeches', dcSrc8: 'Ideology analysis', dcSrc9: 'Family ties & inner circle',
+    dcSrc10: 'Board seats', dcSrc11: 'Civic activities', dcSrc12: 'Social accounts',
+    dcSrc13: 'Investment funds', dcSrc14: 'Tax data', dcSrc15: 'Misconduct suspicions', dcSrc16: 'AI multi-source query',
+    dcSourcesNote: '* Sample data. The real platform would use official registers and open APIs automatically.',
+    civicEyebrow: 'Civic collaboration · Open source',
+    civicTitle: 'Built for citizens,',
+    civicTitleEm: 'with citizens.',
+    civicLead: 'PolitiikkaPörssi is built as a civic collaboration on open-source principles. The service belongs to all citizens — not parties, not private interests. Platform governance is decentralised into citizens\' hands.',
+    civicPillars: [
+      {icon:'🔓',title:'Open source',body:'All code is public. Anyone can review, develop and improve the platform. Transparency starts with ourselves.'},
+      {icon:'🏛',title:'Decentralised governance',body:'No single entity owns or controls PolitiikkaPörssi. Decisions are made as a civic community.'},
+      {icon:'🌍',title:'Service for all',body:'The service is free and accessible to all citizens. Democracy cannot be behind a paywall.'},
+    ],
+    civicBoxTitle: "Transparency is an elected representative's duty",
+    civicBoxBody: "An MP receives their mandate from citizens. It is natural to expect that a person holding a public position of trust commits to transparency and submits themselves to citizens' evaluation. Refusing to register with the service or share data is a message that citizens can interpret as they see fit.",
+    civicBoxVerdict: 'An MP who refuses transparency in their public role — gives their own answer as to why not.',
+    gpStreakLbl: 'DAY STREAK',
+    gpEyebrow: '🎮 CITIZEN GAME PANEL',
+    gpTitle: 'Activity',
+    gpTitleEm: 'rewarded',
+    gpXpLbl: 'TOTAL POINTS',
+    gpXpRank: '⭐ LEVEL 4',
+    gpXpLevel: 'LEVEL 4 —',
+    gpXpLevelName: 'ACTIVE CITIZEN',
+    gpXpNums: '4,820 / 6,000 XP',
+    gpXpNext: '1,180 XP to next level:',
+    gpXpNextName: 'CITIZEN WATCHDOG ⬆',
+    gpTaskHdr: 'DAILY MISSIONS',
+    gpTaskCounter: '1/5 COMPLETED',
+    gpWeekHdr: 'WEEKLY BONUS',
+    gpWeekTag: 'ENDS IN 2 DAYS',
+    gpChestLbl: 'OPEN CHEST',
+    gpChestSub: 'Complete 5/5 missions',
+    gpRewardTitle: 'WEEKLY REWARD!',
+    gpRewardXp: '+500 XP',
+    gpRewardBadge: '+ NEW BADGE:',
+    gpRewardBadgeName: 'WEEK ACTIVE 🌟',
+    gpWeeklyRows: [
+      {done:true, txt:'Log in 7 consecutive days', xp:'+200 XP'},
+      {done:true, txt:'Research 10 MPs', xp:'+150 XP'},
+      {done:true, txt:'Share 3 pieces of info', xp:'+100 XP'},
+      {done:false, txt:'Sign 2 initiatives', xp:'+200 XP'},
+      {done:false, txt:'Report 1 missing data', xp:'+350 XP', epic:true},
+    ],
+    gpBadgesHdr: 'EARNED BADGES',
+    gpBadgesList: [
+      {earned:true, bc:'#00e5ff', bg:'rgba(0,229,255,.12)', ico:'🔍', name:'RESEARCHER', sub:'Researched 10 MPs'},
+      {earned:true, bc:'#00e676', bg:'rgba(0,230,118,.12)', ico:'📢', name:'INFO SHARER', sub:'Shared 5 times'},
+      {earned:true, bc:'#ffd600', bg:'rgba(255,214,0,.12)', ico:'🔥', name:'7 DAY STREAK', sub:'Week active'},
+      {earned:false, bc:'#b0c4de', bg:'rgba(176,196,222,.05)', ico:'👁️', name:'WATCHDOG', sub:'Level 5 required'},
+      {earned:false, bc:'#cc44ff', bg:'rgba(204,68,255,.05)', ico:'🕵️', name:'CORRUPTION\u00ADHUNTER', sub:'Report 5 cases'},
+      {earned:false, bc:'#ff6680', bg:'rgba(255,102,128,.05)', ico:'⚡', name:'FLASH RESEARCHER', sub:'10 researches/day'},
+      {earned:false, bc:'#ffd600', bg:'rgba(255,214,0,.05)', ico:'👑', name:'DEMOCRACY GUARDIAN', sub:'Level 10 required'},
+    ],
+    gpTasks: [
+      {id:0, done:true, grad:'linear-gradient(135deg,#00e676,#009944)', glow:'rgba(0,230,118,.6)', ico:'📢', title:'Share info on social media', desc:"Share an MP's data on social media", bar:100, barColor:'var(--gr)', xp:'+30 XP', xpClass:'gpc-xp-done'},
+      {id:1, done:false, active:true, grad:'linear-gradient(135deg,#00e5ff,#006699)', glow:'rgba(0,229,255,.6)', spin1:'#00e5ff', spin2:'#00e676', ico:'🔍', title:'Research an MP', desc:"Open a politician's profile and read the data", bar:60, barColor:'var(--cy)', prog:'3/5', progColor:'var(--cy)', xp:'+50 XP', btn:'OPEN →', btnColor:'var(--cy)', completeLbl:'MP researched!'},
+      {id:2, done:false, active:true, special:true, grad:'linear-gradient(135deg,#cc44ff,#660088)', glow:'rgba(204,68,255,.7)', spin1:'#cc44ff', spin2:'#00e5ff', ico:'🤖', titleColor:'#cc44ff', title:'Read AI summary of news', desc:'AI analyses the latest news article — read the analysis', bar:0, barColor:'#cc44ff', prog:'0/1', xp:'+80 XP', xpClass:'gpc-xp-special', btn:'READ →', btnColor:'#cc44ff', aiBadge:true, completeLbl:'AI summary read!'},
+      {id:3, done:false, active:true, grad:'linear-gradient(135deg,#ffd600,#ff6600)', glow:'rgba(255,214,0,.6)', spin1:'#ffd600', spin2:'#ff6600', ico:'🗳️', title:"Sign a citizens' initiative", desc:"Support a citizens' initiative in parliament", bar:33, barColor:'var(--wa)', prog:'1/3', progColor:'var(--wa)', xp:'+75 XP', btn:'SIGN →', btnColor:'var(--wa)', completeLbl:'Initiative signed!'},
+      {id:4, done:false, grad:'linear-gradient(135deg,#ff1744,#880022)', glow:'rgba(232,16,42,.5)', spin1:'#ff1744', spin2:'#ff6680', ico:'⚠️', title:'Report missing data', desc:"Noticed missing data in a politician's profile?", bar:0, barColor:'var(--red)', prog:'0/1', xp:'+100 XP', xpClass:'gpc-xp-epic', btn:'REPORT →', btnColor:'var(--red)', completeLbl:'Missing data reported!'},
+      {id:5, done:false, grad:'linear-gradient(135deg,#cc44ff,#660088)', glow:'rgba(204,68,255,.5)', spin1:'#cc44ff', spin2:'#6600cc', ico:'💬', title:"Comment on a promise's fulfilment", desc:'Evaluate whether the MP has kept their campaign promise', bar:0, barColor:'#cc44ff', prog:'0/2', xp:'+60 XP', btn:'COMMENT →', btnColor:'#cc44ff', completeLbl:'Comment added!'},
+    ],
+    ppSeason: '🎟️ SEASON 1 · MARCH 2026',
+    ppTitle: 'POLITICS',
+    ppTitleHl: 'PASS',
+    ppSub: 'Complete missions · Level up · Earn rewards',
+    ppDaysLbl: 'DAYS REMAINING',
+    ppOwnedBadge: '✅ PASS ACTIVE',
+    ppBarLbl: 'SEASON PROGRESS',
+    ppBarXp: '4,820 / 10,000 XP',
+    ppTabFree: 'FREE TRACK',
+    ppTabPremium: '⭐ PREMIUM TRACK',
+    ppTabNote: 'Click to switch track',
+    ppFreeLbl: '🆓 FREE TRACK — for all citizens',
+    ppPremLbl: '⭐ PREMIUM TRACK — exclusive rewards',
+    ppFreeTiers: [
+      {lvl:'1',ico:'🔍',cls:'pp-r-cyan',name:'RESEARCHER BADGE',type:'Profile badge',state:'earned'},
+      {lvl:'5',ico:'📊',cls:'pp-r-green',name:'DATA THEME',type:'UI theme',state:'earned'},
+      {lvl:'10',ico:'🔥',cls:'pp-r-gold',name:'7 DAY STREAK',type:'Animated badge',state:'earned'},
+      {lvl:'15',ico:'📡',cls:'pp-r-cyan',name:'LIVE ALERTS',type:'Feature unlocked',state:'earned'},
+      {lvl:'20',ico:'🤖',cls:'pp-r-purple',name:'AI QUERIES +5',type:'Bonus queries/day',state:'earned'},
+      {lvl:'48',ico:'⭐',cls:'pp-r-gold',name:'ACTIVE FRAME',type:'Profile frame',state:'current'},
+      {lvl:'50',ico:'🏅',cls:'pp-r-dim',name:'SILVER TIER',type:'Title reward',state:'locked'},
+      {lvl:'60',ico:'👁️',cls:'pp-r-dim',name:'WATCHDOG',type:'Special badge',state:'locked'},
+      {lvl:'70',ico:'⚡',cls:'pp-r-red',name:'FLASH RESEARCHER',type:'SPECIAL REWARD',state:'locked',special:true},
+      {lvl:'80',ico:'🕵️',cls:'pp-r-dim',name:'DETECTIVE THEME',type:'UI theme',state:'locked'},
+      {lvl:'90',ico:'🌐',cls:'pp-r-dim',name:'NETWORK VIEW',type:'Feature unlocked',state:'locked'},
+      {lvl:'100',ico:'👑',cls:'pp-r-rainbow',name:'DEMOCRACY GUARDIAN',type:'GRAND FINALE',state:'locked',finale:true},
+    ],
+    ppPremTiers: [
+      {lvl:'1',ico:'🎖️',cls:'pp-r-gold',name:'GOLD FRAME',type:'Animated frame',state:'prem-earned'},
+      {lvl:'10',ico:'🔆',cls:'pp-r-gold',name:'NEON THEME',type:'Exclusive theme',state:'prem-earned'},
+      {lvl:'20',ico:'🎯',cls:'pp-r-gold',name:'TRACKER',sub:'+10 AI queries/day',type:'Bonus feature',state:'prem-earned'},
+      {lvl:'30',ico:'🏆',cls:'pp-r-rainbow',name:'GOLD TROPHY',type:'SPECIAL REWARD',state:'prem-earned',special:true},
+      {lvl:'48',ico:'🔮',cls:'pp-r-purple',name:'CRYSTAL BALL',type:'Animated avatar',state:'prem-current'},
+      {lvl:'50',ico:'🌟',cls:'pp-r-dim',name:'STARFIELD BG',type:'Profile background',state:'prem-locked'},
+      {lvl:'60',ico:'🛡️',cls:'pp-r-dim',name:'SHIELD BADGE',type:'Exclusive badge',state:'prem-locked'},
+      {lvl:'70',ico:'💎',cls:'pp-r-rainbow',name:'DIAMOND STATUS',type:'SPECIAL REWARD',state:'prem-locked',special:true},
+      {lvl:'80',ico:'🎪',cls:'pp-r-dim',name:'ARENA ACCESS',type:'Special feature',state:'prem-locked'},
+      {lvl:'90',ico:'🌈',cls:'pp-r-dim',name:'PRISM THEME',type:'Exclusive theme',state:'prem-locked'},
+      {lvl:'100',ico:'🌠',cls:'pp-r-rainbow',name:'CITIZEN\u00ADLEGEND',type:'GRAND FINALE · EXCLUSIVE',state:'prem-locked',finale:true},
+    ],
+    ppEarnTitle: '⚡ HOW TO EARN XP',
+    whyBtn: 'But why?',
+    esiteTag: 'BRIEF',
+    esiteModalTitle: 'PolitiikkaPörssi — Democracy for the Digital Age',
+    esiteConceptLbl: 'CONCEPT',
+    esitePrincipleLbl: 'PRINCIPLE',
+    esiteFtrTag: 'CONCEPT PROPOSAL 2026',
+    esiteBody: [
+      {type:'p', html:'The state collects data on citizens. Government registries grow, digital identification expands, and online regulation tightens. At the same time, tech giants build detailed profiles of users: their consumption habits, time spent online, and even predictable patterns in their thinking.'},
+      {type:'p', html:'If society accepts this one-way data collection, an inevitable question arises: <strong>where is citizens’ right to scrutinise power with the same level of detail?</strong>'},
+      {type:'p', html:'PolitiikkaPörssi is founded on this principle. It is a platform that brings politics, the exercise of power, and public data into one place. If authorities have the right to analyse citizens, citizens have a corresponding right to examine what is done with the mandate they have given.'},
+      {type:'concept', lbl:'CONCEPT', items:[
+        'This idea relates to the concept of <em>sousveillance</em>. While traditional surveillance flows top-down, sousveillance reverses the perspective: citizens monitor power. In a digital society, this no longer means only journalistic exposure or individual protest. It can mean systematic, data-driven political monitoring.',
+        '<strong>PolitiikkaPörssi is building this infrastructure.</strong>'
+      ]},
+      {type:'p', html:'The platform aggregates public data sources and makes visible the key dimensions of political activity. Citizens can examine, for example:'},
+      {type:'list', items:['MPs’ voting behaviour and legislative initiatives','the fulfilment of political promises','affiliations and networks','structures of public procurement','lobbying networks and channels of influence','party funding and campaign finance sources','political appointments and networks of public nominations','timelines of decision-making and chains of influence']},
+      {type:'p', html:'Such analysis also makes visible phenomena that have traditionally been difficult to examine systematically: old boys’ networks, political favours, the revolving door between public and private sectors, and various forms of corruption and conflicts of interest.'},
+      {type:'p', html:'When this information is brought together in one place and presented clearly, politics becomes a trackable whole rather than a fragmented news stream.'},
+      {type:'concept', lbl:'PRINCIPLE', items:[
+        'PolitiikkaPörssi operates on the principle of <em>strong identification</em>. Every participant has one identity and one voice. This makes the system genuinely democratic — not a field for bot networks or anonymous campaigns, but an infrastructure for civic participation.',
+        'A core principle is <em>continuous accountability</em>. Democracy is not limited to election day every four years. Politics must be continuously evaluable. Citizens have the right to scrutinise the exercise of power in real time, analyse decisions, and form a collective view of how the public officials they have hired are performing.'
+      ]},
+      {type:'future', lbl:'● NEXT PHASE', items:[
+        'PolitiikkaPörssi is only the first step. The next phase expands the analysis beyond national politics to the level of the European Union. The decision-making of EU institutions, lobbying networks, regulatory processes, and political channels of influence can all be brought into the same open scrutiny.',
+        'When public data is combined with analytics and civic participation, a system emerges that is capable of examining the exercise of power thoroughly and in real time.'
+      ]},
+      {type:'closing', items:[
+        'Democracy was born at a time when information moved slowly and scrutiny of power was limited.',
+        '<strong>The digital age makes something new possible: citizens can build their own view of power.</strong>',
+        'PolitiikkaPörssi is a step towards more transparent politics. Towards a society where power is not only exercised in the name of citizens, but also monitored by them.'
+      ]},
+    ],
+    secNextLabel: 'CONTINUE HERE',
+    secNextArrow: 'NEXT',
+    esiteClose: 'CLOSE ✕',
+    esiteFutureLbl: '● NEXT PHASE',
+    kcVerified: '✓ verified',
+    kcMsg1Name: 'Sanna L.',
+    kcMsg1: 'The transparency of voting machines is a critical issue.',
+    kcMsg2Name: 'Paavo K.',
+    kcMsg2: 'How do we get more young people to run in municipal elections?',
+    kcMsgOwn: 'Voter turnout needs to go up!',
+    kcMsgOwnName: 'You',
+    kcModalClose: '✕ CLOSE',
+    ppEarnRows: [
+      {grad:'linear-gradient(135deg,#00e5ff,#006699)',ico:'🔍',act:'Research an MP',xp:'+10 XP / research',xpColor:'var(--cy)'},
+      {grad:'linear-gradient(135deg,#00e676,#009944)',ico:'📢',act:'Share info on social media',xp:'+30 XP',xpColor:'var(--gr)'},
+      {grad:'linear-gradient(135deg,#ffd600,#ff6600)',ico:'🗳️',act:"Sign a citizens' initiative",xp:'+75 XP',xpColor:'var(--wa)'},
+      {grad:'linear-gradient(135deg,#ff1744,#880022)',ico:'⚠️',act:'Report missing data',xp:'+100 XP',xpColor:'var(--red)'},
+      {grad:'linear-gradient(135deg,#cc44ff,#660088)',ico:'💬',act:'Comment on promise fulfilment',xp:'+60 XP',xpColor:'#cc44ff'},
+      {grad:'linear-gradient(135deg,#ffd600,#ff9100)',ico:'🔥',act:'Daily login bonus',xp:'+50 XP',xpColor:'var(--go)',bonus:true},
+      {grad:'linear-gradient(135deg,#ffd600,#a07000)',ico:'⭐',act:'Weekly bonus (7 day streak)',xp:'+500 XP BONUS',xpColor:'var(--go)',bonus:true},
+      {grad:'linear-gradient(135deg,#00e676,#00ff88)',ico:'🏅',act:'Complete all daily missions',xp:'+200 XP BONUS',xpColor:'var(--gr)',bonus:true},
+    ],
+  }
+};
 
 let L='fi';
 
@@ -1871,13 +2707,182 @@ function render(){
     ).join('')+`<div class="tk-panel-close" onclick="toggleTickerPanel()">${t.tickerPanelClose}</div>`;
   }
 
-  const lgs=['fi','en','sv','et'];
   document.getElementById('nav').innerHTML=
     `<li><button class="nav-esite-btn" onclick="openEsite()">${t.navEsite}</button></li>`+
-    `<li></li>`;
-  document.querySelectorAll('.lb').forEach(b=>{b.onclick=()=>{L=b.dataset.lang;render();setTimeout(initSecPanels,300);};});
+    `<li class="lang-sw"><button class="lb2${L==='fi'?' lang-active':''}" onclick="setLang('fi')">🇫🇮 FI</button><button class="lb2${L==='en'?' lang-active':''}" onclick="setLang('en')">🇬🇧 EN</button></li>`;
   document.getElementById('app').innerHTML=page(t);
+  renderGP(t);
   obs();
+}
+
+function setLang(code){
+  L=code;
+  // Reset panel state so initSecPanels re-collects from fresh page() output
+  currentPanel=null;
+  Object.keys(sectionStore).forEach(function(k){ delete sectionStore[k]; });
+  var wrap=document.getElementById('secPanelWrap');
+  if(wrap) wrap.classList.remove('open');
+  render();
+  setTimeout(initSecPanels,300);
+}
+
+function buildTaskCard(tk){
+  if(tk.done) return `<div class="gpc-card gpc-done" id="gpc${tk.id}"><div class="gpc-scan"></div><div class="gpc-particles" id="gpc${tk.id}p"></div><div class="gpc-left"><div class="gpc-ico" style="background:${tk.grad};box-shadow:0 0 20px ${tk.glow};">${tk.ico}</div></div><div class="gpc-mid"><div class="gpc-title">${tk.title}</div><div class="gpc-desc">${tk.desc}</div><div class="gpc-bar-wrap"><div class="gpc-bar" style="width:100%;background:${tk.barColor};"></div></div></div><div class="gpc-right"><div class="gpc-check">\u2713</div><div class="gpc-xp gpc-xp-done">${tk.xp}</div></div></div>`;
+  const sp=tk.spin1?` style="--spin-c1:${tk.spin1};--spin-c2:${tk.spin2};"`:'' ;
+  const ts=tk.titleColor?` style="color:${tk.titleColor};"`:'' ;
+  const ph=tk.prog?`<div class="gpc-prog"${tk.progColor?` style="color:${tk.progColor};"`:''}>` +tk.prog+ '</div>':'' ;
+  const ab=tk.aiBadge?'<div class="gpc-special-badge">AI</div>':'' ;
+  const cc='gpc-active'+(tk.special?' gpc-special':'');
+  const cl=(tk.completeLbl||tk.title).replace(/'/g,"\\'");
+  const pts=parseInt(tk.xp)||0;
+  return `<div class="gpc-card ${cc}" id="gpc${tk.id}" onclick="gpCompleteTask(this,${tk.id},'${tk.ico}','${cl}','${tk.xp}',${pts})"><div class="gpc-scan"></div><div class="gpc-particles" id="gpc${tk.id}p"></div><div class="gpc-border-spin"${sp}></div>${ab}<div class="gpc-left"><div class="gpc-ico" style="background:${tk.grad};box-shadow:0 0 20px ${tk.glow};">${tk.ico}</div></div><div class="gpc-mid"><div class="gpc-title"${ts}>${tk.title}</div><div class="gpc-desc">${tk.desc}</div><div class="gpc-bar-wrap"><div class="gpc-bar" style="width:${tk.bar||0}%;background:${tk.barColor};"></div></div></div><div class="gpc-right">${ph}<div class="gpc-xp ${tk.xpClass||''}">${tk.xp}</div><div class="gpc-btn" style="border-color:${tk.btnColor};color:${tk.btnColor};">${tk.btn}</div></div></div>`;
+}
+
+function buildTier(tier){
+  const sm={earned:'pp-earned',current:'pp-current',locked:'pp-locked','prem-earned':'pp-prem-earned','prem-current':'pp-prem-current','prem-locked':'pp-prem-locked'};
+  const lm={earned:'',current:'pp-lvl-active',locked:'pp-lvl-locked','prem-earned':'pp-lvl-prem','prem-current':'pp-lvl-prem','prem-locked':'pp-lvl-prem-lock'};
+  let sc=sm[tier.state]||'',lc=lm[tier.state]||'';
+  if(tier.finale&&tier.state==='locked'){sc+=' pp-tier-finale';lc='pp-lvl-finale';}
+  if(tier.finale&&tier.state==='prem-locked'){sc+=' pp-tier-finale';lc='pp-lvl-prem-finale';}
+  if(tier.special&&tier.state==='locked'){sc+=' pp-tier-special';lc='pp-lvl-special';}
+  if(tier.special&&tier.state==='prem-locked'){sc+=' pp-tier-special';lc='pp-lvl-prem-special';}
+  const right=tier.state==='current'?'<div class="pp-tier-arrow">\u25b6</div>':tier.state==='prem-current'?'<div class="pp-tier-arrow pp-arrow-gold">\u25b6</div>':(tier.state==='earned'||tier.state==='prem-earned')?`<div class="pp-tier-check${tier.state==='prem-earned'?' pp-check-gold':''}">\u2713</div>`:'<div class="pp-tier-lock">\ud83d\udd12</div>';
+  const pulse=(tier.state==='current'||tier.state==='prem-current')?' pp-reward-pulse':'';
+  const sub=tier.sub?`<div class="pp-reward-name-sub">${tier.sub}</div>`:'';
+  return `<div class="pp-tier ${sc}"><div class="pp-tier-lvl ${lc}">${tier.lvl}</div><div class="pp-tier-reward${pulse}"><div class="pp-reward-ico ${tier.cls}">${tier.ico}</div><div class="pp-reward-name">${tier.name}</div>${sub}<div class="pp-reward-type">${tier.type}</div></div>${right}</div>`;
+}
+
+function renderGP(t){
+  const sl=document.querySelector('.gp-streak-lbl');if(sl)sl.textContent=t.gpStreakLbl;
+  const ey=document.querySelector('.gp-title-block .ey');if(ey)ey.textContent=t.gpEyebrow;
+  const h2=document.querySelector('.gp-title-block .st');
+  if(h2)h2.innerHTML=`${t.gpTitle} <em style="color:var(--go);font-style:normal;">${t.gpTitleEm}</em>`;
+  const xl=document.querySelector('.gp-xp-lbl');if(xl)xl.textContent=t.gpXpLbl;
+  const xr=document.querySelector('.gp-xp-rank');if(xr)xr.textContent=t.gpXpRank;
+  const lvlEl=document.querySelector('.gp-xpbar-level');
+  if(lvlEl)lvlEl.innerHTML=`${t.gpXpLevel} <span style="color:var(--cy);">${t.gpXpLevelName}</span>`;
+  const numsEl=document.querySelector('.gp-xpbar-nums');if(numsEl)numsEl.textContent=t.gpXpNums;
+  const nextEl=document.querySelector('.gp-xpbar-next');
+  if(nextEl)nextEl.innerHTML=`${t.gpXpNext} <span style="color:var(--go);font-weight:700;">${t.gpXpNextName}</span>`;
+  const panels=document.querySelectorAll('.gp-panel');
+  if(panels[0]){
+    const th=panels[0].querySelector('.gp-panel-title');if(th)th.textContent=t.gpTaskHdr;
+    const tc=panels[0].querySelector('.gp-panel-tag');if(tc)tc.textContent=t.gpTaskCounter;
+    const cards=panels[0].querySelector('.gp-task-cards');
+    if(cards&&t.gpTasks)cards.innerHTML=t.gpTasks.map(buildTaskCard).join('');
+  }
+  if(panels[1]){
+    const wh=panels[1].querySelector('.gp-panel-title');if(wh)wh.textContent=t.gpWeekHdr;
+    const wt=panels[1].querySelector('.gp-panel-tag');if(wt)wt.textContent=t.gpWeekTag;
+    const cl=panels[1].querySelector('.gp-chest-lbl');if(cl)cl.textContent=t.gpChestLbl;
+    const cs=panels[1].querySelector('.gp-chest-sublbl');if(cs)cs.textContent=t.gpChestSub;
+    const rt=panels[1].querySelector('.gp-chest-reward-title');if(rt)rt.textContent=t.gpRewardTitle;
+    const rx=panels[1].querySelector('.gp-chest-reward-xp');if(rx)rx.textContent=t.gpRewardXp;
+    const rb=panels[1].querySelector('.gp-chest-reward-badge');
+    if(rb)rb.innerHTML=`${t.gpRewardBadge} <span style="color:var(--go);">${t.gpRewardBadgeName}</span>`;
+    const wkly=panels[1].querySelector('.gp-weekly');
+    if(wkly&&t.gpWeeklyRows)wkly.innerHTML=t.gpWeeklyRows.map(r=>{
+      const xc='gp-weekly-xp'+(r.epic?' epic':'');
+      return r.done?`<div class="gp-weekly-row done"><span>\u2705</span><span>${r.txt}</span><span class="${xc}">${r.xp}</span></div>`:`<div class="gp-weekly-row"><span style="opacity:.4;">\u25cb</span><span style="opacity:.6;">${r.txt}</span><span class="${xc}" style="opacity:${r.epic?.7:.5};">${r.xp}</span></div>`;
+    }).join('');
+  }
+  const bh=document.querySelector('.gp-badges-hdr .gp-panel-title');if(bh)bh.textContent=t.gpBadgesHdr;
+  const bg=document.querySelector('.gp-badges');
+  if(bg&&t.gpBadgesList)bg.innerHTML=t.gpBadgesList.map(b=>{
+    const cls=b.earned?'earned':'locked';
+    const lock=b.earned?'':'<div class="gp-badge-lock">\ud83d\udd12</div>';
+    return `<div class="gp-badge ${cls}" style="--bc:${b.bc};--bg:${b.bg};"><div class="gp-badge-ico">${b.ico}</div><div class="gp-badge-name">${b.name}</div><div class="gp-badge-sub">${b.sub}</div>${lock}</div>`;
+  }).join('');
+  const ppSec=document.querySelector('#politiikkapassi');
+  if(!ppSec||!t.ppSeason)return;
+  const ppEy=ppSec.querySelector('.ey');if(ppEy)ppEy.textContent=t.ppSeason;
+  const ppH2=ppSec.querySelector('.st');
+  if(ppH2)ppH2.innerHTML=`${t.ppTitle}<span style="color:var(--go);">${t.ppTitleHl}</span>`;
+  const ppSb=ppSec.querySelector('.pp-sec > p');if(ppSb)ppSb.textContent=t.ppSub;
+  const ppTL=ppSec.querySelector('.pp-timer-lbl');if(ppTL)ppTL.textContent=t.ppDaysLbl;
+  const ppOb=ppSec.querySelector('.pp-owned-badge');if(ppOb)ppOb.textContent=t.ppOwnedBadge;
+  const ppBL=ppSec.querySelector('.pp-sbar-lbl');if(ppBL)ppBL.textContent=t.ppBarLbl;
+  const ppBX=ppSec.querySelector('.pp-sbar-xp');if(ppBX)ppBX.textContent=t.ppBarXp;
+  const tabs=ppSec.querySelectorAll('.pp-tab');
+  if(tabs[0])tabs[0].textContent=t.ppTabFree;
+  if(tabs[1])tabs[1].textContent=t.ppTabPremium;
+  const tn=ppSec.querySelector('.pp-tab-note');if(tn)tn.textContent=t.ppTabNote;
+  const pfl=ppSec.querySelector('#ppTrackFree .pp-track-label');if(pfl)pfl.textContent=t.ppFreeLbl;
+  const ppl=ppSec.querySelector('#ppTrackPremium .pp-track-label');if(ppl)ppl.textContent=t.ppPremLbl;
+  const ft=ppSec.querySelector('#ppTrackFree .pp-tiers');
+  if(ft&&t.ppFreeTiers)ft.innerHTML=t.ppFreeTiers.map(buildTier).join('');
+  const pt2=ppSec.querySelector('#ppTrackPremium .pp-tiers');
+  if(pt2&&t.ppPremTiers)pt2.innerHTML=t.ppPremTiers.map(buildTier).join('');
+  const et=ppSec.querySelector('.pp-earn-title');if(et)et.textContent=t.ppEarnTitle;
+  const eg=ppSec.querySelector('.pp-earn-grid');
+  if(eg&&t.ppEarnRows)eg.innerHTML=t.ppEarnRows.map(r=>`<div class="pp-earn-row${r.bonus?' pp-earn-bonus':''}"><span class="pp-earn-ico" style="background:${r.grad};">${r.ico}</span><span class="pp-earn-act">${r.act}</span><span class="pp-earn-xp" style="color:${r.xpColor};">${r.xp}</span></div>`).join('');
+  renderExtra(t);
+}
+
+
+function renderEsite(t) {
+  var el = document.getElementById('esiteModalBody');
+  if (!el || !t.esiteBody) return;
+
+  // Update header elements
+  var tag = document.querySelector('.esite-modal-tag');
+  if (tag) tag.textContent = t.esiteTag;
+  var title = document.querySelector('[data-i18n="esiteModalTitle"]');
+  if (title) title.textContent = t.esiteModalTitle;
+  var ftr = document.querySelector('[data-i18n="esiteFtrTag"]');
+  if (ftr) ftr.textContent = t.esiteFtrTag;
+
+  // Build body
+  var html = '';
+  t.esiteBody.forEach(function(block) {
+    if (block.type === 'p') {
+      html += '<p>' + block.html + '</p>';
+    } else if (block.type === 'concept') {
+      html += '<div class="esite-concept"><div class="esite-concept-lbl">' + block.lbl + '</div>';
+      block.items.forEach(function(item) { html += '<p>' + item + '</p>'; });
+      html += '</div>';
+    } else if (block.type === 'future') {
+      html += '<div class="esite-future"><div class="esite-future-lbl">' + block.lbl + '</div>';
+      block.items.forEach(function(item) { html += '<p>' + item + '</p>'; });
+      html += '</div>';
+    } else if (block.type === 'list') {
+      html += '<ul class="esite-list">';
+      block.items.forEach(function(item) { html += '<li>' + item + '</li>'; });
+      html += '</ul>';
+    } else if (block.type === 'closing') {
+      html += '<div class="esite-closing">';
+      block.items.forEach(function(item) { html += '<p>' + item + '</p>'; });
+      html += '</div>';
+    }
+  });
+  el.innerHTML = html;
+}
+
+function renderExtra(t){
+  // Translate all elements with data-i18n attribute
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(t[key] !== undefined) el.textContent = t[key];
+  });
+  // sec-panel-close button (built dynamically)
+  document.querySelectorAll('.sec-panel-close').forEach(function(el){
+    el.textContent = t.secPanelClose;
+  });
+  // dc card extras
+  var lb = document.getElementById('chamberLiveBtnTxt');
+  if(lb) lb.textContent = t.chamberLiveBtn || '';
+  var tb = document.querySelector('[data-i18n="dcThreatBanner"]');
+  if(tb) tb.textContent = t.dcThreatBanner || '';
+  var tl = document.querySelector('[data-i18n="dcTrustLbl"]');
+  if(tl) tl.textContent = t.dcTrustLbl || '';
+  ['dcTrustLow','dcTrustMid','dcTrustHigh'].forEach(function(k){
+    var el = document.querySelector('[data-i18n="'+k+'"]');
+    if(el) el.textContent = t[k] || '';
+  });
+  // dc-score-ring RISKI-TASO label
+  var sr = document.querySelector('.dc-score-ring');
+  if(sr) sr.style.setProperty('--risk-lbl', '"'+(t.dcScoreRingLbl||'RISKI-TASO')+'"');
+  renderEsite(t);
 }
 
 function page(t){
@@ -1975,7 +2980,7 @@ function page(t){
     <div class="aloita-cta-wrap">
 
       <div class="aloita-arrow-wrap">
-        <div class="aloita-neon-label">ALOITA TÄSTÄ</div>
+        <div class="aloita-neon-label">${t.secNavStartLabel}</div>
         <div class="aloita-arrow">▼</div>
       </div>
 
@@ -2008,7 +3013,7 @@ function page(t){
           <div class="sec-card-title" style="
             color:#fff;font-weight:900;font-size:15px;letter-spacing:2px;
             text-shadow:0 0 12px rgba(0,229,255,.6);
-          ">Katso kortit</div>
+          ">${t.secNavStartTitle}</div>
 
         </div>
       </div>
@@ -2017,66 +3022,66 @@ function page(t){
     <div class="sec-card" style="--sc-color:#ff6680;" data-panel="duel" onclick="toggleSecPanel('duel',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 30% 50%,rgba(21,101,255,.45),transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(232,16,42,.45),transparent 50%),linear-gradient(160deg,#020510,#100208);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(255,102,128,.5);color:#ff6680;">VS VERTAILU</div>
+      <div class="sec-card-badge" style="border-color:rgba(255,102,128,.5);color:#ff6680;">${t.secNavDuelBadge}</div>
       <div class="sec-card-ico" style="font-size:36px;color:white;filter:none;transform:translate(-50%,-50%);top:40%;left:50%;position:absolute;text-align:center;white-space:nowrap;">🏒 <span style="color:#ffd600;font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;vertical-align:middle;">VS</span> 🏛️</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">Jääkiekko vs Politiikka</div>
-        <div class="sec-card-sub">Avoimuuden kuilu</div>
+        <div class="sec-card-title">${t.secNavDuelTitle}</div>
+        <div class="sec-card-sub">${t.secNavDuelSub}</div>
       </div>
     </div>
 
     <div class="sec-card" style="--sc-color:#ffd600;" data-panel="julkinen" onclick="toggleSecPanel('julkinen',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 50% 30%,rgba(120,90,0,.8),rgba(4,7,12,.95) 70%),linear-gradient(160deg,#0d0800,#1a1000);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(255,214,0,.5);color:#ffd600;">🗄️ DATA</div>
+      <div class="sec-card-badge" style="border-color:rgba(255,214,0,.5);color:#ffd600;">${t.secNavDataBadge}</div>
       <div class="sec-card-ico" style="color:#ffd600;">🗄️</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">Kaikki julkinen tieto</div>
-        <div class="sec-card-sub">Yhdessä paikassa</div>
+        <div class="sec-card-title">${t.secNavDataTitle}</div>
+        <div class="sec-card-sub">${t.secNavDataSub}</div>
       </div>
     </div>
 
     <div class="sec-card" style="--sc-color:#00e5ff;" data-panel="syote" onclick="toggleSecPanel('syote',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,80,120,.9),rgba(4,7,12,.95) 70%),linear-gradient(160deg,#001824,#020e18);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(0,229,255,.5);color:#00e5ff;">📡 LIVE</div>
+      <div class="sec-card-badge" style="border-color:rgba(0,229,255,.5);color:#00e5ff;">${t.secNavLiveBadge}</div>
       <div class="sec-card-ico" style="color:#00e5ff;">📡</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">Poliittinen Tapahtuma&shy;syöte</div>
-        <div class="sec-card-sub">LIVE · Reaaliaikainen</div>
+        <div class="sec-card-title">${t.secNavLiveTitle}</div>
+        <div class="sec-card-sub">${t.secNavLiveSub}</div>
       </div>
     </div>
 
     <div class="sec-card" style="--sc-color:#cc44ff;" data-panel="ai" onclick="toggleSecPanel('ai',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 50% 30%,rgba(100,0,180,.7),rgba(4,7,12,.95) 70%),linear-gradient(160deg,#08001a,#100020);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(204,68,255,.5);color:#cc44ff;">🤖 AI</div>
+      <div class="sec-card-badge" style="border-color:rgba(204,68,255,.5);color:#cc44ff;">${t.secNavAiBadge}</div>
       <div class="sec-card-ico" style="color:#cc44ff;">🤖</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">AI skannaa poliitikot</div>
-        <div class="sec-card-sub">Läpinäkyviksi</div>
+        <div class="sec-card-title">${t.secNavAiTitle}</div>
+        <div class="sec-card-sub">${t.secNavAiSub}</div>
       </div>
     </div>
 
     <div class="sec-card" style="--sc-color:#00e676;" data-panel="ranking" onclick="toggleSecPanel('ranking',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,80,40,.8),rgba(4,7,12,.95) 70%),linear-gradient(160deg,#000d06,#001008);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(0,230,118,.5);color:#00e676;">🎮 PELI</div>
+      <div class="sec-card-badge" style="border-color:rgba(0,230,118,.5);color:#00e676;">${t.secNavGameBadge}</div>
       <div class="sec-card-ico" style="color:#cc44ff;filter:drop-shadow(0 0 18px rgba(204,68,255,.6));">🎮</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">Kansalaisen pelipaneeli</div>
-        <div class="sec-card-sub">XP · Tehtävät · Merkit</div>
+        <div class="sec-card-title">${t.secNavGameTitle}</div>
+        <div class="sec-card-sub">${t.secNavGameSub}</div>
       </div>
     </div>
 
     <div class="sec-card" style="--sc-color:#00e5ff;" data-panel="chat" onclick="toggleSecPanel('chat',this)">
       <div class="sec-card-bg" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,60,90,.8),rgba(4,7,12,.95) 70%),linear-gradient(160deg,#000c14,#001420);"></div>
       <div class="sec-card-overlay"></div>
-      <div class="sec-card-badge" style="border-color:rgba(0,229,255,.5);color:#00e5ff;">💬 CHAT</div>
+      <div class="sec-card-badge" style="border-color:rgba(0,229,255,.5);color:#00e5ff;">${t.secNavChatBadge}</div>
       <div class="sec-card-ico" style="color:#00e5ff;">💬</div>
       <div class="sec-card-info">
-        <div class="sec-card-title">Kansalaischat</div>
-        <div class="sec-card-sub">Vahvistettu · Demokraattinen</div>
+        <div class="sec-card-title">${t.secNavChatTitle}</div>
+        <div class="sec-card-sub">${t.secNavChatSub}</div>
       </div>
     </div>
 
@@ -2090,8 +3095,8 @@ function page(t){
 <div class="sec-panel-wrap" id="secPanelWrap" style="--sp-color:#00e5ff;">
   <div class="sec-panel-inner">
     <div class="sec-panel-topbar">
-      <div class="sec-panel-label" id="secPanelLabel">OSIO</div>
-      <button class="sec-panel-close" onclick="closeSecPanel()">✕ SULJE</button>
+      <div class="sec-panel-label" id="secPanelLabel">${t.secPanelLabel}</div>
+      <button class="sec-panel-close" onclick="closeSecPanel()">${t.secPanelClose}</button>
     </div>
     <div class="sec-panel-content" id="secPanelContent"></div>
   </div>
@@ -2202,8 +3207,16 @@ function page(t){
           <div class="chamber-corner cc-bl"></div>
           <div class="chamber-corner cc-br"></div>
           <div class="chamber-scanline"></div>
-          <div class="chamber-hud">
-            <div class="chamber-hud-left">● EDUSKUNTA · HELSINKI</div>
+          <div class="chamber-hud" style="flex-wrap:wrap;gap:10px;">
+            <div class="chamber-hud-left" style="display:flex;align-items:center;gap:12px;">
+              ● EDUSKUNTA · HELSINKI
+              <button class="chamber-live-btn" id="chamberLiveBtn" onclick="window.open('https://verkkolahetys.eduskunta.fi/fi/','_blank')">
+                <span class="clb-bars"><span></span><span></span><span></span><span></span></span>
+                <span class="clb-dot"></span>
+                <span class="clb-label" id="chamberLiveBtnTxt">Kuuntele puheenvuoro suorana</span>
+                <span class="clb-arrow">▶</span>
+              </button>
+            </div>
             <div class="chamber-hud-right">
               <div class="chamber-legend"><div class="chamber-legend-dot present"></div>Paikalla</div>
               <div class="chamber-legend"><div class="chamber-legend-dot speaking"></div>Puheenvuoro</div>
@@ -2232,16 +3245,34 @@ function page(t){
 
 <section class="datacard-sec" id="tietokanta">
   <div class="datacard-sec-inner">
-    <div class="ey ey-noline rv" style="justify-content:center;display:block;text-align:center;">${t.dcEyebrow}</div>
-    <h2 class="st rv d1" style="text-align:center;">${t.dcTitle}<br><span style="color:var(--cy);">${t.dcTitleEm}</span></h2>
-    <p class="rv d2" style="text-align:center;font-size:16px;color:var(--t);max-width:720px;margin:0 auto 56px;line-height:1.85;">${t.dcLead}</p>
+    <div class="dc-intro-wrap rv" style="max-width:1100px;margin:0 auto 56px;">
+      <div class="ey ey-noline" style="display:block;text-align:center;">${t.dcEyebrow}</div>
+      <div class="dc-title-row" style="position:relative;display:flex;align-items:center;justify-content:center;min-height:110px;">
+        <h2 class="st d1" style="text-align:center;margin:0;">${t.dcTitle}<br><span style="color:var(--cy);">${t.dcTitleEm}</span></h2>
+        <div class="dc-why-slot d2b" style="position:absolute;right:0;top:50%;transform:translateY(-50%);">
+          <button class="why-btn" onclick="document.getElementById('accountability').scrollIntoView({behavior:'smooth',block:'start'})">
+            ${t.whyBtn}
+          </button>
+        </div>
+      </div>
+      <p class="d2" style="font-size:16px;color:var(--t);margin:24px auto 0;line-height:1.85;text-align:center;max-width:760px;">${t.dcLead}</p>
+    </div>
 
     <div class="dc-outer-layout rv d3">
 
       <div class="dc-main-col">
         <div class="dc-card">
+          <!-- threat level banner -->
+          <div class="dc-threat-banner">
+            <span class="dc-threat-ico">⚠</span>
+            <span class="dc-threat-txt" data-i18n="dcThreatBanner">KORKEA RISKI · LOBBAUS · SIDONNAISUUDET · PYÖRÖOVI-VAARA</span>
+            <span class="dc-threat-pulse"></span>
+          </div>
           <div class="dc-card-top">
-            <div class="dc-avatar">&#x1F9D1;&#x200D;&#x2696;&#xFE0F;</div>
+            <div class="dc-avatar">
+              &#x1F9D1;&#x200D;&#x2696;&#xFE0F;
+              <div class="dc-avatar-ring"></div>
+            </div>
             <div class="dc-card-id">
               <div class="dc-card-name">VIRTANEN, Pekka</div>
               <div class="dc-card-meta">Kokoomus · Uusimaa · ${t.dcCardTerm}</div>
@@ -2250,18 +3281,69 @@ function page(t){
                 <span class="dc-tag live">&#x25CF; LIVE</span>
                 <span class="dc-tag ai">&#x1F916; ${t.dcTagAi}</span>
               </div>
+              <!-- trust meter bar -->
+              <div class="dc-trust-meter">
+                <span class="dc-trust-lbl" data-i18n="dcTrustLbl">LUOTTAMUSINDEKSI</span>
+                <div class="dc-trust-track">
+                  <div class="dc-trust-fill" style="width:58%;"></div>
+                  <div class="dc-trust-marker" style="left:58%;"></div>
+                </div>
+                <div class="dc-trust-zones">
+                  <span style="color:var(--red);" data-i18n="dcTrustLow">MATALA</span>
+                  <span style="color:var(--wa);" data-i18n="dcTrustMid">KOHTALAINEN</span>
+                  <span style="color:var(--gr);" data-i18n="dcTrustHigh">KORKEA</span>
+                </div>
+              </div>
             </div>
             <div class="dc-score-ring">
+              <!-- SVG arc gauge -->
+              <svg class="dc-gauge-svg" viewBox="0 0 80 50" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6" stroke-linecap="round"/>
+                <path d="M8,44 A34,34 0 0,1 72,44" fill="none" stroke="url(#gaugeGrad)" stroke-width="6" stroke-linecap="round"
+                  stroke-dasharray="106.8" stroke-dashoffset="44"/>
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#00e676"/>
+                    <stop offset="50%" stop-color="#ffd600"/>
+                    <stop offset="100%" stop-color="#e8102a"/>
+                  </linearGradient>
+                </defs>
+              </svg>
               <div class="dc-score-val">58</div>
               <div class="dc-score-lbl">/ 100</div>
             </div>
           </div>
           <div class="dc-stat-row">
-            <div class="dc-stat s-warn"><div class="dc-stat-icon">&#x1F5F3;</div><div class="dc-stat-val">64%</div><div class="dc-stat-lbl">${t.dcStat1}</div></div>
-            <div class="dc-stat s-ok"><div class="dc-stat-icon">&#x1F3DB;</div><div class="dc-stat-val">85%</div><div class="dc-stat-lbl">${t.dcStat2}</div></div>
-            <div class="dc-stat s-red"><div class="dc-stat-icon">&#x1F91D;</div><div class="dc-stat-val">14&#xD7;</div><div class="dc-stat-lbl">${t.dcStat3}</div></div>
-            <div class="dc-stat s-red"><div class="dc-stat-icon">&#x1F4B0;</div><div class="dc-stat-val">18k&#x20AC;</div><div class="dc-stat-lbl">${t.dcStat4}</div></div>
-            <div class="dc-stat s-pu"><div class="dc-stat-icon">&#x1F9E0;</div><div class="dc-stat-val">78%</div><div class="dc-stat-lbl">${t.dcStat5}</div></div>
+            <div class="dc-stat s-warn">
+              <div class="dc-stat-icon">&#x1F5F3;</div>
+              <div class="dc-stat-val">64%</div>
+              <div class="dc-stat-trend down">▼ -8%</div>
+              <div class="dc-stat-lbl">${t.dcStat1}</div>
+            </div>
+            <div class="dc-stat s-ok">
+              <div class="dc-stat-icon">&#x1F3DB;</div>
+              <div class="dc-stat-val">85%</div>
+              <div class="dc-stat-trend up">▲ +3%</div>
+              <div class="dc-stat-lbl">${t.dcStat2}</div>
+            </div>
+            <div class="dc-stat s-red">
+              <div class="dc-stat-icon">&#x1F91D;</div>
+              <div class="dc-stat-val">14&#xD7;</div>
+              <div class="dc-stat-trend down">▲ +4×</div>
+              <div class="dc-stat-lbl">${t.dcStat3}</div>
+            </div>
+            <div class="dc-stat s-red">
+              <div class="dc-stat-icon">&#x1F4B0;</div>
+              <div class="dc-stat-val">18k&#x20AC;</div>
+              <div class="dc-stat-trend down">▲ +6k</div>
+              <div class="dc-stat-lbl">${t.dcStat4}</div>
+            </div>
+            <div class="dc-stat s-pu">
+              <div class="dc-stat-icon">&#x1F9E0;</div>
+              <div class="dc-stat-val">78%</div>
+              <div class="dc-stat-trend neutral">● =</div>
+              <div class="dc-stat-lbl">${t.dcStat5}</div>
+            </div>
           </div>
           <div class="dc-grid">
             <div class="dc-block"><div class="dc-block-hdr">&#x1F4F0; ${t.dcB1title}</div><div class="dc-items"><div class="dc-item"><span class="dc-dot red"></span>${t.dcB1i1}</div><div class="dc-item"><span class="dc-dot warn"></span>${t.dcB1i2}</div><div class="dc-item"><span class="dc-dot ok"></span>${t.dcB1i3}</div></div></div>
@@ -2489,80 +3571,745 @@ function page(t){
   </div>
 </section>
 
-<section class="scr-sec" id="gamepanel">
+<section class="scr-sec gp-sec" id="gamepanel">
   <div class="plasma"><div class="pw pw1"></div><div class="pw pw2"></div><div class="pw pw3"></div></div>
-  <div style="display:flex;align-items:center;gap:16px;margin-bottom:30px;" class="rv d1">
-    <div class="streak-badge"><span class="streak-fire">🔥</span>7 PERÄKKÄISTÄ KIRJAUTUMISPÄIVÄÄ</div>
-    <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);letter-spacing:1px;">KANSALAISAKTIIVISUUSBONUS AKTIIVINEN</span>
-  </div>
-  <div class="rv d2" style="margin-bottom:36px;">
-    <div style="border:1px solid rgba(0,229,255,0.18);background:rgba(0,229,255,0.03);padding:24px 28px;max-width:900px;margin:0 auto;width:100%;box-sizing:border-box;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
-        <div>
-          <div style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:var(--cy);margin-bottom:4px;">ÄÄNESTÄJÄN PELIPANEELI</div>
-          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);">Kerää pisteitä kansalaisaktiivisuudesta</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;color:var(--gr);">4 820</div>
-          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);letter-spacing:1px;">PISTETTÄ YHTEENSÄ</div>
-        </div>
-      </div>
-      <div style="margin-bottom:20px;">
-        <div style="display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-bottom:5px;letter-spacing:1px;">
-          <span>TASO 4 — AKTIIVINEN KANSALAINEN</span><span>4 820 / 6 000 XP</span>
-        </div>
-        <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:0;overflow:hidden;">
-          <div style="height:100%;width:80%;background:linear-gradient(90deg,#00e5ff,#00e676);"></div>
-        </div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td);margin-top:4px;letter-spacing:1px;">1 180 XP seuraavaan tasoon: KANSALAISVALVOJA</div>
-      </div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--td);margin-bottom:10px;">PÄIVÄN TEHTÄVÄT</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;">🔍</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--t);flex:1;">Tutki kansanedustaja</span>
-          <div style="flex:0 0 120px;height:5px;background:rgba(255,255,255,0.06);"><div style="height:100%;width:60%;background:var(--cy);"></div></div>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cy);min-width:40px;text-align:right;">3/5</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:48px;text-align:right;">+50 XP</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;">📢</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--t);flex:1;">Jaa tieto somessa</span>
-          <div style="flex:0 0 120px;height:5px;background:rgba(255,255,255,0.06);"><div style="height:100%;width:100%;background:var(--gr);"></div></div>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gr);min-width:40px;text-align:right;">✓</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gr);min-width:48px;text-align:right;">+30 XP</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;">🗳</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--t);flex:1;">Allekirjoita kansalaisaloite</span>
-          <div style="flex:0 0 120px;height:5px;background:rgba(255,255,255,0.06);"><div style="height:100%;width:33%;background:var(--wa);"></div></div>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--wa);min-width:40px;text-align:right;">1/3</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:48px;text-align:right;">+75 XP</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;">⚠️</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--t);flex:1;">Raportoi puuttuva tieto</span>
-          <div style="flex:0 0 120px;height:5px;background:rgba(255,255,255,0.06);"><div style="height:100%;width:0%;background:var(--red);"></div></div>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);min-width:40px;text-align:right;">0/1</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:48px;text-align:right;">+100 XP</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:14px;">💬</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--t);flex:1;">Kommentoi lupauksen toteutus</span>
-          <div style="flex:0 0 120px;height:5px;background:rgba(255,255,255,0.06);"><div style="height:100%;width:0%;background:#cc44ff;"></div></div>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);min-width:40px;text-align:right;">0/2</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:48px;text-align:right;">+60 XP</span>
-        </div>
-      </div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--td);margin-bottom:10px;">ANSAITUT MERKIT</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;">
-        <span style="background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--cy);padding:4px 10px;letter-spacing:1px;">🔍 TUTKIJA</span>
-        <span style="background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--gr);padding:4px 10px;letter-spacing:1px;">📢 TIEDONJAKAJA</span>
-        <span style="background:rgba(255,214,0,0.1);border:1px solid rgba(255,214,0,0.3);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--go);padding:4px 10px;letter-spacing:1px;">🔥 7 PÄIVÄN PUTKI</span>
-        <span style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);padding:4px 10px;letter-spacing:1px;">🔒 VALVOJA — LUKITTU</span>
-        <span style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);padding:4px 10px;letter-spacing:1px;">🔒 KORRUPTIONMETSÄSTÄJÄ — LUKITTU</span>
+
+  <!-- ── HEADER: streak + title ── -->
+  <div class="gp-header rv">
+    <div class="gp-streak">
+      <div class="gp-streak-fire">🔥</div>
+      <div class="gp-streak-info">
+        <div class="gp-streak-num">7</div>
+        <div class="gp-streak-lbl">PÄIVÄN PUTKI</div>
       </div>
     </div>
+    <div class="gp-title-block">
+      <div class="ey ey-noline" style="margin-bottom:4px;">🎮 KANSALAISEN PELIPANEELI</div>
+      <h2 class="st" style="font-size:clamp(22px,2.8vw,40px);margin-bottom:0;">Aktiviisuudesta <em style="color:var(--go);font-style:normal;">palkitaan</em></h2>
+    </div>
+    <div class="gp-total-xp rv d2">
+      <div class="gp-xp-num">5 640</div>
+      <div class="gp-xp-lbl">PISTETTÄ YHTEENSÄ</div>
+      <div class="gp-xp-rank">⭐ TASO 4</div>
+    </div>
+  </div>
+
+  <!-- ── XP BAR ── -->
+  <div class="gp-xpbar-wrap rv d1">
+    <div class="gp-xpbar-labels">
+      <span class="gp-xpbar-level">TASO 4 — <span style="color:var(--cy);">AKTIIVINEN KANSALAINEN</span></span>
+      <span class="gp-xpbar-nums">5 640 / 6 000 XP</span>
+    </div>
+    <div class="gp-xpbar-track">
+      <div class="gp-xpbar-fill" style="width:94%;"></div>
+      <div class="gp-xpbar-glow"></div>
+    </div>
+    <div class="gp-xpbar-next">360 XP seuraavaan tasoon: <span style="color:var(--go);font-weight:700;">KANSALAISVALVOJA ⬆</span></div>
+  </div>
+
+  <!-- ── MAIN GRID: tasks + rewards ── -->
+  <div class="gp-main rv d2">
+
+    <!-- PÄIVÄN TEHTÄVÄT -->
+    <div class="gp-panel">
+      <div class="gp-panel-hdr">
+        <span class="gp-panel-ico">⚔️</span>
+        <span class="gp-panel-title">PÄIVÄN TEHTÄVÄT</span>
+        <span class="gp-panel-tag" id="gpTaskCounter">1/5 SUORITETTU</span>
+      </div>
+      <div class="gp-task-cards" id="gpTaskCards">
+
+        <!-- DONE -->
+        <div class="gpc-card gpc-done" id="gpc0">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc0p"></div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#00e676,#009944);box-shadow:0 0 20px rgba(0,230,118,.6);">📢</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title">Jaa tieto somessa</div>
+            <div class="gpc-desc">Jaa kansanedustajan tietoja sosiaalisessa mediassa</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:100%;background:var(--gr);"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-check">✓</div>
+            <div class="gpc-xp gpc-xp-done">+30 XP</div>
+          </div>
+        </div>
+
+        <!-- ACTIVE -->
+        <div class="gpc-card gpc-active" id="gpc1" onclick="gpCompleteTask(this,1,'🔍','Tutki kansanedustaja','+50 XP',50)">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc1p"></div>
+          <div class="gpc-border-spin"></div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#00e5ff,#006699);box-shadow:0 0 20px rgba(0,229,255,.6);">🔍</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title">Tutki kansanedustaja</div>
+            <div class="gpc-desc">Avaa poliitikon profiili ja lue tiedot</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:60%;background:var(--cy);"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-prog" style="color:var(--cy);">3/5</div>
+            <div class="gpc-xp">+50 XP</div>
+            <div class="gpc-btn" style="border-color:var(--cy);color:var(--cy);">AVAA →</div>
+          </div>
+        </div>
+
+        <!-- ACTIVE: AI tehtävä -->
+        <div class="gpc-card gpc-active gpc-special" id="gpc2" onclick="gpCompleteTask(this,2,'🤖','AI-tiivistelmä luettu!','+80 XP',80)">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc2p"></div>
+          <div class="gpc-border-spin" style="--spin-c1:#cc44ff;--spin-c2:#00e5ff;"></div>
+          <div class="gpc-special-badge">AI</div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#cc44ff,#660088);box-shadow:0 0 20px rgba(204,68,255,.7);">🤖</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title" style="color:#cc44ff;">Katso AI-tiivistelmä uutisesta</div>
+            <div class="gpc-desc">Tekoäly analysoi poliitikon viimeisimmän uutisen — lue analyysi</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:0%;background:#cc44ff;"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-prog">0/1</div>
+            <div class="gpc-xp gpc-xp-special">+80 XP</div>
+            <div class="gpc-btn" style="border-color:#cc44ff;color:#cc44ff;">LUKU →</div>
+          </div>
+        </div>
+
+        <!-- ACTIVE: aloite -->
+        <div class="gpc-card gpc-active" id="gpc3" onclick="gpCompleteTask(this,3,'🗳️','Aloite allekirjoitettu!','+75 XP',75)">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc3p"></div>
+          <div class="gpc-border-spin" style="--spin-c1:#ffd600;--spin-c2:#ff6600;"></div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#ffd600,#ff6600);box-shadow:0 0 20px rgba(255,214,0,.6);">🗳️</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title">Allekirjoita kansalaisaloite</div>
+            <div class="gpc-desc">Tue kansalaisaloitetta eduskunnassa</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:33%;background:var(--wa);"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-prog" style="color:var(--wa);">1/3</div>
+            <div class="gpc-xp">+75 XP</div>
+            <div class="gpc-btn" style="border-color:var(--wa);color:var(--wa);">ALLEKIRJOITA →</div>
+          </div>
+        </div>
+
+        <!-- LOCKED: raportoi -->
+        <div class="gpc-card gpc-locked" id="gpc4" onclick="gpCompleteTask(this,4,'⚠️','Puuttuva tieto raportoitu!','+100 XP',100)">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc4p"></div>
+          <div class="gpc-border-spin" style="--spin-c1:#ff1744;--spin-c2:#ff6680;"></div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#ff1744,#880022);box-shadow:0 0 20px rgba(232,16,42,.5);">⚠️</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title">Raportoi puuttuva tieto</div>
+            <div class="gpc-desc">Huomasit puuttuvan tiedon poliitikon profiilissa?</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:0%;background:var(--red);"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-prog">0/1</div>
+            <div class="gpc-xp gpc-xp-epic">+100 XP</div>
+            <div class="gpc-btn" style="border-color:var(--red);color:var(--red);">RAPORTOI →</div>
+          </div>
+        </div>
+
+        <!-- LOCKED: kommentoi -->
+        <div class="gpc-card gpc-locked" id="gpc5" onclick="gpCompleteTask(this,5,'💬','Kommentti lisätty!','+60 XP',60)">
+          <div class="gpc-scan"></div>
+          <div class="gpc-particles" id="gpc5p"></div>
+          <div class="gpc-border-spin" style="--spin-c1:#cc44ff;--spin-c2:#6600cc;"></div>
+          <div class="gpc-left">
+            <div class="gpc-ico" style="background:linear-gradient(135deg,#cc44ff,#660088);box-shadow:0 0 20px rgba(204,68,255,.5);">💬</div>
+          </div>
+          <div class="gpc-mid">
+            <div class="gpc-title">Kommentoi lupauksen toteutus</div>
+            <div class="gpc-desc">Arvioi onko edustaja pitänyt vaalilupauksen</div>
+            <div class="gpc-bar-wrap"><div class="gpc-bar" style="width:0%;background:#cc44ff;"></div></div>
+          </div>
+          <div class="gpc-right">
+            <div class="gpc-prog">0/2</div>
+            <div class="gpc-xp">+60 XP</div>
+            <div class="gpc-btn" style="border-color:#cc44ff;color:#cc44ff;">KOMMENTOI →</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIIKKOBONUKSET + PALKINTOTRUHE -->
+    <div class="gp-panel">
+      <div class="gp-panel-hdr">
+        <span class="gp-panel-ico">🏆</span>
+        <span class="gp-panel-title">VIIKKOBONUS</span>
+        <span class="gp-panel-tag" style="background:rgba(255,214,0,.15);border-color:rgba(255,214,0,.4);color:var(--go);">PÄÄTTYY 2 PV</span>
+      </div>
+
+      <!-- Truhe -->
+      <div class="gp-chest-wrap">
+        <div class="gp-chest" id="gpChest" onclick="gpOpenChest(this)">
+          <div class="gp-chest-body">
+            <div class="gp-chest-lid">
+              <div class="gp-chest-lid-inner">🏅</div>
+            </div>
+            <div class="gp-chest-base">
+              <div class="gp-chest-lock">🔐</div>
+              <div class="gp-chest-lbl">AVAA LAHJA</div>
+              <div class="gp-chest-sublbl">Suorita 5/5 tehtävää</div>
+            </div>
+          </div>
+          <div class="gp-chest-glow"></div>
+          <div class="gp-chest-particles" id="gpChestParticles"></div>
+        </div>
+        <div class="gp-chest-reward" id="gpChestReward">
+          <div class="gp-chest-reward-ico">🎁</div>
+          <div class="gp-chest-reward-title">VIIKKOPALKKIO!</div>
+          <div class="gp-chest-reward-xp">+500 XP</div>
+          <div class="gp-chest-reward-badge">+ UUSI MERKKI: <span style="color:var(--go);">VIIKKOAKTIIVI 🌟</span></div>
+        </div>
+      </div>
+
+      <!-- Viikon tehtävät (mini) -->
+      <div class="gp-weekly">
+        <div class="gp-weekly-row done"><span>✅</span><span>Kirjaudu 7 päivänä peräkkäin</span><span class="gp-weekly-xp">+200 XP</span></div>
+        <div class="gp-weekly-row done"><span>✅</span><span>Tutki 10 kansanedustajaa</span><span class="gp-weekly-xp">+150 XP</span></div>
+        <div class="gp-weekly-row done"><span>✅</span><span>Jaa 3 tietoa somessa</span><span class="gp-weekly-xp">+100 XP</span></div>
+        <div class="gp-weekly-row"><span style="opacity:.4;">○</span><span style="opacity:.6;">Allekirjoita 2 aloitetta</span><span class="gp-weekly-xp" style="opacity:.5;">+200 XP</span></div>
+        <div class="gp-weekly-row"><span style="opacity:.4;">○</span><span style="opacity:.6;">Raportoi 1 puuttuva tieto</span><span class="gp-weekly-xp epic" style="opacity:.7;">+350 XP</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── BADGES ── -->
+  <div class="gp-badges-wrap rv d3">
+    <div class="gp-badges-hdr">
+      <span class="gp-panel-ico">🎖️</span>
+      <span class="gp-panel-title">ANSAITUT MERKIT</span>
+    </div>
+    <div class="gp-badges">
+
+      <div class="gp-badge earned" style="--bc:#00e5ff;--bg:rgba(0,229,255,.12);">
+        <div class="gp-badge-ico">🔍</div>
+        <div class="gp-badge-name">TUTKIJA</div>
+        <div class="gp-badge-sub">Tutkinut 10 ed.</div>
+      </div>
+
+      <div class="gp-badge earned" style="--bc:#00e676;--bg:rgba(0,230,118,.12);">
+        <div class="gp-badge-ico">📢</div>
+        <div class="gp-badge-name">TIEDONJAKAJA</div>
+        <div class="gp-badge-sub">Jaettu 5 kertaa</div>
+      </div>
+
+      <div class="gp-badge earned" style="--bc:#ffd600;--bg:rgba(255,214,0,.12);">
+        <div class="gp-badge-ico">🔥</div>
+        <div class="gp-badge-name">7 PV PUTKI</div>
+        <div class="gp-badge-sub">Viikon aktiivi</div>
+      </div>
+
+      <div class="gp-badge locked" style="--bc:#b0c4de;--bg:rgba(176,196,222,.05);">
+        <div class="gp-badge-ico">👁️</div>
+        <div class="gp-badge-name">VALVOJA</div>
+        <div class="gp-badge-sub">Taso 5 vaaditaan</div>
+        <div class="gp-badge-lock">🔒</div>
+      </div>
+
+      <div class="gp-badge locked" style="--bc:#cc44ff;--bg:rgba(204,68,255,.05);">
+        <div class="gp-badge-ico">🕵️</div>
+        <div class="gp-badge-name">KORRUPTION­METSÄSTÄJÄ</div>
+        <div class="gp-badge-sub">Raportoi 5 tapausta</div>
+        <div class="gp-badge-lock">🔒</div>
+      </div>
+
+      <div class="gp-badge locked" style="--bc:#ff6680;--bg:rgba(255,102,128,.05);">
+        <div class="gp-badge-ico">⚡</div>
+        <div class="gp-badge-name">SALAMATUTKIJA</div>
+        <div class="gp-badge-sub">10 tutkimusta/pv</div>
+        <div class="gp-badge-lock">🔒</div>
+      </div>
+
+      <div class="gp-badge locked" style="--bc:#ffd600;--bg:rgba(255,214,0,.05);">
+        <div class="gp-badge-ico">👑</div>
+        <div class="gp-badge-name">DEMOKRATIAN VARTIJA</div>
+        <div class="gp-badge-sub">Taso 10 vaaditaan</div>
+        <div class="gp-badge-lock">🔒</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── TASOPALKINNOT ── -->
+  <div class="gp-levels-wrap rv d3">
+    <div class="gp-badges-hdr" style="margin-bottom:24px;">
+      <span class="gp-panel-ico">🏆</span>
+      <span class="gp-panel-title">TASOPALKINNOT — 10 TASOA</span>
+      <span class="gp-panel-tag" style="margin-left:auto;">Nykyinen taso: <span style="color:var(--go);font-weight:700;">TASO 4</span></span>
+    </div>
+    <div class="gp-levels-grid">
+
+      <!-- TASO 1 -->
+      <div class="gp-lvl-card earned" data-lvl="1">
+        <div class="gp-lvl-num">01</div>
+        <div class="gp-lvl-ico">🌱</div>
+        <div class="gp-lvl-name">UUSI KANSALAINEN</div>
+        <div class="gp-lvl-xp">0 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🏅 Profiilimerkki</li>
+          <li>🎉 Tervetuloviesti</li>
+          <li>🔓 Perusnäkymät</li>
+        </ul>
+        <div class="gp-lvl-status earned-lbl">✓ SAAVUTETTU</div>
+      </div>
+
+      <!-- TASO 2 -->
+      <div class="gp-lvl-card earned" data-lvl="2">
+        <div class="gp-lvl-num">02</div>
+        <div class="gp-lvl-ico">👀</div>
+        <div class="gp-lvl-name">HERÄNNYT ÄÄNESTÄJÄ</div>
+        <div class="gp-lvl-xp">500 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🏅 Merkki profiiliin</li>
+          <li>🗳️ Kansalaiskysely-äänestys</li>
+          <li>📧 Viikkoraportti sähköpostiin</li>
+        </ul>
+        <div class="gp-lvl-status earned-lbl">✓ SAAVUTETTU</div>
+      </div>
+
+      <!-- TASO 3 -->
+      <div class="gp-lvl-card earned" data-lvl="3">
+        <div class="gp-lvl-num">03</div>
+        <div class="gp-lvl-ico">🔍</div>
+        <div class="gp-lvl-name">TIETOINEN KANSALAINEN</div>
+        <div class="gp-lvl-xp">1 500 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>📂 Laajennettu poliitikkoprofiili</li>
+          <li>🤝 Lobbaustapaamisten yksityiskohdat</li>
+          <li>⭐ Seurattavat poliitikot -lista</li>
+        </ul>
+        <div class="gp-lvl-status earned-lbl">✓ SAAVUTETTU</div>
+      </div>
+
+      <!-- TASO 4 — NYKYINEN -->
+      <div class="gp-lvl-card current" data-lvl="4">
+        <div class="gp-lvl-current-badge">● NYKYINEN</div>
+        <div class="gp-lvl-num">04</div>
+        <div class="gp-lvl-ico">⚡</div>
+        <div class="gp-lvl-name">AKTIIVINEN KANSALAINEN</div>
+        <div class="gp-lvl-xp">3 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🤖 AI-kysely poliitikosta</li>
+          <li>📋 Päivittäiset tehtävät</li>
+          <li>📊 Historialliset äänestystiedot</li>
+        </ul>
+        <div class="gp-lvl-status current-lbl">⚡ AKTIIVINEN</div>
+      </div>
+
+      <!-- TASO 5 -->
+      <div class="gp-lvl-card locked" data-lvl="5">
+        <div class="gp-lvl-num" style="color:var(--td);">05</div>
+        <div class="gp-lvl-ico">👁️</div>
+        <div class="gp-lvl-name">KANSALAISVALVOJA</div>
+        <div class="gp-lvl-xp">6 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🔔 Reaaliaikaiset hälytykset</li>
+          <li>🕰️ Historiallinen data 10 v taaksepäin</li>
+          <li>📍 Poliitikon sijaintikaronkat</li>
+        </ul>
+        <div class="gp-lvl-status locked-lbl">🔒 360 XP puuttuu</div>
+      </div>
+
+      <!-- TASO 6 -->
+      <div class="gp-lvl-card locked" data-lvl="6">
+        <div class="gp-lvl-num" style="color:var(--td);">06</div>
+        <div class="gp-lvl-ico">🛡️</div>
+        <div class="gp-lvl-name">DEMOKRATIAN VARTIJA</div>
+        <div class="gp-lvl-xp">10 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🚨 Raportoi epäilyttävät sidonnaisuudet</li>
+          <li>🛡️ Eksklusiivinen Vartija-merkki</li>
+          <li>📬 Raporttisi moderaattorijonoon</li>
+        </ul>
+        <div class="gp-lvl-status locked-lbl">🔒 Lukittu</div>
+      </div>
+
+      <!-- TASO 7 -->
+      <div class="gp-lvl-card locked" data-lvl="7">
+        <div class="gp-lvl-num" style="color:var(--td);">07</div>
+        <div class="gp-lvl-ico">📢</div>
+        <div class="gp-lvl-name">AVOIMUUDEN SANANSAATTAJA</div>
+        <div class="gp-lvl-xp">15 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>👤 Oma julkinen profiili</li>
+          <li>✍️ Kirjoita julkisia analyyseja</li>
+          <li>🔗 Kutsulinkki kaverille</li>
+        </ul>
+        <div class="gp-lvl-status locked-lbl">🔒 Lukittu</div>
+      </div>
+
+      <!-- TASO 8 -->
+      <div class="gp-lvl-card locked" data-lvl="8">
+        <div class="gp-lvl-num" style="color:var(--td);">08</div>
+        <div class="gp-lvl-ico">🌐</div>
+        <div class="gp-lvl-name">VAIKUTTAJA</div>
+        <div class="gp-lvl-xp">22 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🧪 Beta-ominaisuudet ensin</li>
+          <li>💡 Ehdota uusia datapisteitä</li>
+          <li>🗳️ Äänioikeus kehityskyselyissä</li>
+        </ul>
+        <div class="gp-lvl-status locked-lbl">🔒 Lukittu</div>
+      </div>
+
+      <!-- TASO 9 -->
+      <div class="gp-lvl-card locked" data-lvl="9">
+        <div class="gp-lvl-num" style="color:var(--td);">09</div>
+        <div class="gp-lvl-ico">🏆</div>
+        <div class="gp-lvl-name">DEMOKRATIAN MESTARI</div>
+        <div class="gp-lvl-xp">32 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>🌟 Hall of Fame -lista</li>
+          <li>📞 Suora palautekanava tiimille</li>
+          <li>🔬 Uusien AI-ominaisuuksien betatestaus</li>
+        </ul>
+        <div class="gp-lvl-status locked-lbl">🔒 Lukittu</div>
+      </div>
+
+      <!-- TASO 10 -->
+      <div class="gp-lvl-card locked finale" data-lvl="10">
+        <div class="gp-lvl-num" style="color:var(--go);">10</div>
+        <div class="gp-lvl-ico">👑</div>
+        <div class="gp-lvl-name">AVOIMUUDEN LEGENDA</div>
+        <div class="gp-lvl-xp">50 000 XP</div>
+        <ul class="gp-lvl-rewards">
+          <li>📬 Fyysinen sertifikaatti postitse</li>
+          <li>📖 Nimi virallisissa kiitoksissa</li>
+          <li>🏛️ Neuvoa-antava paneeli</li>
+          <li>👑 Legendamerkki profiilissa ikuisesti</li>
+        </ul>
+        <div class="gp-lvl-status finale-lbl">👑 GRAND FINALE</div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ POLITIIKKAPASSI ══════════════════════════════════════════ -->
+<section class="pp-sec" id="politiikkapassi">
+  <div class="pp-bg-grid"></div>
+  <div class="pp-inner">
+
+    <!-- Header -->
+    <div class="pp-header rv">
+      <div class="pp-header-left">
+        <div class="ey ey-noline" style="margin-bottom:6px;">🎟️ KAUSI 1 · MAALISKUU 2026</div>
+        <h2 class="st" style="margin-bottom:6px;">POLITIIKKA<span style="color:var(--go);">PASSI</span></h2>
+        <p style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--td);letter-spacing:1px;margin:0;">Suorita tehtäviä · Nouse tasoilla · Ansaitse palkintoja</p>
+      </div>
+      <div class="pp-header-right">
+        <div class="pp-season-timer">
+          <div class="pp-timer-val">18</div>
+          <div class="pp-timer-lbl">PÄIVÄÄ JÄLJELLÄ</div>
+        </div>
+        <div class="pp-owned-badge">✅ PASSI AKTIIVINEN</div>
+      </div>
+    </div>
+
+    <!-- Season XP bar -->
+    <div class="pp-season-bar rv d1">
+      <div class="pp-sbar-labels">
+        <span class="pp-sbar-lbl">KAUDEN EDISTYMINEN</span>
+        <span class="pp-sbar-xp">4 820 / 10 000 XP</span>
+      </div>
+      <div class="pp-sbar-track">
+        <div class="pp-sbar-fill" style="width:48.2%;"></div>
+        <div class="pp-sbar-markers">
+          <div class="pp-sbar-mk" style="left:10%;" title="Taso 10"></div>
+          <div class="pp-sbar-mk" style="left:20%;" title="Taso 20"></div>
+          <div class="pp-sbar-mk pp-sbar-mk-special" style="left:30%;" title="Taso 30 — ERIKOISPALKKIO"></div>
+          <div class="pp-sbar-mk" style="left:40%;" title="Taso 40"></div>
+          <div class="pp-sbar-mk pp-sbar-mk-you" style="left:48.2%;" title="Sinä olet tässä"></div>
+          <div class="pp-sbar-mk" style="left:50%;" title="Taso 50"></div>
+          <div class="pp-sbar-mk pp-sbar-mk-special" style="left:70%;" title="Taso 70 — ERIKOISPALKKIO"></div>
+          <div class="pp-sbar-mk pp-sbar-mk-special" style="left:100%;" title="Taso 100 — GRAND FINALE"></div>
+        </div>
+        <div class="pp-sbar-you-lbl" style="left:48.2%;">SINÄ</div>
+      </div>
+    </div>
+
+    <!-- Tier tabs -->
+    <div class="pp-tabs rv d2">
+      <button class="pp-tab active" onclick="ppShowTier(this,'free')">ILMAINEN POLKU</button>
+      <button class="pp-tab premium" onclick="ppShowTier(this,'premium')">⭐ PREMIUM-POLKU</button>
+      <div class="pp-tab-note">Vaihdat polkua klikkaamalla</div>
+    </div>
+
+    <!-- FREE TIER TRACK -->
+    <div class="pp-track" id="ppTrackFree">
+      <div class="pp-track-label"><span class="pp-track-ico">🆓</span> ILMAINEN POLKU — kaikille kansalaisille</div>
+      <div class="pp-tiers">
+
+        <div class="pp-tier pp-earned">
+          <div class="pp-tier-lvl">1</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-cyan">🔍</div>
+            <div class="pp-reward-name">TUTKIJA-MERKKI</div>
+            <div class="pp-reward-type">Profiilimerkki</div>
+          </div>
+          <div class="pp-tier-check">✓</div>
+        </div>
+
+        <div class="pp-tier pp-earned">
+          <div class="pp-tier-lvl">5</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-green">📊</div>
+            <div class="pp-reward-name">DATA-TEEMA</div>
+            <div class="pp-reward-type">Käyttöliittymäteema</div>
+          </div>
+          <div class="pp-tier-check">✓</div>
+        </div>
+
+        <div class="pp-tier pp-earned">
+          <div class="pp-tier-lvl">10</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-gold">🔥</div>
+            <div class="pp-reward-name">7 PV PUTKI</div>
+            <div class="pp-reward-type">Animoitu merkki</div>
+          </div>
+          <div class="pp-tier-check">✓</div>
+        </div>
+
+        <div class="pp-tier pp-earned">
+          <div class="pp-tier-lvl">15</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-cyan">📡</div>
+            <div class="pp-reward-name">LIVE-HÄLYTYKSET</div>
+            <div class="pp-reward-type">Ominaisuus avattu</div>
+          </div>
+          <div class="pp-tier-check">✓</div>
+        </div>
+
+        <div class="pp-tier pp-earned">
+          <div class="pp-tier-lvl">20</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-purple">🤖</div>
+            <div class="pp-reward-name">AI-KYSELYT +5</div>
+            <div class="pp-reward-type">Bonus kyselyt/pv</div>
+          </div>
+          <div class="pp-tier-check">✓</div>
+        </div>
+
+        <div class="pp-tier pp-current">
+          <div class="pp-tier-lvl pp-lvl-active">48</div>
+          <div class="pp-tier-reward pp-reward-pulse">
+            <div class="pp-reward-ico pp-r-gold">⭐</div>
+            <div class="pp-reward-name">AKTIIVI-KEHYS</div>
+            <div class="pp-reward-type">Profiiilikehys</div>
+          </div>
+          <div class="pp-tier-arrow">▶</div>
+        </div>
+
+        <div class="pp-tier pp-locked">
+          <div class="pp-tier-lvl pp-lvl-locked">50</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🏅</div>
+            <div class="pp-reward-name">HOPEA-TASO</div>
+            <div class="pp-reward-type">Tittelipalkinto</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-locked">
+          <div class="pp-tier-lvl pp-lvl-locked">60</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">👁️</div>
+            <div class="pp-reward-name">VALVOJA</div>
+            <div class="pp-reward-type">Erikoismerkki</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-locked pp-tier-special">
+          <div class="pp-tier-lvl pp-lvl-special">70</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-red">⚡</div>
+            <div class="pp-reward-name">SALAMATUTKIJA</div>
+            <div class="pp-reward-type">ERIKOISPALKKIO</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-locked">
+          <div class="pp-tier-lvl pp-lvl-locked">80</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🕵️</div>
+            <div class="pp-reward-name">ETSIVÄ-TEEMA</div>
+            <div class="pp-reward-type">Käyttöliittymäteema</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-locked">
+          <div class="pp-tier-lvl pp-lvl-locked">90</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🌐</div>
+            <div class="pp-reward-name">VERKOSTO-NÄKYMÄ</div>
+            <div class="pp-reward-type">Ominaisuus avattu</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-locked pp-tier-finale">
+          <div class="pp-tier-lvl pp-lvl-finale">100</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-rainbow">👑</div>
+            <div class="pp-reward-name">DEMOKRATIAN VARTIJA</div>
+            <div class="pp-reward-type">GRAND FINALE</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PREMIUM TIER TRACK -->
+    <div class="pp-track pp-track-hidden" id="ppTrackPremium">
+      <div class="pp-track-label pp-track-label-premium"><span class="pp-track-ico">⭐</span> PREMIUM-POLKU — eksklusiiviset palkinnot</div>
+      <div class="pp-tiers">
+
+        <div class="pp-tier pp-prem-earned">
+          <div class="pp-tier-lvl pp-lvl-prem">1</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-gold">🎖️</div>
+            <div class="pp-reward-name">KULTA-KEHYS</div>
+            <div class="pp-reward-type">Animoitu kehys</div>
+          </div>
+          <div class="pp-tier-check pp-check-gold">✓</div>
+        </div>
+
+        <div class="pp-tier pp-prem-earned">
+          <div class="pp-tier-lvl pp-lvl-prem">10</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-gold">🔆</div>
+            <div class="pp-reward-name">NEON-TEEMA</div>
+            <div class="pp-reward-type">Ekslusiivinen teema</div>
+          </div>
+          <div class="pp-tier-check pp-check-gold">✓</div>
+        </div>
+
+        <div class="pp-tier pp-prem-earned">
+          <div class="pp-tier-lvl pp-lvl-prem">20</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-gold">🎯</div>
+            <div class="pp-reward-name">TARKKAILIJA</div>
+            <div class="pp-reward-name-sub">+10 AI-kyselyä/pv</div>
+            <div class="pp-reward-type">Bonus ominaisuus</div>
+          </div>
+          <div class="pp-tier-check pp-check-gold">✓</div>
+        </div>
+
+        <div class="pp-tier pp-prem-earned">
+          <div class="pp-tier-lvl pp-lvl-prem">30</div>
+          <div class="pp-tier-reward pp-reward-pulse">
+            <div class="pp-reward-ico pp-r-rainbow">🏆</div>
+            <div class="pp-reward-name">KULTA-TROFEE</div>
+            <div class="pp-reward-type">ERIKOISPALKKIO</div>
+          </div>
+          <div class="pp-tier-check pp-check-gold">✓</div>
+        </div>
+
+        <div class="pp-tier pp-prem-current">
+          <div class="pp-tier-lvl pp-lvl-prem">48</div>
+          <div class="pp-tier-reward pp-reward-pulse">
+            <div class="pp-reward-ico pp-r-purple">🔮</div>
+            <div class="pp-reward-name">KRISTALLIPALLO</div>
+            <div class="pp-reward-type">Animoitu avatar</div>
+          </div>
+          <div class="pp-tier-arrow pp-arrow-gold">▶</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked">
+          <div class="pp-tier-lvl pp-lvl-prem-lock">50</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🌟</div>
+            <div class="pp-reward-name">TÄHTIKENTTÄ-TAUSTA</div>
+            <div class="pp-reward-type">Profiilitausta</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked">
+          <div class="pp-tier-lvl pp-lvl-prem-lock">60</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🛡️</div>
+            <div class="pp-reward-name">KILPI-MERKKI</div>
+            <div class="pp-reward-type">Ekslusiivinen merkki</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked pp-tier-special">
+          <div class="pp-tier-lvl pp-lvl-prem-special">70</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-rainbow">💎</div>
+            <div class="pp-reward-name">TIMANTTI-STATUS</div>
+            <div class="pp-reward-type">ERIKOISPALKKIO</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked">
+          <div class="pp-tier-lvl pp-lvl-prem-lock">80</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🎪</div>
+            <div class="pp-reward-name">AREENA-PÄÄSY</div>
+            <div class="pp-reward-type">Erikoisominaisuus</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked">
+          <div class="pp-tier-lvl pp-lvl-prem-lock">90</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-dim">🌈</div>
+            <div class="pp-reward-name">PRISM-TEEMA</div>
+            <div class="pp-reward-type">Ekslusiivinen teema</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+        <div class="pp-tier pp-prem-locked pp-tier-finale">
+          <div class="pp-tier-lvl pp-lvl-prem-finale">100</div>
+          <div class="pp-tier-reward">
+            <div class="pp-reward-ico pp-r-rainbow">🌠</div>
+            <div class="pp-reward-name">KANSALAIS­LEGENDA</div>
+            <div class="pp-reward-type">GRAND FINALE · EKSKLUSIIVINEN</div>
+          </div>
+          <div class="pp-tier-lock">🔒</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- How to earn XP -->
+    <div class="pp-earn rv d3">
+      <div class="pp-earn-title">⚡ KUINKA ANSAITA XP</div>
+      <div class="pp-earn-grid">
+        <div class="pp-earn-row"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#00e5ff,#006699);">🔍</span><span class="pp-earn-act">Tutki kansanedustaja</span><span class="pp-earn-xp" style="color:var(--cy);">+10 XP / tutk.</span></div>
+        <div class="pp-earn-row"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#00e676,#009944);">📢</span><span class="pp-earn-act">Jaa tieto somessa</span><span class="pp-earn-xp" style="color:var(--gr);">+30 XP</span></div>
+        <div class="pp-earn-row"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#ffd600,#ff6600);">🗳️</span><span class="pp-earn-act">Allekirjoita kansalaisaloite</span><span class="pp-earn-xp" style="color:var(--wa);">+75 XP</span></div>
+        <div class="pp-earn-row"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#ff1744,#880022);">⚠️</span><span class="pp-earn-act">Raportoi puuttuva tieto</span><span class="pp-earn-xp" style="color:var(--red);">+100 XP</span></div>
+        <div class="pp-earn-row"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#cc44ff,#660088);">💬</span><span class="pp-earn-act">Kommentoi lupauksen toteutus</span><span class="pp-earn-xp" style="color:#cc44ff;">+60 XP</span></div>
+        <div class="pp-earn-row pp-earn-bonus"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#ffd600,#ff9100);">🔥</span><span class="pp-earn-act">Päivittäinen kirjautumisbonus</span><span class="pp-earn-xp" style="color:var(--go);">+50 XP</span></div>
+        <div class="pp-earn-row pp-earn-bonus"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#ffd600,#a07000);">⭐</span><span class="pp-earn-act">Viikkobonus (7 pv putki)</span><span class="pp-earn-xp" style="color:var(--go);">+500 XP BONUS</span></div>
+        <div class="pp-earn-row pp-earn-bonus"><span class="pp-earn-ico" style="background:linear-gradient(135deg,#00e676,#00ff88);">🏅</span><span class="pp-earn-act">Suorita kaikki päivän tehtävät</span><span class="pp-earn-xp" style="color:var(--gr);">+200 XP BONUS</span></div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -2623,9 +4370,9 @@ function page(t){
           <div class="kc-room">☕ Vapaa Sana <span class="kc-room-n">521</span></div>
         </div>
         <div class="kc-mock-msgs">
-          <div class="kc-msg"><div class="kc-av" style="background:linear-gradient(135deg,#1565ff,#00e5ff)">SL</div><div class="kc-msg-body"><div class="kc-msg-meta"><span style="color:#00e5ff">Sanna L.</span><span class="kc-msg-time">09:14</span><span class="kc-verified">✓ vahvistettu</span></div><div class="kc-bubble">Äänestyskoneiden läpinäkyvyys on kriittinen kysymys.</div></div></div>
-          <div class="kc-msg"><div class="kc-av" style="background:linear-gradient(135deg,#7c4dff,#ea80fc)">PK</div><div class="kc-msg-body"><div class="kc-msg-meta"><span style="color:#ea80fc">Paavo K.</span><span class="kc-msg-time">09:31</span><span class="kc-verified">✓ vahvistettu</span></div><div class="kc-bubble">Miten saadaan lisää nuoria ehdokkaiksi kuntavaaleissa?</div></div></div>
-          <div class="kc-msg own"><div class="kc-msg-body own"><div class="kc-msg-meta" style="flex-direction:row-reverse"><span style="color:#00e5ff">Sinä</span><span class="kc-msg-time">09:47</span><span class="kc-verified">✓ vahvistettu</span></div><div class="kc-bubble own">Äänestysprosentti pitää saada nousuun!</div></div><div class="kc-av" style="background:linear-gradient(135deg,#00897b,#00e676)">MH</div></div>
+          <div class="kc-msg"><div class="kc-av" style="background:linear-gradient(135deg,#1565ff,#00e5ff)">SL</div><div class="kc-msg-body"><div class="kc-msg-meta"><span style="color:#00e5ff" data-i18n="kcMsg1Name">Sanna L.</span><span class="kc-msg-time">09:14</span><span class="kc-verified" data-i18n="kcVerified">✓ vahvistettu</span></div><div class="kc-bubble" data-i18n="kcMsg1">Äänestyskoneiden läpinäkyvyys on kriittinen kysymys.</div></div></div>
+          <div class="kc-msg"><div class="kc-av" style="background:linear-gradient(135deg,#7c4dff,#ea80fc)">PK</div><div class="kc-msg-body"><div class="kc-msg-meta"><span style="color:#ea80fc" data-i18n="kcMsg2Name">Paavo K.</span><span class="kc-msg-time">09:31</span><span class="kc-verified" data-i18n="kcVerified">✓ vahvistettu</span></div><div class="kc-bubble" data-i18n="kcMsg2">Miten saadaan lisää nuoria ehdokkaiksi kuntavaaleissa?</div></div></div>
+          <div class="kc-msg own"><div class="kc-msg-body own"><div class="kc-msg-meta" style="flex-direction:row-reverse"><span style="color:#00e5ff" data-i18n="kcMsgOwnName">Sinä</span><span class="kc-msg-time">09:47</span><span class="kc-verified" data-i18n="kcVerified">✓ vahvistettu</span></div><div class="kc-bubble own" data-i18n="kcMsgOwn">Äänestysprosentti pitää saada nousuun!</div></div><div class="kc-av" style="background:linear-gradient(135deg,#00897b,#00e676)">MH</div></div>
           <div class="kc-typing"><span>Aino L. kirjoittaa</span><span class="kc-tdots"><span></span><span></span><span></span></span></div>
         </div>
         <div class="kc-mock-input"><span class="kc-input-placeholder">Kirjoita viestisi...</span><span class="kc-send-icon">➤</span></div>
@@ -3501,6 +5248,305 @@ function initConnCanvas(){return;// canvas removed — static SVG used instead
   if(origRender) window.render=function(){origRender();setTimeout(tryInit,50);};
 })();
 
+var gpDoneCount = 1; // starts at 1 (first task pre-done)
+
+/* ── XP STATE ── */
+var GP = {
+  xp: 5640, xpMax: 6000, level: 4,
+  levelName: 'AKTIIVINEN KANSALAINEN',
+  nextName: 'KANSALAISVALVOJA',
+  totalTasks: 5,
+  levels: [
+    {lvl:1,name:'UUSI KANSALAINEN',xpNeeded:0},
+    {lvl:2,name:'HERÄNNYT ÄÄNESTÄJÄ',xpNeeded:500},
+    {lvl:3,name:'TIETOINEN KANSALAINEN',xpNeeded:1500},
+    {lvl:4,name:'AKTIIVINEN KANSALAINEN',xpNeeded:3000},
+    {lvl:5,name:'KANSALAISVALVOJA',xpNeeded:6000},
+    {lvl:6,name:'DEMOKRATIAN VARTIJA',xpNeeded:10000},
+    {lvl:7,name:'AVOIMUUDEN MESTARI',xpNeeded:16000},
+  ]
+};
+
+(function injectGpStyles(){
+  var s = document.createElement('style');
+  s.textContent = '@keyframes gpc-toast{0%{opacity:0;transform:translateY(20px) scale(.8);}15%{opacity:1;transform:translateY(0) scale(1.1);}80%{opacity:1;transform:translateY(-30px) scale(1);}100%{opacity:0;transform:translateY(-60px) scale(.9);}}'
+  + '@keyframes lvlup-in{0%{opacity:0;transform:scale(.7) translateY(40px);}60%{transform:scale(1.06) translateY(-6px);}100%{opacity:1;transform:scale(1) translateY(0);}}'
+  + '@keyframes lvlup-star{0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.3) rotate(15deg);}}'
+  + '@keyframes lvlup-bg{0%{opacity:0;}100%{opacity:1;}}'
+  + '@keyframes xp-pop{0%{transform:scale(1);}30%{transform:scale(1.18);}60%{transform:scale(0.95);}100%{transform:scale(1);}}'
+  + '@keyframes xp-float{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-70px) scale(1.3);}}'
+  + '@keyframes alltasks-bounce{0%,100%{transform:scale(1);}25%{transform:scale(1.15);}75%{transform:scale(0.92);}}'
+  + '#gpLevelModal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);}'
+  + '#gpLevelModal.hidden{display:none!important;}'
+  + '.gplm-box{background:var(--s1);border:2px solid var(--go);padding:48px 56px;text-align:center;position:relative;overflow:hidden;max-width:480px;width:90%;box-shadow:0 0 80px rgba(255,214,0,.4),0 0 160px rgba(255,214,0,.15);animation:lvlup-in .5s cubic-bezier(.34,1.56,.64,1) forwards;}'
+  + '.gplm-box::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,214,0,.03) 39px,rgba(255,214,0,.03) 40px);}'
+  + '.gplm-stars{font-size:48px;margin-bottom:12px;animation:lvlup-star 1s ease-in-out infinite;}'
+  + '.gplm-title{font-family:"Orbitron",sans-serif;font-size:10px;letter-spacing:4px;color:var(--go);text-transform:uppercase;margin-bottom:8px;}'
+  + '.gplm-lvl{font-family:"Orbitron",sans-serif;font-weight:900;font-size:clamp(36px,6vw,56px);color:var(--tb);letter-spacing:2px;line-height:1;margin-bottom:6px;text-shadow:0 0 40px rgba(255,214,0,.6);}'
+  + '.gplm-name{font-family:"Orbitron",sans-serif;font-weight:700;font-size:clamp(14px,2vw,20px);color:var(--go);letter-spacing:3px;margin-bottom:24px;}'
+  + '.gplm-xp{font-family:"Share Tech Mono",monospace;font-size:13px;color:var(--cy);margin-bottom:28px;letter-spacing:1px;}'
+  + '.gplm-bar-wrap{height:10px;background:rgba(255,255,255,.06);margin-bottom:28px;overflow:hidden;}'
+  + '.gplm-bar{height:100%;background:linear-gradient(90deg,var(--go),#ff6600);width:0%;transition:width 1.2s ease 0.3s;}'
+  + '.gplm-btn{background:linear-gradient(135deg,var(--go),#ff6600);color:#000;font-family:"Orbitron",sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:14px 36px;border:none;cursor:pointer;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);transition:transform .2s;}'
+  + '.gplm-btn:hover{transform:scale(1.05);}'
+  + '.gplm-confetti{position:absolute;inset:0;pointer-events:none;}';
+  document.head.appendChild(s);
+
+  function createModal(){
+    var existing = document.getElementById('gpLevelModal');
+    if(existing) return;
+    var modal = document.createElement('div');
+    modal.id = 'gpLevelModal';
+    modal.className = 'hidden';
+    modal.innerHTML = '<div class="gplm-box"><div class="gplm-confetti" id="gplmConfetti"></div><div class="gplm-stars" id="gplmStars">⭐</div><div class="gplm-title">TASO NOUSI!</div><div class="gplm-lvl" id="gplmLvl">TASO 5</div><div class="gplm-name" id="gplmName">KANSALAISVALVOJA</div><div class="gplm-xp" id="gplmXp">6 000 / 10 000 XP</div><div class="gplm-bar-wrap"><div class="gplm-bar" id="gplmBar"></div></div><button class="gplm-btn" onclick="window.gpCloseModal()">JATKA PELAAMISTA →</button></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){ if(e.target===modal) window.gpCloseModal(); });
+  }
+
+  if(document.body){ createModal(); }
+  else { document.addEventListener('DOMContentLoaded', createModal); }
+})();
+
+function gpUpdateXpDisplay(animate){
+  var xn=document.querySelector('.gp-xp-num');
+  var bar=document.querySelector('.gp-xpbar-fill');
+  var nums=document.querySelector('.gp-xpbar-nums');
+  var next=document.querySelector('.gp-xpbar-next');
+  var rank=document.querySelector('.gp-xp-rank');
+  var lvlEl=document.querySelector('.gp-xpbar-level');
+  var pct=Math.min(100,Math.round(GP.xp/GP.xpMax*100));
+  if(xn){if(animate){xn.style.animation='xp-pop .4s ease';setTimeout(function(){xn.style.animation='';},400);}xn.textContent=GP.xp.toLocaleString('fi-FI');}
+  if(bar) bar.style.width=pct+'%';
+  if(nums) nums.textContent=GP.xp.toLocaleString('fi-FI')+' / '+GP.xpMax.toLocaleString('fi-FI')+' XP';
+  if(next){var toNext=GP.xpMax-GP.xp;if(toNext>0)next.innerHTML=toNext.toLocaleString('fi-FI')+' XP seuraavaan tasoon: <span style="color:var(--go);font-weight:700;">'+GP.nextName+' ⬆</span>';else next.innerHTML='<span style="color:var(--go);font-weight:700;">✨ Maksimitaso saavutettu!</span>';}
+  if(rank) rank.textContent='⭐ TASO '+GP.level;
+  if(lvlEl) lvlEl.innerHTML='TASO '+GP.level+' — <span style="color:var(--cy);">'+GP.levelName+'</span>';
+}
+
+function gpCheckLevelUp(prevXp){
+  for(var i=GP.levels.length-1;i>=0;i--){
+    if(GP.xp>=GP.levels[i].xpNeeded && prevXp<GP.levels[i].xpNeeded){
+      GP.level=GP.levels[i].lvl;
+      GP.levelName=GP.levels[i].name;
+      GP.nextName=(GP.levels[i+1]?GP.levels[i+1].name:'MESTARI');
+      GP.xpMax=(GP.levels[i+1]?GP.levels[i+1].xpNeeded:GP.levels[i].xpNeeded+10000);
+      gpUpdateLevelCards();
+      setTimeout(function(){gpShowLevelModal();},600);
+      return;
+    }
+  }
+}
+
+function gpUpdateLevelCards(){
+  var cards = document.querySelectorAll('.gp-lvl-card[data-lvl]');
+  cards.forEach(function(card){
+    var lvl = parseInt(card.dataset.lvl);
+    var statusEl = card.querySelector('.gp-lvl-status');
+    var numEl = card.querySelector('.gp-lvl-num');
+    var badgeEl = card.querySelector('.gp-lvl-current-badge');
+
+    // Reset class completely to avoid stale combinations
+    card.className = 'gp-lvl-card' + (lvl===10 ? ' finale' : '');
+    card.setAttribute('data-lvl', String(lvl));
+    card.style.animation = 'none';
+
+    if(lvl < GP.level){
+      // Already passed — earned
+      card.classList.add('earned');
+      if(badgeEl) badgeEl.remove();
+      if(numEl){ numEl.style.color='var(--cy)'; numEl.style.marginTop='4px'; }
+      if(statusEl){ statusEl.className='gp-lvl-status earned-lbl'; statusEl.textContent='✓ SAAVUTETTU'; }
+      card.style.opacity=''; card.style.filter='';
+    } else if(lvl === GP.level){
+      // Current level
+      card.classList.add('current');
+      card.style.animation = ''; // re-enable CSS pulse
+      if(!badgeEl){
+        badgeEl = document.createElement('div');
+        badgeEl.className = 'gp-lvl-current-badge';
+        card.insertBefore(badgeEl, card.firstChild);
+      }
+      badgeEl.textContent = '● NYKYINEN';
+      if(numEl){ numEl.style.color='var(--go)'; numEl.style.marginTop='18px'; }
+      if(statusEl){ statusEl.className='gp-lvl-status current-lbl'; statusEl.textContent='⚡ AKTIIVINEN'; }
+      card.style.opacity=''; card.style.filter='';
+      // Update panel tag
+      var tag = document.querySelector('.gp-levels-wrap .gp-panel-tag');
+      if(tag) tag.innerHTML='Nykyinen taso: <span style="color:var(--go);font-weight:700;">TASO '+GP.level+'</span>';
+    } else {
+      // Locked
+      card.classList.add('locked');
+      if(badgeEl) badgeEl.remove();
+      if(numEl){ numEl.style.color = lvl===10 ? 'var(--go)' : 'var(--td)'; numEl.style.marginTop='4px'; }
+      var toGo = GP.levels[lvl-1] ? (GP.levels[lvl-1].xpNeeded - GP.xp) : '?';
+      if(statusEl){
+        statusEl.className='gp-lvl-status '+(lvl===10?'finale-lbl':'locked-lbl');
+        statusEl.textContent = lvl===10 ? '👑 GRAND FINALE' : '🔒 '+toGo.toLocaleString('fi-FI')+' XP puuttuu';
+      }
+    }
+  });
+}
+
+function gpShowLevelModal(){
+  // Ensure modal exists in DOM
+  var modal = document.getElementById('gpLevelModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'gpLevelModal';
+    modal.className = 'hidden';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e){ if(e.target===modal) window.gpCloseModal(); });
+  }
+
+  // Rebuild inner box every time — guarantees animation restarts
+  var stars = ['⭐','🌟','💫','✨','🏆','👑','🔱'];
+  var star = stars[Math.min(GP.level-1, stars.length-1)];
+  var base = GP.levels[GP.level-1] ? GP.levels[GP.level-1].xpNeeded : 0;
+  var range = GP.xpMax - base;
+  var pct = range > 0 ? Math.min(100, Math.round((GP.xp - base) / range * 100)) : 100;
+
+  // Show first so animation triggers on fresh element
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+
+  modal.innerHTML = '<div class="gplm-box">'
+    + '<div class="gplm-confetti" id="gplmConfetti"></div>'
+    + '<div class="gplm-stars">'+star+'</div>'
+    + '<div class="gplm-title">TASO NOUSI!</div>'
+    + '<div class="gplm-lvl">TASO '+GP.level+'</div>'
+    + '<div class="gplm-name">'+GP.levelName+'</div>'
+    + '<div class="gplm-xp">'+GP.xp.toLocaleString('fi-FI')+' / '+GP.xpMax.toLocaleString('fi-FI')+' XP</div>'
+    + '<div class="gplm-bar-wrap"><div class="gplm-bar" id="gplmBar" style="width:0%"></div></div>'
+    + '<button class="gplm-btn" onclick="window.gpCloseModal()">JATKA PELAAMISTA →</button>'
+    + '</div>';
+
+  // Animate bar after paint
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var barEl = document.getElementById('gplmBar');
+      if(barEl) barEl.style.width = pct + '%';
+    });
+  });
+
+  // Confetti
+  var confetti = document.getElementById('gplmConfetti');
+  if(confetti){
+    var colors = ['#ffd600','#00e676','#00e5ff','#ff6680','#cc44ff','#ff9100'];
+    for(var i=0; i<30; i++){
+      var p = document.createElement('div');
+      var c = colors[Math.floor(Math.random()*colors.length)];
+      var x = Math.random()*100, delay = Math.random()*.8, dur = 1+Math.random()*1.5;
+      p.style.cssText = 'position:absolute;left:'+x+'%;top:-10px;width:'+(4+Math.random()*6)+'px;height:'+(4+Math.random()*6)+'px;background:'+c+';border-radius:50%;animation:float-particle '+dur+'s ease-out '+delay+'s forwards;--tx:'+(Math.random()-.5)*60+'px;--ty:'+(200+Math.random()*200)+'px;';
+      confetti.appendChild(p);
+    }
+  }
+}
+
+window.gpCloseModal=function(){var modal=document.getElementById('gpLevelModal');if(modal){modal.classList.add('hidden');modal.style.display='';}gpUpdateLevelCards();};
+
+function gpAllTasksDone(){
+  var counter=document.getElementById('gpTaskCounter');
+  if(counter){counter.textContent='5/5 SUORITETTU ✓';counter.style.background='rgba(0,230,118,.2)';counter.style.borderColor='rgba(0,230,118,.6)';counter.style.color='var(--gr)';}
+  var chest=document.getElementById('gpChest');
+  if(chest){var sublbl=chest.querySelector('.gp-chest-sublbl');if(sublbl){sublbl.textContent='Kaikki tehtävät suoritettu! Avaa lahja ✨';sublbl.style.color='var(--go)';}var lockEl=chest.querySelector('.gp-chest-lock');if(lockEl)lockEl.textContent='🎁';}
+  var toast=document.createElement('div');
+  toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(18px,3vw,28px);color:var(--gr);text-shadow:0 0 30px rgba(0,230,118,.9);text-align:center;pointer-events:none;animation:lvlup-in .4s cubic-bezier(.34,1.56,.64,1) forwards;';
+  toast.innerHTML='🏆 KAIKKI TEHTÄVÄT SUORITETTU!<br><span style="font-size:0.55em;color:var(--go);letter-spacing:2px;">Avaa lahja →</span>';
+  document.body.appendChild(toast);
+  setTimeout(function(){toast.remove();},3500);
+}
+
+function gpCompleteTask(card, idx, ico, label, xp, pts) {
+  if (card.classList.contains('gpc-done')) return;
+  card.classList.remove('gpc-active','gpc-locked','gpc-special');
+  card.classList.add('gpc-done','gpc-flash');
+  var bar = card.querySelector('.gpc-bar');
+  if (bar) bar.style.width = '100%';
+  var right = card.querySelector('.gpc-right');
+  if (right) right.innerHTML = '<div class="gpc-check">✓</div><div class="gpc-xp gpc-xp-done">'+xp+'</div>';
+  var title = card.querySelector('.gpc-title');
+  if (title) { title.style.textDecoration='line-through'; title.style.color='var(--td)'; }
+  var icoEl = card.querySelector('.gpc-ico');
+  if (icoEl) icoEl.style.filter='brightness(.7)';
+  var spin = card.querySelector('.gpc-border-spin');
+  if (spin) spin.remove();
+  var pc = document.getElementById('gpc'+idx+'p');
+  var colors = ['#ffd600','#00e676','#00e5ff','#ff6680','#cc44ff'];
+  if (pc) {
+    for (var i=0;i<14;i++){
+      var p=document.createElement('div');
+      var c=colors[Math.floor(Math.random()*colors.length)];
+      var tx=(Math.random()-0.5)*120, ty=-(20+Math.random()*80);
+      p.style.cssText='position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:'+c+';box-shadow:0 0 6px '+c+';--tx:'+tx+'px;--ty:'+ty+'px;--d:1s;animation:float-particle 1s ease-out forwards;';
+      pc.appendChild(p);
+    }
+  }
+  var prevXp = GP.xp;
+  GP.xp += pts;
+  gpDoneCount++;
+  gpUpdateXpDisplay(true);
+  gpCheckLevelUp(prevXp);
+  var counter = document.getElementById('gpTaskCounter');
+  if (counter) counter.textContent = gpDoneCount+'/5 SUORITETTU';
+  var floatXp = document.createElement('div');
+  var rect = card.getBoundingClientRect();
+  floatXp.style.cssText='position:fixed;z-index:9999;font-family:Orbitron,sans-serif;font-weight:900;font-size:22px;color:var(--go);text-shadow:0 0 20px rgba(255,214,0,.9);pointer-events:none;animation:xp-float 1.4s ease-out forwards;left:'+(rect.right-80)+'px;top:'+(rect.top+rect.height/2-14)+'px;';
+  floatXp.textContent = ico+' '+xp;
+  document.body.appendChild(floatXp);
+  setTimeout(function(){ floatXp.remove(); }, 1500);
+  var numsEl = document.querySelector('.gp-xpbar-nums');
+  if(numsEl){numsEl.style.color='var(--go)';setTimeout(function(){numsEl.style.color='var(--cy)';},800);}
+  if (gpDoneCount >= GP.totalTasks) { setTimeout(gpAllTasksDone, 400); }
+}
+
+function ppShowTier(btn, tier) {
+  document.querySelectorAll('.pp-tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  var free = document.getElementById('ppTrackFree');
+  var prem = document.getElementById('ppTrackPremium');
+  if (free && prem) {
+    if (tier === 'premium') { free.classList.add('pp-track-hidden'); prem.classList.remove('pp-track-hidden'); }
+    else { prem.classList.add('pp-track-hidden'); free.classList.remove('pp-track-hidden'); }
+  }
+}
+
+function gpOpenChest(el) {
+  if (el.dataset.opened) return;
+  el.dataset.opened = '1';
+  var reward = document.getElementById('gpChestReward');
+  if (!reward) return;
+  var body = el.querySelector('.gp-chest-body');
+  var glow = el.querySelector('.gp-chest-glow');
+  if (body) body.style.display = 'none';
+  if (glow) glow.style.display = 'none';
+  reward.classList.add('open');
+  var pc = document.getElementById('gpChestParticles');
+  if (pc) {
+    var colors = ['#ffd600','#00e676','#00e5ff','#ff6680','#cc44ff'];
+    for (var i = 0; i < 18; i++) {
+      var p = document.createElement('div');
+      var c = colors[Math.floor(Math.random()*colors.length)];
+      var tx = (Math.random()-0.5)*160;
+      var ty = -(40+Math.random()*100);
+      var delay = Math.random()*0.3;
+      p.style.cssText = 'position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:'+c+';box-shadow:0 0 8px '+c+';--tx:'+tx+'px;--ty:'+ty+'px;--d:1.2s;--delay:'+delay+'s;animation:float-particle 1.2s ease-out forwards;';
+      pc.appendChild(p);
+    }
+  }
+  /* ── ADD 500 XP ── */
+  var prevXp = GP.xp;
+  GP.xp += 500;
+  gpUpdateXpDisplay(true);
+  gpCheckLevelUp(prevXp);
+  /* Floating +500 XP label */
+  var rect = el.getBoundingClientRect();
+  var floatXp = document.createElement('div');
+  floatXp.style.cssText = 'position:fixed;z-index:9999;font-family:Orbitron,sans-serif;font-weight:900;font-size:26px;color:var(--go);text-shadow:0 0 20px rgba(255,214,0,.9);pointer-events:none;animation:xp-float 1.6s ease-out forwards;left:'+(rect.left+rect.width/2-40)+'px;top:'+(rect.top+20)+'px;';
+  floatXp.textContent = '🎁 +500 XP';
+  document.body.appendChild(floatXp);
+  setTimeout(function(){ floatXp.remove(); }, 1700);
+}
+
 render();
 setTimeout(positionExtArrows, 100);
 setTimeout(initSecPanels, 300);
@@ -3508,7 +5554,7 @@ setTimeout(initSecPanels, 300);
 
 <div class="kc-modal" id="kcModal">
   <div class="kc-modal-inner" id="kcModalInner">
-    <button class="kc-modal-close" onclick="closeKansalaisChat()">✕ SULJE</button>
+    <button class="kc-modal-close" data-i18n="kcModalClose" onclick="closeKansalaisChat()">✕ SULJE</button>
 
     <div id="kcLogin" style="display:flex;flex:1;align-items:center;justify-content:center;padding:24px;">
       <div style="width:100%;max-width:460px;background:var(--s1);border:1px solid var(--bb);border-top:2px solid var(--cy);box-shadow:0 0 80px rgba(0,229,255,.1);">
@@ -3742,7 +5788,7 @@ function kcBuildMessages(){
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;${isOwn?'flex-direction:row-reverse;':''}">
             <span style="font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;color:${isOwn?'var(--cy)':acol};">${isOwn?'Matti H.':kcEsc(m.u)}</span>
             <span style="font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--td);">${m.t}</span>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--gr);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);padding:1px 4px;">✓ vahvistettu</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:7px;color:var(--gr);background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);padding:1px 4px;" data-i18n="kcVerified">✓ vahvistettu</span>
           </div>
           <div style="background:${isOwn?'rgba(0,229,255,.06)':'var(--s1)'};border:1px solid ${isOwn?'rgba(0,229,255,.2)':'var(--bb)'};border-left:2px solid ${isOwn?'var(--cy)':acol};padding:8px 12px;font-size:14px;line-height:1.5;color:${isOwn?'var(--tb)':'var(--t)'};font-family:'Rajdhani',sans-serif;font-weight:500;">${kcEsc(m.txt)}</div>
           ${reactHtml}
@@ -3986,8 +6032,11 @@ function istBuildTicker() {
 
   rail.innerHTML = loopItems.map(ev => {
     const badgeHtml = ev.badges.map(b => `<span class="ist-badge ${b}">${badgeLabel(b)}</span>`).join('');
+    const hasLink = ev.link && ev.link !== '#';
+    const linkAttr = hasLink ? `href="${ev.link}" target="_blank" rel="noopener"` : '';
+    const tag = hasLink ? 'a' : 'div';
     return `
-      <div class="ist-tick-card" style="border-left-color:${ev.color};"
+      <${tag} class="ist-tick-card${hasLink?' ist-tick-link':''}" style="border-left-color:${ev.color};${hasLink?'cursor:pointer;text-decoration:none;':''}" ${linkAttr}
            onmouseenter="tickerPaused=true" onmouseleave="tickerPaused=false">
         <div class="ist-tick-inner">
           <div class="ist-tick-top">
@@ -3998,10 +6047,10 @@ function istBuildTicker() {
           <div class="ist-tick-body">${ev.body}</div>
           <div class="ist-tick-footer">
             <div class="ist-tick-source">📖 ${ev.readtime} lukuaika</div>
-            <div class="ist-tick-cta">LUE LISÄÄ →</div>
+            ${hasLink ? '<div class="ist-tick-cta">LUE LISÄÄ →</div>' : ''}
           </div>
         </div>
-      </div>`;
+      </${tag}>`;
   }).join('');
 
   /* Measure after paint */
@@ -4064,7 +6113,151 @@ if (_origRender2) {
   window.render = function() { _origRender2(); setTimeout(istInit, 80); };
 }
 istInit();
+
+
 })();
 </script>
+
+
+<script>
+/* ══ GAMIFICATION ANIMATIONS ══════════════════════════════ */
+(function(){
+
+/* ── 1. SCROLL-REVEAL COUNTER ANIMATION ── */
+function animateCounter(el, target, duration, suffix) {
+  var start = 0;
+  var startTime = null;
+  var isFloat = target % 1 !== 0;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    var current = Math.floor(ease * target * 10) / 10;
+    el.textContent = (isFloat ? current.toFixed(1) : Math.floor(current)) + (suffix || '');
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = (isFloat ? target.toFixed(1) : target) + (suffix || '');
+  }
+  requestAnimationFrame(step);
+}
+
+var counterObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    var el = entry.target;
+    if (el._counted) return;
+    el._counted = true;
+    var raw = el.getAttribute('data-count');
+    var suffix = el.getAttribute('data-suffix') || '';
+    animateCounter(el, parseFloat(raw), 1800, suffix);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+// Tag stat values for counting
+document.querySelectorAll('.dc-stat-val').forEach(function(el) {
+  var txt = el.textContent.trim();
+  var num = parseFloat(txt.replace(/[^0-9.]/g,''));
+  var suffix = txt.replace(/[0-9.]/g,'').trim();
+  if (!isNaN(num) && num > 0) {
+    el.setAttribute('data-count', num);
+    el.setAttribute('data-suffix', suffix);
+    el.textContent = '0' + suffix;
+    counterObs.observe(el);
+  }
+});
+
+/* ── 2. MAGNETIC HOVER BUTTONS ── */
+function addMagnetic(selector, strength) {
+  document.querySelectorAll(selector).forEach(function(btn) {
+    btn.style.transition = 'transform 0.2s cubic-bezier(0.23,1,0.32,1)';
+    btn.addEventListener('mousemove', function(e) {
+      var rect = btn.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var dx = (e.clientX - cx) * strength;
+      var dy = (e.clientY - cy) * strength;
+      btn.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      btn.style.transform = 'translate(0,0)';
+    });
+  });
+}
+addMagnetic('.nav-esite-btn', 0.35);
+addMagnetic('.why-btn', 0.25);
+addMagnetic('.lb2', 0.4);
+addMagnetic('.sec-card', 0.08);
+
+/* ── 3. 3D TILT ON CARDS ── */
+function addTilt(selector, maxTilt) {
+  document.querySelectorAll(selector).forEach(function(card) {
+    card.style.transformStyle = 'preserve-3d';
+    card.style.transition = 'transform 0.15s ease-out';
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform =
+        'perspective(600px) rotateY(' + (x * maxTilt) + 'deg) rotateX(' + (-y * maxTilt) + 'deg) scale(1.03)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(600px) rotateY(0) rotateX(0) scale(1)';
+    });
+  });
+}
+addTilt('.dc-card', 6);
+addTilt('.ac', 8);
+addTilt('.feat-card', 7);
+addTilt('.gp-badge', 12);
+
+/* ── 4. TYPEWRITER EFFECT ON HERO ── */
+function typewriter(el, speed) {
+  if (!el || el._typed) return;
+  el._typed = true;
+  var original = el.innerHTML;
+  var text = el.textContent;
+  el.textContent = '';
+  el.style.borderRight = '2px solid var(--cy)';
+  el.style.animation = 'cursor-blink 0.7s step-end infinite';
+  var i = 0;
+  function type() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      setTimeout(type, speed);
+    } else {
+      el.style.borderRight = 'none';
+      el.style.animation = 'none';
+    }
+  }
+  type();
+}
+
+// Apply to hero eyebrow when it enters view
+var heroObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      var el = entry.target;
+      setTimeout(function(){ typewriter(el, 45); }, 400);
+      heroObs.unobserve(el);
+    }
+  });
+}, { threshold: 0.8 });
+
+var heroEy = document.querySelector('.he');
+if (heroEy) heroObs.observe(heroEy);
+
+/* particle trail poistettu */
+
+})();
+</script>
+
+<style>
+@keyframes cursor-blink {
+  0%,100%{border-color:var(--cy);}
+  50%{border-color:transparent;}
+}
+</style>
+
 </body>
 </html>
