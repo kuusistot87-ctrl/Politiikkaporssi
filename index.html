@@ -616,6 +616,40 @@
     #btnNykyiset:hover, #btnNykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; color: #3ec63e !important; }
     #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; color: #f5a623 !important; }
 
+    /* ── SIVUTUS ── */
+    #pagination {
+      position: relative;
+      z-index: 1;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: 1.25rem 1rem 2rem;
+      flex-wrap: wrap;
+    }
+    .page-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 4px;
+      color: #5a7a99;
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem;
+      letter-spacing: .1em;
+      padding: .4rem .7rem;
+      cursor: pointer;
+      transition: all .2s;
+      min-width: 36px;
+    }
+    .page-btn:hover  { border-color: #00d4ff; color: #00d4ff; }
+    .page-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.1); }
+    .page-btn:disabled { opacity: .25; cursor: default; }
+    .page-info {
+      font-size: .72rem;
+      letter-spacing: .12em;
+      color: #5a7a99;
+      padding: 0 .5rem;
+    }
+
     /* ── ACCORDION ── */
     .accordion-item {
       border: 1px solid var(--border);
@@ -723,6 +757,7 @@
 
 <!-- KORTTINÄKYMÄ -->
 <main id="grid" style="display:none"></main>
+<div id="pagination"></div>
 
 <!-- MODAL -->
 <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalName">
