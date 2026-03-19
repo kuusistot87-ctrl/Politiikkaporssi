@@ -102,28 +102,55 @@ NYKYISET = {
 }
 
 # ── Puolue Wikidata-ID → lyhenne ──
+# Kattaa kaikki SemParl-datassa esiintyvät Q-koodit
 PUOLUEET = {
-    # KOK
-    "Q304191":"KOK",
-    # PS
-    "Q181858":"PS","Q327591":"PS",
-    # SDP
-    "Q170775":"SDP","Q499029":"SDP",
-    # KESK
+    # Nykyiset puolueet
+    "Q304191":"KOK",                        # Kansallinen Kokoomus
+    "Q506591":"KESK",                       # Suomen Keskusta (483 kpl)
+    "Q845537":"RKP",                        # Svenska folkpartiet (209 kpl)
+    "Q634277":"PS",                         # Perussuomalaiset (75 kpl)
+    "Q10669363":"PS",                       # PS vaihtoehtoinen
+    "Q385927":"VAS",                        # Vasemmistoliitto (66 kpl)
+    "Q1138982":"KD",                        # Kristillisdemokraatit (38 kpl)
+    "Q327591":"PS",                         # PS (vaihtoehtoinen)
+    "Q3230391":"LIIK",                      # Liike Nyt
+    "Q18678676":"SIN",                      # Sininen tulevaisuus
+    # SDP eri muodoissa
+    "Q499029":"SDP",                        # SDP (708 kpl - yleisin)
+    "Q170775":"SDP",                        # SDP (vaihtoehtoinen)
+    # KESK eri muodoissa
     "Q170750":"KESK","Q1752583":"KESK","Q3177095":"KESK",
     # VIHR
-    "Q465955":"VIHR","Q170784":"VIHR",
+    "Q465955":"VIHR","Q170784":"VIHR","Q196695":"VIHR",
     # VAS
-    "Q170767":"VAS","Q385927":"VAS",
+    "Q170767":"VAS",
     # RKP
     "Q170782":"RKP","Q1092519":"RKP",
     # KD
     "Q965052":"KD","Q170781":"KD",
-    # LIIK
-    "Q3230391":"LIIK",
-    # SIN
-    "Q18678676":"SIN",
     # Historialliset puolueet
+    "Q585735":"SKDL",                       # SKDL - Suomen Kansan Demokraattinen Liitto (142 kpl)
+    "Q1378704":"SP",                        # Suomalainen Puolue (86 kpl)
+    "Q1191102":"ED",                        # Edistyspuolue / National Progressive Party (84 kpl)
+    "Q1713433":"NP",                        # Nuorsuomalainen Puolue (40 kpl)
+    "Q1341419":"SKP",                       # Suomen Kommunistinen Puolue (35 kpl)
+    "Q1854411":"SMP",                       # Suomen Maaseudun Puolue (28 kpl)
+    "Q1813319":"TPSL",                      # Työväen ja Pienviljelijäin Sosialidemokraattinen Liitto (26 kpl)
+    "Q220217":"SSP",                        # Sosialistinen Työväenpuolue (23 kpl)
+    "Q1442516":"IKL",                       # Isänmaallinen Kansanliike (22 kpl)
+    "Q914375":"LKP",                        # Liberaalinen Kansanpuolue (21 kpl)
+    "Q30337076":"KOK",                      # Kokoomus historiallinen (20 kpl)
+    "Q1336715":"SP",                        # Suomalainen Puolue vaihtoehto (18 kpl)
+    "Q613849":"SFP",                        # Svenska folkpartiet historiallinen (18 kpl)
+    "Q5450807":"SKY",                       # Suomen Kansan Yhtenäisyyspuolue (14 kpl)
+    "Q1628434":"KP",                        # Kansanpuolue (14 kpl)
+    "Q540982":"LKP",                        # LKP vaihtoehto (12 kpl)
+    "Q2305779":"SKP",                       # SKP vaihtoehto (11 kpl)
+    "Q5164311":"SPP",                       # Suomen Pientalonpoikien Puolue (5 kpl)
+    "Q14900504":"KTL",                      # Kristillinen Työväenliitto (5 kpl)
+    "Q2532147":"SDP",                       # SDP historiallinen (4 kpl)
+    "Q52157683":"VAS",                      # VAS vaihtoehto (3 kpl)
+    # Muut historialliset
     "Q170778":"SKDL","Q1054366":"SKL","Q170779":"LKP",
     "Q504956":"SMP","Q170780":"TPSL","Q170783":"SPP",
     "Q2045396":"KP","Q505610":"ED","Q170777":"SKYP",
