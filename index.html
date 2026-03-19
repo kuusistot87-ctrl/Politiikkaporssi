@@ -1324,6 +1324,12 @@ async function naytaLobbausTiedot(m, vari) {
 
   // Hae myös toimintailmoitusdata indeksistä
   const tiData = idx.toimintailmoitukset ? idx.toimintailmoitukset[m.nimi] : null;
+  console.log("Lobbaus debug:", {
+    nimi: m.nimi,
+    on_ti: !!idx.toimintailmoitukset,
+    ti_avaimet: idx.toimintailmoitukset ? Object.keys(idx.toimintailmoitukset).slice(0,3) : [],
+    tiData: tiData ? "löytyi" : "EI LÖYDY"
+  });
 
   el.style.setProperty("--party-c", vari);
   setTimeout(() => paivitaAccordionKorkeus(el), 50);
