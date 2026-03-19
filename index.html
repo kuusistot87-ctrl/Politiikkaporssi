@@ -1350,28 +1350,12 @@ async function naytaLobbausTiedot(m, vari) {
     return;
   }
 
-  const kaudet    = idx.kaudet;
-  const maxMaara  = Math.max(...keData.kaudet.map(k => k.maara));
-  const yhteensa  = keData.yhteensa;
+  const maxMaara = Math.max(...keData.kaudet.map(k => k.maara));
+  const yhteensa = keData.yhteensa;
 
-  // Laske sijoitus viimeisimmässä kaudessa
-  let sijoitus = "–";
-  let sijoitusKausi = "";
-  if (keData.kaudet.length > 0) {
-    const viimKausi = keData.kaudet[keData.kaudet.length - 1];
-    try {
-      const kRes = await fetch("lobbaus_json/" + viimKausi.kausi_id + ".json");
-      if (kRes.ok) {
-        const kData = await kRes.json();
-        const lista = kData.kansanedustajat;
-        const idx2  = lista.findIndex(x => x.nimi === m.nimi);
-        if (idx2 >= 0) {
-          sijoitus     = idx2 + 1;
-          sijoitusKausi = viimKausi.kausi_label;
-        }
-      }
-    } catch(_) {}
-  }
+  // Sijoitus suoraan index.json:sta — ei erillistä fetchiä
+  const sijoitus      = keData.sijoitus_viimeisin || "–";
+  const sijoitusKausi = keData.sijoitus_kausi     || "";
 
   // Aikasarjapalkit
   const BAR_MAX_PX = 56;
