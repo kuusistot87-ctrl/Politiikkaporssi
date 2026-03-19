@@ -459,6 +459,47 @@
       opacity: .3;
     }
 
+    /* ── PUOLUE DROPDOWN ── */
+    .puolue-dropdown-wrap {
+      position: relative;
+    }
+    .puolue-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: .5rem;
+      z-index: 200;
+      min-width: 280px;
+      display: none;
+      flex-wrap: wrap;
+      gap: .35rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 16px rgba(0,212,255,.08);
+    }
+    .puolue-dropdown.open {
+      display: flex;
+    }
+    .puolue-dropdown .dp-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 3px;
+      color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      padding: .3rem .6rem;
+      cursor: pointer;
+      transition: all .15s;
+      text-transform: uppercase;
+    }
+    .puolue-dropdown .dp-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+    .puolue-dropdown .dp-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
+    #btnNykyiset:hover, #btnNykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; color: #3ec63e !important; }
+    #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; color: #f5a623 !important; }
+
     /* ── ACCORDION ── */
     .accordion-item {
       border: 1px solid var(--border);
@@ -523,14 +564,15 @@
   <label for="searchInput">Haku:</label>
   <input id="searchInput" type="text" placeholder="Nimi tai puolue…" autocomplete="off"/>
 
-  <button class="filter-btn active" data-puolue="">Kaikki</button>
+  <button class="filter-btn active" data-puolue="" id="btnKaikki">Kaikki</button>
 
-  <div style="width:1px;height:20px;background:#1a2a55;margin:0 .25rem;align-self:center;"></div>
+  <div class="puolue-dropdown-wrap">
+    <button class="filter-btn" id="btnPuolue">Puolue ▾</button>
+    <div class="puolue-dropdown" id="puolueDropdown"></div>
+  </div>
 
-  <button class="filter-btn" id="btnNykyiset">Nykyiset</button>
-  <button class="filter-btn" id="btnHistorialliset">Historialliset</button>
-
-  <div style="width:1px;height:20px;background:#1a2a55;margin:0 .25rem;align-self:center;"></div>
+  <button class="filter-btn" id="btnNykyiset" style="border-color:#3ec63e;color:#3ec63e">Nykyiset</button>
+  <button class="filter-btn" id="btnHistorialliset" style="border-color:#f5a623;color:#f5a623">Historialliset</button>
 
   <span class="count-badge" id="countBadge"></span>
 </div>
@@ -587,21 +629,47 @@ async function lataaHakemisto() {
   }
 }
 
-/* ── Rakenna puoluepainikkeet ── */
+/* ── Rakenna puolue-dropdown ── */
 function rakennaPuoluePainikkeet() {
-  const toolbar = document.querySelector(".toolbar");
-  toolbar.querySelectorAll(".filter-btn[data-puolue]:not([data-puolue=''])").forEach(b => b.remove());
-  const kaikki = toolbar.querySelector("[data-puolue='']");
+  const dropdown = document.getElementById("puolueDropdown");
   const puolueet = [...new Set(KAIKKI.map(m => m.puolue).filter(p => p && p !== "–"))].sort();
-  [...puolueet].reverse().forEach(p => {
+  dropdown.innerHTML = "";
+  puolueet.forEach(p => {
     const btn = document.createElement("button");
-    btn.className = "filter-btn";
-    btn.dataset.puolue = p;
+    btn.className = "dp-btn";
     btn.textContent = p;
-    btn.addEventListener("click", () => setPuolue(p, btn));
-    kaikki.insertAdjacentElement("afterend", btn);
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActive = btn.classList.contains("active");
+      dropdown.querySelectorAll(".dp-btn").forEach(b => b.classList.remove("active"));
+      if (!isActive) {
+        btn.classList.add("active");
+        setPuolue(p, btn);
+        document.getElementById("btnPuolue").textContent = p + " ▾";
+        document.getElementById("btnPuolue").style.borderColor = "#00d4ff";
+        document.getElementById("btnPuolue").style.color = "#00d4ff";
+      } else {
+        setPuolue("", null);
+        document.getElementById("btnPuolue").textContent = "Puolue ▾";
+        document.getElementById("btnPuolue").style.borderColor = "";
+        document.getElementById("btnPuolue").style.color = "";
+      }
+      dropdown.classList.remove("open");
+    });
+    dropdown.appendChild(btn);
   });
 }
+
+// Dropdown toggle
+document.getElementById("btnPuolue").addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.getElementById("puolueDropdown").classList.toggle("open");
+});
+
+// Sulje dropdown kun klikataan muualle
+document.addEventListener("click", () => {
+  document.getElementById("puolueDropdown").classList.remove("open");
+});
 
 /* ── Suodatus ── */
 function suodataJaRenderöi() {
@@ -626,9 +694,9 @@ function suodataJaRenderöi() {
 document.getElementById("searchInput").addEventListener("input", suodataJaRenderöi);
 
 function setPuolue(p, btn) {
-  document.querySelectorAll(".filter-btn[data-puolue]").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
   aktiivisuusPuolue = p;
+  // Kaikki-nappi aktiiviseksi jos ei puoluetta valittu
+  document.getElementById("btnKaikki").classList.toggle("active", !p);
   suodataJaRenderöi();
 }
 
@@ -641,10 +709,14 @@ function setAika(tila) {
 
 document.getElementById("btnNykyiset").addEventListener("click", () => setAika("nykyiset"));
 document.getElementById("btnHistorialliset").addEventListener("click", () => setAika("hist"));
-document.querySelector("[data-puolue='']").addEventListener("click", function() {
-  document.querySelectorAll(".filter-btn[data-puolue]").forEach(b => b.classList.remove("active"));
-  this.classList.add("active");
+document.getElementById("btnKaikki").addEventListener("click", function() {
   aktiivisuusPuolue = "";
+  this.classList.add("active");
+  // Nollaa dropdown
+  document.getElementById("puolueDropdown").querySelectorAll(".dp-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("btnPuolue").textContent = "Puolue ▾";
+  document.getElementById("btnPuolue").style.borderColor = "";
+  document.getElementById("btnPuolue").style.color = "";
   suodataJaRenderöi();
 });
 
