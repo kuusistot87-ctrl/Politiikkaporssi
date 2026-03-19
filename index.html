@@ -893,12 +893,14 @@ function naytaTulokset() {
   document.getElementById("grid").style.display      = "grid";
   document.getElementById("tulosrivi").style.display = "flex";
   document.getElementById("tulosrivi").style.alignItems = "center";
+  document.getElementById("pagination").style.display = "flex";
 }
 
 function naytaSplash() {
   document.getElementById("splash").style.display    = "flex";
   document.getElementById("grid").style.display      = "none";
   document.getElementById("tulosrivi").style.display = "none";
+  document.getElementById("pagination").style.display = "none";
   document.getElementById("countBadge").textContent  = "";
   aktiivisuusPuolue = "";
   aikasuodatin = "";
@@ -940,42 +942,108 @@ document.getElementById("btnNykyiset").addEventListener("click", () => setAika("
 document.getElementById("btnHistorialliset").addEventListener("click", () => setAika("hist"));
 
 
-/* ── Renderöi kortit ── */
-function renderEdustajat(lista) {
-  const grid = document.getElementById("grid");
+/* ── Sivutus ── */
+const SIVULLA = 50;
+let nykyinenSivu = 1;
+let suodatettuLista = [];
+
+function luoKortti(m) {
+  const vari = puolueVari(m.puolue);
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.setProperty("--party-color", vari);
+  card.style.setProperty("--party-glow", vari + "55");
+  card.setAttribute("role","button"); card.setAttribute("tabindex","0");
+  const paikkatieto = m.nykyinen ? (m.vaalipiiri||m.kotikunta||"") : (m.kotikunta||"");
+  const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
+               : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
+  card.innerHTML = `
+    <div class="card-topbar"></div>
+    <div class="card-body">
+      <div class="card-party-tag">${m.puolue||"–"}</div>
+      <div class="card-name">${m.nimi}</div>
+      <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
+    </div>
+    <div class="card-arrow">AVAA →</div>`;
+  card.addEventListener("click", () => openTTLProfile(m));
+  card.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openTTLProfile(m); });
+  return card;
+}
+
+function renderSivu(sivu) {
+  nykyinenSivu = sivu;
+  const grid  = document.getElementById("grid");
+  const pagin = document.getElementById("pagination");
   grid.innerHTML = "";
-  if (!lista.length) {
+
+  if (!suodatettuLista.length) {
     grid.innerHTML = `<div class="empty-state"><span>∅</span>Ei hakutuloksia</div>`;
     document.getElementById("countBadge").textContent = "";
+    pagin.style.display = "none";
     return;
   }
+
+  const alku  = (sivu - 1) * SIVULLA;
+  const loppu = Math.min(alku + SIVULLA, suodatettuLista.length);
+  const sivuja = Math.ceil(suodatettuLista.length / SIVULLA);
+
+  suodatettuLista.slice(alku, loppu).forEach((m, i) => {
+    const c = luoKortti(m);
+    c.style.animationDelay = `${Math.min(i,40)*30}ms`;
+    grid.appendChild(c);
+  });
+
+  // Päivitä count
   const pohja = KAIKKI.filter(m =>
     aikasuodatin === "nykyiset" ? m.nykyinen : aikasuodatin === "hist" ? !m.nykyinen : true
   );
-  document.getElementById("countBadge").textContent = `${lista.length} / ${pohja.length} edustajaa`;
-  lista.forEach((m, i) => {
-    const vari = puolueVari(m.puolue);
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.setProperty("--party-color", vari);
-    card.style.setProperty("--party-glow", vari + "55");
-    card.style.animationDelay = `${Math.min(i,40)*35}ms`;
-    card.setAttribute("role","button"); card.setAttribute("tabindex","0");
-    const paikkatieto = m.nykyinen ? (m.vaalipiiri||m.kotikunta||"") : (m.kotikunta||"");
-    const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
-                 : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
-    card.innerHTML = `
-      <div class="card-topbar"></div>
-      <div class="card-body">
-        <div class="card-party-tag">${m.puolue||"–"}</div>
-        <div class="card-name">${m.nimi}</div>
-        <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
-      </div>
-      <div class="card-arrow">AVAA →</div>`;
-    card.addEventListener("click", () => openTTLProfile(m));
-    card.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openTTLProfile(m); });
-    grid.appendChild(card);
+  document.getElementById("countBadge").textContent =
+    `${alku+1}–${loppu} / ${suodatettuLista.length} edustajaa`;
+
+  // Sivutuspainikkeet
+  if (sivuja <= 1) { pagin.style.display = "none"; return; }
+  pagin.style.display = "flex";
+  pagin.innerHTML = "";
+
+  const prev = document.createElement("button");
+  prev.className = "page-btn"; prev.textContent = "‹"; prev.disabled = sivu === 1;
+  prev.addEventListener("click", () => { renderSivu(sivu-1); window.scrollTo({top:0,behavior:"smooth"}); });
+  pagin.appendChild(prev);
+
+  // Sivunumerot älykkäällä ellipsillä
+  const nayta = [];
+  for (let s = 1; s <= sivuja; s++) {
+    if (s === 1 || s === sivuja || Math.abs(s - sivu) <= 2) nayta.push(s);
+    else if (nayta[nayta.length-1] !== "…") nayta.push("…");
+  }
+  nayta.forEach(s => {
+    if (s === "…") {
+      const sp = document.createElement("span");
+      sp.className = "page-info"; sp.textContent = "…";
+      pagin.appendChild(sp);
+    } else {
+      const btn = document.createElement("button");
+      btn.className = "page-btn" + (s === sivu ? " active" : "");
+      btn.textContent = s;
+      btn.addEventListener("click", () => { renderSivu(s); window.scrollTo({top:0,behavior:"smooth"}); });
+      pagin.appendChild(btn);
+    }
   });
+
+  const next = document.createElement("button");
+  next.className = "page-btn"; next.textContent = "›"; next.disabled = sivu === sivuja;
+  next.addEventListener("click", () => { renderSivu(sivu+1); window.scrollTo({top:0,behavior:"smooth"}); });
+  pagin.appendChild(next);
+}
+
+/* ── Renderöi kortit ── */
+function renderEdustajat(lista) {
+  // Aakkosjärjestys sukunimen mukaan
+  suodatettuLista = [...lista].sort((a, b) =>
+    a.nimi.split(" ").pop().localeCompare(b.nimi.split(" ").pop(), "fi")
+  );
+  nykyinenSivu = 1;
+  renderSivu(1);
 }
 
 /* ================================================================
