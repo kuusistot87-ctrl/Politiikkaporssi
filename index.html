@@ -532,70 +532,115 @@
 </footer>
 
 <script>
-/* ================================================================
-   PUOLUEVÄRIT
-   ================================================================ */
 const PUOLUEVARIT = {
-  KOK:  "#1a6fd8", PS:   "#f5c400", SDP:  "#e01010",
-  KESK: "#009b50", VIHR: "#3ec63e", VAS:  "#d00020",
-  RKP:  "#f5c400", KD:   "#1040b0", LIIK: "#8a25cc",
+  KOK:"#1a6fd8", PS:"#f5c400", SDP:"#e01010", KESK:"#009b50",
+  VIHR:"#3ec63e", VAS:"#d00020", RKP:"#f5c400", KD:"#1040b0", LIIK:"#8a25cc",
 };
 const puolueVari = p => PUOLUEVARIT[p] || "#00d4ff";
 
-/* ================================================================
-   TILA
-   ================================================================ */
-let KAIKKI   = [];   // kaikki edustajat index.json:sta
-let NÄYTETYT = [];   // suodatettu lista
+let KAIKKI = [];
 let aktiivisuusPuolue = "";
-let näytäVainNykyiset = false;
+let aikasuodatin = ""; // "" | "nykyiset" | "hist"
 
-/* ================================================================
-   LATAA index.json KERRAN SIVUN AVAUTUESSA
-   ================================================================ */
+/* ── Lataa index.json ── */
 async function lataaHakemisto() {
   const grid = document.getElementById("grid");
   grid.innerHTML = `<div class="empty-state">
     <div class="spinner" style="margin:0 auto 1rem"></div>
     <div style="font-size:.85rem;color:#5a7a99;letter-spacing:.1em">LADATAAN HAKEMISTOA…</div>
   </div>`;
-
   try {
     const res = await fetch("edustajat_json/index.json");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     KAIKKI = await res.json();
-    päivitäSuodattimet();
+    rakennaPuoluePainikkeet();
     suodataJaRenderöi();
-  } catch (err) {
-    grid.innerHTML = `<div class="empty-state">
-      <span>✗</span>
-      <div style="font-size:.85rem;color:#e01010;">Hakemistoa ei löydy:<br>
-      <code style="font-size:.75rem">edustajat_json/index.json</code><br><br>
-      Aja ensin: <code>python3 luo_hakemisto.py</code></div>
-    </div>`;
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state"><span>✗</span>
+      <div style="color:#e01010;font-size:.85rem;">Hakemistoa ei löydy:<br>
+      <code>edustajat_json/index.json</code><br><br>
+      Aja: <code>python luo_hakemisto.py</code></div></div>`;
   }
 }
 
-/* ================================================================
-   RENDERÖI KORTIT
-   ================================================================ */
+/* ── Rakenna puoluepainikkeet dynaamisesti ── */
+function rakennaPuoluePainikkeet() {
+  const toolbar = document.querySelector(".toolbar");
+  // Poista vanhat puoluepainikkeet (joilla on data-puolue ja arvo ei ole tyhjä)
+  toolbar.querySelectorAll(".filter-btn[data-puolue]:not([data-puolue=''])").forEach(b => b.remove());
+  const kaikki = toolbar.querySelector("[data-puolue='']");
+  const puolueet = [...new Set(KAIKKI.map(m => m.puolue).filter(p => p && p !== "–"))].sort();
+  // Lisää puoluepainikkeet käänteisessä järjestyksessä afterend-metodilla
+  [...puolueet].reverse().forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn";
+    btn.dataset.puolue = p;
+    btn.textContent = p;
+    btn.addEventListener("click", () => setPuolue(p, btn));
+    kaikki.insertAdjacentElement("afterend", btn);
+  });
+}
+
+/* ── Suodatus ── */
+function suodataJaRenderöi() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const lista = KAIKKI.filter(m => {
+    if (aikasuodatin === "nykyiset" && !m.nykyinen) return false;
+    if (aikasuodatin === "hist"     &&  m.nykyinen) return false;
+    if (aktiivisuusPuolue && m.puolue !== aktiivisuusPuolue) return false;
+    if (!q) return true;
+    return (
+      (m.nimi       || "").toLowerCase().includes(q) ||
+      (m.puolue     || "").toLowerCase().includes(q) ||
+      (m.kotikunta  || "").toLowerCase().includes(q) ||
+      (m.koulutus   || "").toLowerCase().includes(q) ||
+      (m.syntymavuosi || "").includes(q)
+    );
+  });
+  renderEdustajat(lista);
+}
+
+document.getElementById("searchInput").addEventListener("input", suodataJaRenderöi);
+
+function setPuolue(p, btn) {
+  document.querySelectorAll(".filter-btn[data-puolue]").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  aktiivisuusPuolue = p;
+  suodataJaRenderöi();
+}
+
+function setAika(tila) {
+  const btnN = document.getElementById("btnNykyiset");
+  const btnH = document.getElementById("btnHistorialliset");
+  // Toggle: jos sama nappi uudelleen → poista suodatin
+  aikasuodatin = (aikasuodatin === tila) ? "" : tila;
+  btnN.classList.toggle("active", aikasuodatin === "nykyiset");
+  btnH.classList.toggle("active", aikasuodatin === "hist");
+  suodataJaRenderöi();
+}
+
+document.getElementById("btnNykyiset").addEventListener("click", () => setAika("nykyiset"));
+document.getElementById("btnHistorialliset").addEventListener("click", () => setAika("hist"));
+document.querySelector("[data-puolue='']").addEventListener("click", function() {
+  document.querySelectorAll(".filter-btn[data-puolue]").forEach(b => b.classList.remove("active"));
+  this.classList.add("active");
+  aktiivisuusPuolue = "";
+  suodataJaRenderöi();
+});
+
+/* ── Renderöi kortit ── */
 function renderEdustajat(lista) {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
-
-  if (lista.length === 0) {
+  if (!lista.length) {
     grid.innerHTML = `<div class="empty-state"><span>∅</span>Ei hakutuloksia</div>`;
     document.getElementById("countBadge").textContent = "";
     return;
   }
-
-  const pohjajoukko = KAIKKI.filter(e => {
-    if (näytäVainNykyiset === "nykyiset") return e.nykyinen;
-    if (näytäVainNykyiset === "hist") return !e.nykyinen;
-    return true;
-  });
-  document.getElementById("countBadge").textContent =
-    `${lista.length} / ${pohjajoukko.length} edustajaa`;
+  const pohja = KAIKKI.filter(m =>
+    (aikasuodatin === "nykyiset" ? m.nykyinen : aikasuodatin === "hist" ? !m.nykyinen : true)
+  );
+  document.getElementById("countBadge").textContent = `${lista.length} / ${pohja.length} edustajaa`;
 
   lista.forEach((m, i) => {
     const vari = puolueVari(m.puolue);
@@ -603,161 +648,80 @@ function renderEdustajat(lista) {
     card.className = "card";
     card.style.setProperty("--party-color", vari);
     card.style.setProperty("--party-glow", vari + "55");
-    card.style.animationDelay = `${Math.min(i, 40) * 35}ms`;
-    card.setAttribute("role", "button");
-    card.setAttribute("tabindex", "0");
-    card.setAttribute("aria-label", `${m.nimi}, ${m.puolue}`);
-
-    const vuodet = m.kuolinvuosi
-      ? `${m.syntymavuosi || "?"}–${m.kuolinvuosi}`
-      : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
-
+    card.style.animationDelay = `${Math.min(i,40)*35}ms`;
+    card.setAttribute("role","button"); card.setAttribute("tabindex","0");
+    const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
+                 : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
     card.innerHTML = `
       <div class="card-topbar"></div>
       <div class="card-body">
-        <div class="card-party-tag">${m.puolue || "–"}</div>
+        <div class="card-party-tag">${m.puolue||"–"}</div>
         <div class="card-name">${m.nimi}</div>
         <div class="card-meta">${[m.kotikunta, vuodet].filter(Boolean).join(" · ")}</div>
       </div>
       <div class="card-arrow">AVAA →</div>`;
     card.addEventListener("click", () => openTTLProfile(m));
-    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") openTTLProfile(m); });
+    card.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openTTLProfile(m); });
     grid.appendChild(card);
   });
 }
 
-/* ================================================================
-   SUODATUS & HAKU
-   ================================================================ */
-function suodataJaRenderöi() {
-  const q = document.getElementById("searchInput").value.toLowerCase().trim();
-  NÄYTETYT = KAIKKI.filter(m => {
-    if (näytäVainNykyiset === "nykyiset" && !m.nykyinen) return false;
-    if (näytäVainNykyiset === "hist" && m.nykyinen) return false;
-    if (aktiivisuusPuolue && m.puolue !== aktiivisuusPuolue) return false;
-    if (!q) return true;
-    return (
-      m.nimi.toLowerCase().includes(q) ||
-      (m.puolue || "").toLowerCase().includes(q) ||
-      (m.kotikunta || "").toLowerCase().includes(q) ||
-      (m.koulutus || "").toLowerCase().includes(q) ||
-      (m.syntymavuosi || "").includes(q)
-    );
-  });
-  renderEdustajat(NÄYTETYT);
-}
-
-document.getElementById("searchInput").addEventListener("input", suodataJaRenderöi);
-
-function päivitäSuodattimet() {
-  const löydetyt = [...new Set(KAIKKI.map(m => m.puolue).filter(Boolean))].sort();
-  const toolbar = document.querySelector(".toolbar");
-  toolbar.querySelectorAll(".filter-btn:not([data-puolue=''])").forEach(b => b.remove());
-  const kaikki = toolbar.querySelector("[data-puolue='']");
-  löydetyt.forEach(p => {
-    const btn = document.createElement("button");
-    btn.className = "filter-btn";
-    btn.dataset.puolue = p;
-    btn.textContent = p;
-    btn.addEventListener("click", () => { setFilterPuolue(p, btn); });
-    kaikki.insertAdjacentElement("afterend", btn);
-  });
-  kaikki.addEventListener("click", () => { setFilterPuolue("", kaikki); });
-}
-
-function setFilterPuolue(p, btn) {
-  // Poista aktiivinen vain puoluepainikkeilta
-  document.querySelectorAll(".filter-btn[data-puolue]").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  aktiivisuusPuolue = p;
-  suodataJaRenderöi();
-}
-
-// Nykyiset / Historialliset -napit
-document.addEventListener("DOMContentLoaded", () => {
-  const btnN = document.getElementById("btnNykyiset");
-  const btnH = document.getElementById("btnHistorialliset");
-  if (!btnN || !btnH) return;
-
-  function setAikasuodatin(tila, btn) {
-    btnN.classList.remove("active");
-    btnH.classList.remove("active");
-    if (tila === "nykyiset")      { näytäVainNykyiset = "nykyiset";      btn.classList.add("active"); }
-    else if (tila === "hist")     { näytäVainNykyiset = "hist";          btn.classList.add("active"); }
-    else                          { näytäVainNykyiset = false; }
-    suodataJaRenderöi();
-  }
-
-  btnN.addEventListener("click", () => {
-    setAikasuodatin(näytäVainNykyiset === "nykyiset" ? false : "nykyiset", btnN);
-  });
-  btnH.addEventListener("click", () => {
-    setAikasuodatin(näytäVainNykyiset === "hist" ? false : "hist", btnH);
-  });
-});
-
-/* ================================================================
-   MODAL – avaa (hakee yksilöllisen JSON:n vasta nyt)
-   ================================================================ */
+/* ── Modal ── */
 async function openTTLProfile(m) {
   const overlay = document.getElementById("modalOverlay");
-  const content = document.getElementById("modalContent");
   const vari    = puolueVari(m.puolue);
-
   overlay.style.setProperty("--modal-party-color", vari);
   document.documentElement.style.setProperty("--modal-party-color", vari);
   overlay.classList.add("open");
   document.body.style.overflow = "hidden";
 
-  // Näytä perustiedot heti index.json:sta, lataa lisätiedot taustalla
-  renderModalPerustiedot(m, vari);
+  // Näytä heti index.json:n tiedot
+  renderModal(m, vari);
 
-  // Hae tarkka profiili
+  // Hae tarkka JSON taustalla — se voi sisältää lisää tietoja tulevaisuudessa
   if (m.tiedosto) {
     try {
       const res = await fetch(`edustajat_json/${m.tiedosto}`);
       if (res.ok) {
-        const raw = await res.json();
-        renderModalTarkka(m, raw, vari);
-        return;
+        // Tällä hetkellä index.json sisältää jo kaikki näytettävät kentät
+        // Tähän voi lisätä tarkempia tietoja myöhemmin
       }
-    } catch (_) {}
+    } catch(_) {}
   }
-  // Fallback: index.json:n tiedot riittävät
 }
 
-/* ── Modal: näytä index.json:n perustiedot heti ── */
-function renderModalPerustiedot(m, vari) {
+function renderModal(m, vari) {
   const content = document.getElementById("modalContent");
   const vuodet = m.kuolinvuosi
-    ? `${m.syntymavuosi || "?"}–${m.kuolinvuosi}`
+    ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
     : m.syntymavuosi ? `${m.syntymavuosi}–` : "–";
-
+  const nykyinenTeksti = m.nykyinen
+    ? `<span style="color:#3ec63e">● aktiivinen</span>`
+    : `<span style="color:#f5a623">● päättynyt</span>`;
   const kuvaHtml = m.kuva
     ? `<img src="${m.kuva}" alt="${m.nimi}" onerror="this.style.display='none'"
-         style="width:70px;height:86px;object-fit:cover;border-radius:3px;
+         style="width:72px;height:88px;object-fit:cover;border-radius:3px;
                 border:1px solid ${vari};float:right;margin:0 0 .5rem 1rem;">`
     : "";
-
   const linkit = [];
-  if (m.eduskunta) linkit.push(linkki(m.eduskunta, "EDUSKUNTA.FI ↗", vari));
-  if (m.wiki)      linkit.push(linkki(m.wiki, "WIKIPEDIA ↗", "#aaa"));
-  if (m.twitter)   linkit.push(linkki(`https://twitter.com/${m.twitter}`, "TWITTER ↗", "#1d9bf0"));
+  if (m.eduskunta) linkit.push(lnk(m.eduskunta,"EDUSKUNTA.FI ↗",vari));
+  if (m.wiki)      linkit.push(lnk(m.wiki,"WIKIPEDIA ↗","#aaa"));
+  if (m.twitter)   linkit.push(lnk(`https://twitter.com/${m.twitter}`,"TWITTER ↗","#1d9bf0"));
 
   content.innerHTML = `
-    <div class="modal-label">Kansanedustaja · ${m.puolue || "–"}</div>
-    <div class="modal-party-tag" style="--modal-party-color:${vari}">${m.puolue || "–"}</div>
+    <div class="modal-label">Kansanedustaja · ${m.puolue||"–"}</div>
+    <div class="modal-party-tag" style="--modal-party-color:${vari}">${m.puolue||"–"}</div>
     ${kuvaHtml}
     <div class="modal-name" id="modalName">${m.nimi}</div>
     <div class="modal-divider"></div>
     <div class="detail-grid">
       <div class="detail-item">
         <div class="d-label">Koulutus / ammatti</div>
-        <div class="d-value">${m.koulutus || "–"}</div>
+        <div class="d-value">${m.koulutus||"–"}</div>
       </div>
       <div class="detail-item">
         <div class="d-label">Kotikunta</div>
-        <div class="d-value">${m.kotikunta || "–"}</div>
+        <div class="d-value">${m.kotikunta||"–"}</div>
       </div>
       <div class="detail-item">
         <div class="d-label">Elinvuodet</div>
@@ -765,44 +729,36 @@ function renderModalPerustiedot(m, vari) {
       </div>
       <div class="detail-item">
         <div class="d-label">Vaalikaudet</div>
-        <div class="d-value">${m.vaalikaudet || "–"}</div>
+        <div class="d-value">${m.vaalikaudet||"–"}</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Puolue</div>
+        <div class="d-value" style="color:${vari}">${m.puolue||"–"}</div>
+      </div>
+      <div class="detail-item">
+        <div class="d-label">Status</div>
+        <div class="d-value">${nykyinenTeksti}</div>
       </div>
     </div>
     ${linkit.length ? `<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem;">${linkit.join("")}</div>` : ""}
   `;
 }
 
-/* ── Modal: täydennä tarkalla profiililla jos saatavilla ── */
-function renderModalTarkka(m, raw, vari) {
-  // Tässä versiossa index.json sisältää jo kaikki kentät,
-  // joten tarkka profiili ei lisää merkittävästi uutta.
-  // Lisätään vain mahdollinen vaalipiiri jos löytyy raw:sta.
-  const vaalipiiri = (raw["semparl:has_affiliation"] || []).length > 0
-    ? null : null; // Vaalipiiri vaatisi affiliations-datan purkamista
-  // (laajennus tulevaisuudessa)
-}
-
-function linkki(url, teksti, vari) {
+function lnk(url, teksti, vari) {
   return `<a href="${url}" target="_blank" rel="noopener"
     style="color:${vari};font-size:.75rem;letter-spacing:.1em;text-decoration:none;
            border:1px solid ${vari}55;padding:.2rem .55rem;border-radius:3px;">${teksti}</a>`;
 }
 
-/* ================================================================
-   MODAL – sulje
-   ================================================================ */
 function closeTTLProfile() {
   document.getElementById("modalOverlay").classList.remove("open");
   document.body.style.overflow = "";
 }
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeTTLProfile(); });
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeTTLProfile(); });
 document.getElementById("modalOverlay").addEventListener("click", e => {
-  if (e.target === document.getElementById("modalOverlay")) closeTTLProfile();
+  if(e.target===document.getElementById("modalOverlay")) closeTTLProfile();
 });
 
-/* ================================================================
-   KÄYNNISTÄ
-   ================================================================ */
 lataaHakemisto();
 </script>
 </body>
