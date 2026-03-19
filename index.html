@@ -965,11 +965,20 @@ function luoKortti(m) {
   const paikkatieto = m.nykyinen ? (m.vaalipiiri||m.kotikunta||"") : (m.kotikunta||"");
   const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
                : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
+  const kuvaHtml = m.kuva
+    ? `<img src="${m.kuva}" alt="${m.nimi}" loading="lazy"
+         onerror="this.style.display='none'"
+         style="position:absolute;top:.7rem;right:.7rem;width:44px;height:54px;
+                object-fit:cover;border-radius:3px;
+                border:1px solid var(--party-color, #1a2a55);
+                opacity:.85;">`
+    : "";
   card.innerHTML = `
     <div class="card-topbar"></div>
-    <div class="card-body">
+    <div class="card-body" style="position:relative">
+      ${kuvaHtml}
       <div class="card-party-tag">${m.puolue||"–"}</div>
-      <div class="card-name">${kaannaNimi(m.nimi)}</div>
+      <div class="card-name" style="padding-right:${m.kuva?"54px":"0"}">${kaannaNimi(m.nimi)}</div>
       <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
     </div>
     <div class="card-arrow">AVAA →</div>`;
