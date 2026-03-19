@@ -953,22 +953,22 @@ function renderModalSkeleton(m, vari) {
           <div class="detail-item"><div class="d-label">Status</div><div class="d-value" style="color:${m.nykyinen?"#3ec63e":"#f5a623"}">${m.nykyinen?"● aktiivinen":"● päättynyt"}</div></div>
         </div>`, true)}
       ${accordionItem("linkit","LINKIT & YHTEYSTIEDOT",`
-        <div id="linkit-content" style="display:flex;flex-direction:column;gap:.5rem">
-          <div class="spinner" style="margin:.5rem auto"></div>
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
+          ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
+          ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER / X ↗","#1d9bf0") : ""}
+          ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
         </div>`)}
       ${accordionItem("toiminta","ALOITTEET & PUHEENVUOROT",`
-        <div id="toiminta-content">
-          <div class="spinner" style="margin:.5rem auto"></div>
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20(Asiakirjatyyppinimi:Lakialoite%20OR%20Asiakirjatyyppinimi:Toimenpidealoite)%22}","ALOITTEET ↗",vari)}
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20Asiakirjatyyppinimi:%5C%22Kirjallinen%20kysymys%5C%22%22}","KIRJALLISET KYSYMYKSET ↗",vari)}
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22EDKPuhujaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi.split(" ").reverse().join(" "))+"%5C%22%22}","PUHEENVUOROT ↗",vari)}
         </div>`)}
       ${accordionItem("sidonnaisuudet","SIDONNAISUUDET",`
-        <div id="sidonnaisuudet-content">
-          <div class="spinner" style="margin:.5rem auto"></div>
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
         </div>`)}
-    </div>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.25rem;">
-      ${m.eduskunta ? lnk(m.eduskunta,"EDUSKUNTA.FI ↗",vari) : ""}
-      ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
-      ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER ↗","#1d9bf0") : ""}
     </div>`;
 
   // Accordion-logiikka
