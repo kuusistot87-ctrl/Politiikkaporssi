@@ -103,11 +103,65 @@ NYKYISET = {
 
 # ── Puolue Wikidata-ID → lyhenne ──
 PUOLUEET = {
-    "Q304191":"KOK","Q181858":"PS","Q170775":"SDP","Q499029":"SDP",
-    "Q170750":"KESK","Q1752583":"KESK","Q465955":"VIHR","Q170767":"VAS",
-    "Q385927":"VAS","Q170782":"RKP","Q965052":"KD","Q3230391":"LIIK",
+    # KOK
+    "Q304191":"KOK",
+    # PS
+    "Q181858":"PS","Q327591":"PS",
+    # SDP
+    "Q170775":"SDP","Q499029":"SDP",
+    # KESK
+    "Q170750":"KESK","Q1752583":"KESK","Q3177095":"KESK",
+    # VIHR
+    "Q465955":"VIHR","Q170784":"VIHR",
+    # VAS
+    "Q170767":"VAS","Q385927":"VAS",
+    # RKP
+    "Q170782":"RKP","Q1092519":"RKP",
+    # KD
+    "Q965052":"KD","Q170781":"KD",
+    # LIIK
+    "Q3230391":"LIIK",
+    # SIN
     "Q18678676":"SIN",
+    # Historialliset puolueet
+    "Q170778":"SKDL","Q1054366":"SKL","Q170779":"LKP",
+    "Q504956":"SMP","Q170780":"TPSL","Q170783":"SPP",
+    "Q2045396":"KP","Q505610":"ED","Q170777":"SKYP",
 }
+
+# ── Puolueen NIMI → lyhenne (vararatkaisu jos Q-koodi ei tunnistettu) ──
+PUOLUE_NIMET = {
+    "kokoomus":"KOK","samlingsparti":"KOK",
+    "perussuomalais":"PS","sannfinländar":"PS",
+    "sosialidemokraat":"SDP","socialdemokrat":"SDP",
+    "keskusta":"KESK","centern":"KESK","maalaisliitto":"KESK",
+    "agrarian":"KESK",
+    "vihreä":"VIHR","gröna":"VIHR","vihreat":"VIHR",
+    "vasemmistoliitto":"VAS","vänsterförbundet":"VAS",
+    "svenska folkpartiet":"RKP","ruotsalainen":"RKP",
+    "kristillisdemokraat":"KD","kristdemokrat":"KD",
+    "liike nyt":"LIIK","rörelse":"LIIK",
+    "sininen tulevaisuus":"SIN",
+    "skdl":"SKDL","kansandemokraat":"SKDL",
+    "suomen maaseudun puolue":"SMP",
+}
+
+def tunnista_puolue_nimella(party_id_raw: str) -> str:
+    """Vararatkaisu: tunnistaa puolueen nimen perusteella."""
+    low = party_id_raw.lower()
+    for avain, lyhenne in PUOLUE_NIMET.items():
+        if avain in low:
+            return lyhenne
+    return "–"
+
+def tunnista_puolue(party_id: str) -> str:
+    """Tunnistaa puolueen ensin Q-koodista, sitten nimen perusteella."""
+    if not party_id:
+        return "–"
+    qid = party_id.split(":")[-1].split("/")[-1]
+    if qid in PUOLUEET:
+        return PUOLUEET[qid]
+    return tunnista_puolue_nimella(party_id)
 
 def kentta_id(data, avain):
     v = data.get(avain)
@@ -146,8 +200,14 @@ def parsi_edustaja(tiedosto):
 
     label        = kentta_arvo(data,"skos:prefLabel")
     nimi         = parsi_nimi(data)
-    party_qid    = kentta_id(data,"semparl:party").split(":")[-1].split("/")[-1]
-    puolue       = PUOLUEET.get(party_qid,"–")
+    party_raw    = kentta_id(data,"semparl:party")
+    party_qid    = party_raw.split(":")[-1].split("/")[-1]
+    puolue       = tunnista_puolue(party_raw)
+
+    # Jos puolue ei tunnistettu Q-koodista, kokeile NYKYISET-hakemistosta
+    if puolue == "–" and nimi in NYKYISET:
+        pass  # Jätetään "–", NYKYISET ei sisällä puoluetta
+    # Jos puolue edelleen "–" mutta nimi on nykyisten listassa, tarkistetaan myöhemmin
     kotikunta    = kentta_arvo(data,"semparl:home_location_text")
     koulutus     = kentta_arvo(data,"semparl:occupation_text")
     syntymavuosi = next(iter(re.findall(r"\((\d{4})-",label)),None)
@@ -231,6 +291,15 @@ def main():
     print(f"  Nykyisiä (2023-27): {nykyiset}")
     print(f"  Historiallisia:     {len(edustajat)-nykyiset}")
     print(f"  Virheitä:           {virheet}")
+    # Raportoi tuntemattomat Q-koodit
+    q_tuntematon = {}
+    for e in edustajat:
+        if e["puolue"] == "–" and e["nykyinen"]:
+            q_tuntematon[e["nimi"]] = e.get("tiedosto","")
+    if q_tuntematon:
+        print(f"\n  HUOMIO: {len(q_tuntematon)} nykyistä edustajaa ilman puoluetta:")
+        for n,t in list(q_tuntematon.items())[:10]:
+            print(f"    - {n} ({t})")
     print(f"  Tiedosto:           {kohde}  ({koko/1024:.0f} KB)")
 
     # Varoita jos nykyisiä ei löydy kaikille
