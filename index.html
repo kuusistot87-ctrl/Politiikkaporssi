@@ -969,7 +969,7 @@ function luoKortti(m) {
     <div class="card-topbar"></div>
     <div class="card-body">
       <div class="card-party-tag">${m.puolue||"–"}</div>
-      <div class="card-name">${m.nimi}</div>
+      <div class="card-name">${kaannaNimi(m.nimi)}</div>
       <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
     </div>
     <div class="card-arrow">AVAA →</div>`;
