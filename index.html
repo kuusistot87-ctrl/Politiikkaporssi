@@ -700,11 +700,7 @@ async function openTTLProfile(m) {
   document.body.style.overflow = "hidden";
   renderModalSkeleton(m, vari);
 
-  // Hae personId JSON-tiedostosta tai eduskunta-linkistä
-  const pid = haePersonId(m);
-  if (pid) {
-    haeJaNaytaAPI(m, pid, vari);
-  }
+
 }
 
 function haePersonId(m) {
@@ -717,31 +713,7 @@ function haePersonId(m) {
   return null;
 }
 
-async function haeJaNaytaAPI(m, pid, vari) {
-  try {
-    // Hae perustiedot
-    const [mpRes, cvRes] = await Promise.all([
-      fetch(`${API}/MemberOfParliament/rows?perPage=10&page=0&columnName=personId&columnValue=${pid}`),
-      fetch(`${API}/MpAdditionalInfo/rows?perPage=10&page=0&columnName=personId&columnValue=${pid}`)
-    ]);
 
-    const mpData  = mpRes.ok  ? await mpRes.json()  : null;
-    const cvData  = cvRes.ok  ? await cvRes.json()  : null;
-
-    const mp  = parseAPIRows(mpData);
-    const cv  = parseAPIRows(cvData);
-
-    renderModalTäysi(m, pid, mp, cv, vari);
-  } catch(e) {
-    console.warn("API-haku epäonnistui:", e);
-  }
-}
-
-function parseAPIRows(data) {
-  if (!data || !data.columnNames || !data.rowData || !data.rowData.length) return {};
-  const cols = data.columnNames;
-  return Object.fromEntries(cols.map((c,i) => [c, data.rowData[0][i]]));
-}
 
 /* ── Skeleton: näytetään heti index.json:n tiedot ── */
 function renderModalSkeleton(m, vari) {
@@ -811,61 +783,6 @@ function accordionItem(id, label, content, open=false) {
         <div style="padding:.75rem 0">${content}</div>
       </div>
     </div>`;
-}
-
-/* ── Täysi modal API-datalla ── */
-function renderModalTäysi(m, pid, mp, cv, vari) {
-  // Sähköposti
-  const email = mp.email || mp.Email || "";
-  const ammatti = mp.profession || mp.Profession || m.koulutus || "–";
-
-  // Linkit-osio
-  const linkitEl = document.getElementById("linkit-content");
-  if (linkitEl) {
-    linkitEl.innerHTML = `
-      <div class="detail-grid">
-        <div class="detail-item"><div class="d-label">Sähköposti</div>
-          <div class="d-value" style="font-size:.85rem">${email ? email.replace("@","(at)") : "–"}</div></div>
-        <div class="detail-item"><div class="d-label">Ammatti</div>
-          <div class="d-value">${ammatti}</div></div>
-      </div>`;
-  }
-
-  // Toiminta-osio — linkit eduskunnan hakuun
-  const sukunimi = m.nimi.split(" ").pop();
-  const etunimi  = m.nimi.split(" ").slice(0,-1).join(" ");
-  const hakuBase = `https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx`;
-  const toimintaEl = document.getElementById("toiminta-content");
-  if (toimintaEl) {
-    toimintaEl.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:.5rem">
-        ${lnk(`${hakuBase}#Default={"k":"(EDKToimijaCompleteMatching:\"${etunimi} ${sukunimi}\") (Asiakirjatyyppinimi:Lakialoite OR Asiakirjatyyppinimi:Toimenpidealoite OR Asiakirjatyyppinimi:Talousarvioaloite)","o":[{"d":1,"p":"Laadintapvm"}]}`,
-          "ALOITTEET ↗", vari)}
-        ${lnk(`${hakuBase}#Default={"k":"(EDKToimijaCompleteMatching:\"${etunimi} ${sukunimi}\") Asiakirjatyyppinimi:\"Kirjallinen kysymys\"","o":[{"d":1,"p":"Laadintapvm"}]}`,
-          "KIRJALLISET KYSYMYKSET ↗", vari)}
-        ${lnk(`${hakuBase}#Default={"k":"EDKPuhujaCompleteMatching:\"${sukunimi} ${etunimi}\"","o":[{"d":1,"p":"Laadintapvm"}]}`,
-          "PUHEENVUOROT ↗", vari)}
-        ${m.eduskunta ? lnk(m.eduskunta, "TÄYDELLINEN PROFIILI EDUSKUNTA.FI ↗", vari) : ""}
-      </div>`;
-  }
-
-  // Sidonnaisuudet
-  const sidEl = document.getElementById("sidonnaisuudet-content");
-  if (sidEl) {
-    sidEl.innerHTML = m.eduskunta
-      ? `<div style="font-size:.82rem;color:#5a7a99;line-height:1.6">
-          Sidonnaisuustiedot haetaan eduskunnan sivuilta.<br>
-          ${lnk(m.eduskunta+"#sidonnaisuudet","KATSO SIDONNAISUUDET ↗",vari)}
-        </div>`
-      : `<div style="color:#5a7a99;font-size:.82rem">Ei saatavilla</div>`;
-  }
-
-  // Päivitä accordion-korkeudet
-  document.querySelectorAll(".accordion-body").forEach(b => {
-    if (b.style.maxHeight && b.style.maxHeight !== "0px") {
-      b.style.maxHeight = b.scrollHeight + "px";
-    }
-  });
 }
 
 function lnk(url, teksti, vari) {
