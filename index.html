@@ -277,7 +277,7 @@
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 8px;
-      width: min(560px, 94vw);
+      width: min(620px, 96vw);
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 0 60px rgba(0,0,0,.8), 0 0 30px rgba(0,212,255,.1);
@@ -1256,6 +1256,17 @@ async function lataaLobbausIndex() {
   return LOBBAUS_INDEX;
 }
 
+function paivitaAccordionKorkeus(el) {
+  // Etsi lähin avoinna oleva accordion-body ja päivitä sen korkeus
+  let body = el;
+  while (body && !body.classList.contains("accordion-body")) {
+    body = body.parentElement;
+  }
+  if (body && body.style.maxHeight && body.style.maxHeight !== "0px") {
+    body.style.maxHeight = body.scrollHeight + "px";
+  }
+}
+
 async function naytaLobbausTiedot(m, vari) {
   const containerId = "lobbaus-" + m.nimi.replace(/\s+/g,"-");
   const el = document.getElementById(containerId);
@@ -1308,6 +1319,8 @@ async function naytaLobbausTiedot(m, vari) {
   }).join("");
 
   el.style.setProperty("--party-c", vari);
+  // Päivitä accordion-korkeus ensin pelkällä yhteenvedolla
+  setTimeout(() => paivitaAccordionKorkeus(el), 50);
   el.innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.85rem">
       <div>
