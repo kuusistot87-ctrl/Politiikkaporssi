@@ -250,8 +250,19 @@ def parsi_edustaja(tiedosto):
                       for s in sa if s.get("@id","").startswith("twitter:")), "")
 
     # Nykyinen ja vaalipiiri NYKYISET-hakemistosta
-    nykyinen  = nimi in NYKYISET
-    vaalipiiri = NYKYISET.get(nimi, "")
+    # Tarkistetaan myös syntymävuosi jos samalla nimellä useita henkilöitä
+    if nimi in NYKYISET:
+        # Poikkeuslista: nimi → syntymävuosi jolla varmistetaan oikea henkilö
+        SYNTYMAVUOSI_TARKISTUS = {
+            "Otto Andersson": "1983",
+        }
+        if nimi in SYNTYMAVUOSI_TARKISTUS:
+            nykyinen = (syntymavuosi == SYNTYMAVUOSI_TARKISTUS[nimi])
+        else:
+            nykyinen = True
+    else:
+        nykyinen = False
+    vaalipiiri = NYKYISET.get(nimi, "") if nykyinen else ""
 
     return {
         "tiedosto":tiedosto.name,"nimi":nimi,"puolue":puolue,
@@ -274,13 +285,17 @@ PUUTTUVAT = [
      "koulutus":"","syntymavuosi":None,"kuolinvuosi":None,"kuva":"","wiki":"",
      "eduskunta":"","twitter":"","vaalikaudet":1,"nykyinen":True},
     {"tiedosto":"","nimi":"Hanna Laine-Nousimaa","puolue":"SDP","kotikunta":"Kangasala","vaalipiiri":"Pirkanmaa",
-     "koulutus":"yhteiskuntatieteiden maisteri","syntymavuosi":"1972","kuolinvuosi":None,
-     "kuva":"","wiki":"https://fi.wikipedia.org/wiki/Hanna_Laine-Nousimaa",
-     "eduskunta":"","twitter":"","vaalikaudet":1,"nykyinen":True},
+     "koulutus":"lähihoitaja","syntymavuosi":"1972","kuolinvuosi":None,
+     "kuva":"https://www.eduskunta.fi/FI/kansanedustajat/PublishingImages/Laine-Nousimaa-Hanna-web-911829.jpg",
+     "wiki":"https://fi.wikipedia.org/wiki/Hanna_Laine-Nousimaa",
+     "eduskunta":"https://www.eduskunta.fi/FI/kansanedustajat/Sivut/911829.aspx",
+     "twitter":"","vaalikaudet":1,"nykyinen":True},
     {"tiedosto":"","nimi":"Riitta Kaarisalo","puolue":"SDP","kotikunta":"Jyväskylä","vaalipiiri":"Keski-Suomi",
      "koulutus":"yhteiskuntatieteiden maisteri","syntymavuosi":"1979","kuolinvuosi":None,
-     "kuva":"","wiki":"https://fi.wikipedia.org/wiki/Riitta_M%C3%A4kinen",
-     "eduskunta":"","twitter":"","vaalikaudet":3,"nykyinen":True},
+     "kuva":"https://www.eduskunta.fi/FI/kansanedustajat/PublishingImages/Kaarisalo-Riitta-web-911828.jpg",
+     "wiki":"https://fi.wikipedia.org/wiki/Riitta_Kaarisalo",
+     "eduskunta":"https://www.eduskunta.fi/FI/kansanedustajat/Sivut/911828.aspx",
+     "twitter":"","vaalikaudet":3,"nykyinen":True},
 ]
 
 def main():
