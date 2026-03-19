@@ -1187,6 +1187,10 @@ function renderModalSkeleton(m, vari) {
           <div class="detail-item"><div class="d-label">Koulutus</div><div class="d-value">${m.koulutus||"–"}</div></div>
           <div class="detail-item"><div class="d-label">Status</div><div class="d-value" style="color:${m.nykyinen?"#3ec63e":"#f5a623"}">${m.nykyinen?"● aktiivinen":"● päättynyt"}</div></div>
         </div>`, true)}
+      ${accordionItem("lobbaus","LOBBAUSMERKINNÄT",`
+        <div id="lobbaus-${m.nimi.replace(/\s+/g,'-')}" class="lobbaus-container">
+          <div class="spinner" style="margin:.5rem auto"></div>
+        </div>`)}
       ${accordionItem("linkit","LINKIT & YHTEYSTIEDOT",`
         <div style="display:flex;flex-direction:column;gap:.6rem">
           ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
@@ -1204,15 +1208,11 @@ function renderModalSkeleton(m, vari) {
         <div style="display:flex;flex-direction:column;gap:.6rem">
           ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
         </div>`)}
-      ${accordionItem("lobbaus","LOBBAUSMERKINNÄT",`
-        <div id="lobbaus-${m.nimi.replace(/\s+/g,'-')}" class="lobbaus-container">
-          <div class="spinner" style="margin:.5rem auto"></div>
-        </div>`)}
     </div>`;
 
   // Accordion-logiikka
   content.querySelectorAll(".accordion-header").forEach((h, idx) => {
-    const ids = ["perustiedot","linkit","toiminta","sidonnaisuudet","lobbaus"];
+    const ids = ["perustiedot","lobbaus","linkit","toiminta","sidonnaisuudet"];
     h.addEventListener("click", () => {
       const body = h.nextElementSibling;
       const isOpen = body.style.maxHeight && body.style.maxHeight !== "0px";
@@ -1356,10 +1356,37 @@ async function naytaLobbausTiedot(m, vari) {
       }).join("")}
       <div class="d-label" style="margin-top:.85rem;margin-bottom:.4rem">YHTEYDENPIDON TAVAT</div>
       <div style="display:flex;flex-wrap:wrap;gap:.3rem">
-        ${Object.entries(tiData.tavat).sort((a,b)=>b[1]-a[1]).map(([tapa,n]) => {
-          const lyhyt = tapa.replace("Sähköposti tai muu kirjeenvaihto","Sähköposti").replace("Muu yhteydenotto","Muu");
-          return '<span style="background:rgba(255,255,255,.05);border:1px solid '+vari+'55;border-radius:3px;padding:.18rem .45rem;font-size:.68rem;color:'+vari+'">'+lyhyt+' <strong style="color:#fff">'+n+'</strong></span>';
-        }).join("")}
+        ${(() => {
+          // Normalisoi tavat pääkategorioihin
+          const kategoriat = {
+            "Sähköposti": 0,
+            "Tapaaminen": 0,
+            "Puhelu": 0,
+            "Verkkovierailu": 0,
+            "Viesti/some": 0,
+            "Tapahtuma": 0,
+            "Muu": 0
+          };
+          Object.entries(tiData.tavat).forEach(([tapa, n]) => {
+            const t = tapa.toLowerCase();
+            if (t.includes("sähköposti") || t.includes("kirjeenvaihto")) kategoriat["Sähköposti"] += n;
+            if (t.includes("tapaaminen") || t.includes("vierailu")) kategoriat["Tapaaminen"] += n;
+            if (t.includes("puhelin") || t.includes("puhelinsoitto")) kategoriat["Puhelu"] += n;
+            if (t.includes("verkkotapaaminen") || t.includes("etä")) kategoriat["Verkkovierailu"] += n;
+            if (t.includes("tekstiviesti") || t.includes("pikaviesti") || t.includes("sosiaalisen median yksityisviesti") || t.includes("linkedin")) kategoriat["Viesti/some"] += n;
+            if (t.includes("tapahtuma") || t.includes("tilaisuus") || t.includes("osallistuminen") || t.includes("avajaiset") || t.includes("kiertotalouden") || t.includes("rakentamisen") || t.includes("julkaisu") || t.includes("kutsuvierastilaisuus")) kategoriat["Tapahtuma"] += n;
+          });
+          // Jos ei osunut mihinkään → Muu
+          const yhteensa_norm = Object.values(kategoriat).reduce((a,b)=>a+b,0);
+          const yhteensa_raw  = Object.values(tiData.tavat).reduce((a,b)=>a+b,0);
+          kategoriat["Muu"] += Math.max(0, yhteensa_raw - yhteensa_norm + kategoriat["Muu"]);
+          return Object.entries(kategoriat)
+            .filter(([,n]) => n > 0)
+            .sort((a,b) => b[1]-a[1])
+            .map(([kat, n]) =>
+              '<span style="background:rgba(255,255,255,.05);border:1px solid '+vari+'55;border-radius:3px;padding:.2rem .5rem;font-size:.72rem;color:'+vari+'">'+kat+' <strong style="color:#fff">'+n+'</strong></span>'
+            ).join("");
+        })()}
       </div>
       <div class="d-label" style="margin-top:.85rem;margin-bottom:.4rem">LOBBAUSAIHEET</div>
       ${tiData.top_aiheet.slice(0,4).map(x => {
