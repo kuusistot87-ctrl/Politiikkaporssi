@@ -614,6 +614,8 @@
     .puolue-dropdown .dp-btn:hover { border-color: #00d4ff; color: #00d4ff; }
     .puolue-dropdown .dp-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
     #btnNykyiset:hover, #btnNykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; color: #3ec63e !important; }
+    .hdr-lobbaus { border-color: #ff9500 !important; color: #ff9500 !important; }
+    .hdr-lobbaus:hover, .hdr-lobbaus.active { background: rgba(255,149,0,.1) !important; border-color: #ff9500 !important; color: #ff9500 !important; }
     #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; color: #f5a623 !important; }
 
     /* ── SIVUTUS ── */
@@ -705,6 +707,36 @@
       letter-spacing: .05em;
     }
 
+    /* ── LOBBAUS-NÄKYMÄ ── */
+    .lobbaus-panel {
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+    }
+    .lobbaus-panel-title {
+      font-family: 'Orbitron', monospace;
+      font-size: .62rem;
+      letter-spacing: .2em;
+      color: #5a7a99;
+      margin-bottom: .85rem;
+    }
+    .lb-bar-row { margin-bottom: .4rem; cursor: pointer; }
+    .lb-bar-row:hover .lb-bar-fill { opacity: 1; }
+    .lb-bar-label { display:flex; justify-content:space-between; font-size:.72rem; color:#8899aa; margin-bottom:.15rem; }
+    .lb-bar-label span:last-child { color: #00d4ff; font-family:'Orbitron',monospace; font-size:.65rem; }
+    .lb-bar-track { background:rgba(255,255,255,.04); border-radius:3px; height:7px; overflow:hidden; }
+    .lb-bar-fill  { height:100%; border-radius:3px; background:#00d4ff; opacity:.7; transition:width .5s ease,opacity .2s; }
+    .lb-kausi-btn {
+      background:transparent; border:1px solid #1a2a55; border-radius:3px;
+      color:#5a7a99; font-family:'Rajdhani',sans-serif; font-size:.72rem;
+      letter-spacing:.1em; padding:.25rem .6rem; cursor:pointer; transition:all .15s;
+    }
+    .lb-kausi-btn:hover  { border-color:#ff9500; color:#ff9500; }
+    .lb-kausi-btn.active { border-color:#ff9500; color:#ff9500; background:rgba(255,149,0,.08); }
+    .lb-donut-row { display:flex; align-items:center; gap:.6rem; margin-bottom:.35rem; }
+    .lb-donut-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
     /* ── ACCORDION ── */
     .accordion-item {
       border: 1px solid var(--border);
@@ -773,6 +805,7 @@
       </div>
       <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset</button>
       <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Historialliset</button>
+      <button class="hdr-btn hdr-lobbaus" id="btnLobbaus">Lobbaus ↗</button>
     </div>
   </div>
 </header>
@@ -813,6 +846,40 @@
 <!-- KORTTINÄKYMÄ -->
 <main id="grid" style="display:none"></main>
 <div id="pagination"></div>
+
+<!-- LOBBAUS-NÄKYMÄ -->
+<div id="lobbausNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+
+  <!-- Kausisuodatin -->
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap">
+    <span style="font-size:.72rem;letter-spacing:.15em;color:#5a7a99">KAUSI:</span>
+    <div id="lobbausKausiTabit" style="display:flex;gap:.35rem;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- Tilastot grid -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem" id="lobbausTilastot">
+    <div class="lobbaus-panel" style="grid-column:1/-1">
+      <div class="lobbaus-panel-title">KAUSIVERTAILU — KOKONAISYHTEYDENOTOT</div>
+      <div id="lobbausKausiChart" style="display:flex;align-items:flex-end;gap:12px;height:100px;padding:.5rem 0"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">TOP LOBATUT HENKILÖT</div>
+      <div id="lobbausTopKE"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">TOP LOBBARIORGANISAATIOT</div>
+      <div id="lobbausTopOrg"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">AIHEITTAIN</div>
+      <div id="lobbausAiheet"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">YHTEYDENPIDON TAVAT</div>
+      <div id="lobbausTavat" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL -->
 <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalName">
@@ -1333,6 +1400,7 @@ async function naytaLobbausTiedot(m, vari) {
       <div>
         <div class="d-label">Maininnat yhteensä</div>
         <div style="font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:${vari}">${yhteensa}</div>
+        ${tiData && tiData.nimikkeet ? '<div style="font-size:.68rem;color:#5a7a99;margin-top:.2rem">'+Object.entries(tiData.nimikkeet).sort((a,b)=>b[1]-a[1]).map(([nim,n])=>nim+' ('+n+')').join(', ')+'</div>' : ''}
       </div>
       <div>
         <div class="d-label">Sijoitus ${sijoitusKausi}</div>
@@ -1459,6 +1527,155 @@ function closeTTLProfile() {
 document.addEventListener("keydown", e => { if(e.key==="Escape") closeTTLProfile(); });
 document.getElementById("modalOverlay").addEventListener("click", e => {
   if(e.target===document.getElementById("modalOverlay")) closeTTLProfile();
+});
+
+/* ================================================================
+   LOBBAUS-NÄKYMÄ
+   ================================================================ */
+let LOBBAUS_YHT   = null;
+let AKTIIVINEN_KAUSI = "kaikki";
+const LOBBAUS_VARIT = ["#00d4ff","#ff9500","#3ec63e","#d00020","#8a25cc","#f5c400","#1a6fd8","#009b50"];
+
+async function lataaLobbausYhteenveto() {
+  if (LOBBAUS_YHT) return LOBBAUS_YHT;
+  try {
+    const res = await fetch("lobbaus_json/yhteenveto.json?v=" + Date.now());
+    if (res.ok) LOBBAUS_YHT = await res.json();
+  } catch(_) {}
+  return LOBBAUS_YHT;
+}
+
+async function naytaLobbausNakyma() {
+  const nakyma = document.getElementById("lobbausNakyma");
+  const grid   = document.getElementById("grid");
+  const pagin  = document.getElementById("pagination");
+  const splash = document.getElementById("splash");
+
+  // Piilota muut näkymät
+  if (splash)  splash.style.display   = "none";
+  if (grid)    grid.style.display     = "none";
+  if (pagin)   pagin.style.display    = "none";
+  document.getElementById("tulosrivi").style.display = "none";
+  nakyma.style.display = "block";
+
+  document.getElementById("btnLobbaus").classList.add("active");
+  document.getElementById("btnNykyiset").classList.remove("active");
+  document.getElementById("btnHistorialliset").classList.remove("active");
+
+  const yht = await lataaLobbausYhteenveto();
+  if (!yht) {
+    nakyma.innerHTML = '<div style="color:#e01010;padding:2rem">Lobbausdataa ei löydy. Aja muunna_toimintailmoitukset.py.</div>';
+    return;
+  }
+
+  // Rakenna kausisuodattimet
+  const kaudet = Object.entries(yht.kausi_data || {});
+  const tabEl  = document.getElementById("lobbausKausiTabit");
+  tabEl.innerHTML = "";
+  [["kaikki","Kaikki kaudet"], ...kaudet.map(([id,d]) => [id, d.label])].forEach(([id, label]) => {
+    const btn = document.createElement("button");
+    btn.className = "lb-kausi-btn" + (id === AKTIIVINEN_KAUSI ? " active" : "");
+    btn.textContent = label;
+    btn.addEventListener("click", () => {
+      AKTIIVINEN_KAUSI = id;
+      tabEl.querySelectorAll(".lb-kausi-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      paivitaLobbausData(yht);
+    });
+    tabEl.appendChild(btn);
+  });
+
+  paivitaLobbausData(yht);
+}
+
+function paivitaLobbausData(yht) {
+  // Kausivertailu
+  renderKausiChart(yht);
+  // Top KE
+  const topKE = AKTIIVINEN_KAUSI === "kaikki"
+    ? yht.top_ke
+    : Object.entries((yht.kausi_data[AKTIIVINEN_KAUSI]||{}).ke||{}).sort((a,b)=>b[1]-a[1]);
+  renderPalkit("lobbausTopKE", topKE.slice(0,15), "#00d4ff", (nimi) => {
+    // Klikkaa KE:tä → avaa haku
+    piilotaLobbausNakyma();
+    document.getElementById("searchInput").value = nimi;
+    naytaTulokset();
+    suodataJaRenderöi();
+  });
+
+  // Top Org
+  renderPalkit("lobbausTopOrg", yht.top_org.slice(0,15), "#ff9500");
+
+  // Aiheet
+  renderPalkit("lobbausAiheet", yht.top_aiheet.slice(0,12), "#3ec63e");
+
+  // Tavat
+  renderTavat(yht.tavat);
+}
+
+function renderKausiChart(yht) {
+  const el = document.getElementById("lobbausKausiChart");
+  if (!el || !yht.kausi_data) return;
+  const kaudet = Object.entries(yht.kausi_data);
+  const maxVal = Math.max(...kaudet.map(([,d]) => Object.values(d.ke||{}).reduce((a,b)=>a+b,0)));
+  const BAR_H  = 80;
+  el.innerHTML = kaudet.map(([id, d], i) => {
+    const tot = Object.values(d.ke||{}).reduce((a,b)=>a+b,0);
+    const px  = maxVal > 0 ? Math.max(6, Math.round(tot/maxVal*BAR_H)) : 6;
+    const aktv = AKTIIVINEN_KAUSI === id ? "border:1px solid #ff9500;" : "";
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer"
+              onclick="AKTIIVINEN_KAUSI='${id}';document.querySelectorAll('.lb-kausi-btn').forEach((b,j)=>b.classList.toggle('active',j===${i+1}));paivitaLobbausData(LOBBAUS_YHT)">
+      <div style="font-size:.58rem;color:#ff9500;margin-bottom:3px;font-family:'Orbitron',monospace">${tot}</div>
+      <div style="width:100%;height:${px}px;background:#ff9500;opacity:.75;border-radius:3px 3px 0 0;${aktv}"></div>
+      <div style="font-size:.58rem;color:#5a7a99;text-align:center;margin-top:4px">${d.label.replace(/^\d+\.\d+–/,"")}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderPalkit(elId, lista, vari, onClick) {
+  const el = document.getElementById(elId);
+  if (!el || !lista.length) return;
+  const maxN = lista[0][1];
+  el.innerHTML = lista.map(([label, n]) => {
+    const pct   = Math.round(n/maxN*100);
+    const lyhyt = label.length > 40 ? label.slice(0,38)+"…" : label;
+    const klik  = onClick ? `style="cursor:pointer" onclick="(${onClick.toString()})('${label.replace(/'/g,"\'")}')"`  : "";
+    return `<div class="lb-bar-row" ${klik}>
+      <div class="lb-bar-label"><span>${lyhyt}</span><span>${n}</span></div>
+      <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${pct}%;background:${vari}"></div></div>
+    </div>`;
+  }).join("");
+}
+
+function renderTavat(tavat) {
+  const el = document.getElementById("lobbausTavat");
+  if (!el || !tavat) return;
+  const lista  = Object.entries(tavat).sort((a,b)=>b[1]-a[1]);
+  const yhteensa = lista.reduce((s,[,n])=>s+n,0);
+  el.innerHTML = lista.map(([tapa,n],i) => {
+    const pct = Math.round(n/yhteensa*100);
+    return `<div class="lb-donut-row">
+      <div class="lb-donut-dot" style="background:${LOBBAUS_VARIT[i%LOBBAUS_VARIT.length]}"></div>
+      <div style="flex:1;font-size:.75rem;color:#8899aa">${tapa}</div>
+      <div style="font-size:.72rem;color:#fff;font-family:'Orbitron',monospace;min-width:40px;text-align:right">${pct}%</div>
+      <div style="width:60px;background:rgba(255,255,255,.05);border-radius:3px;height:6px;margin-left:.5rem">
+        <div style="width:${pct}%;height:100%;background:${LOBBAUS_VARIT[i%LOBBAUS_VARIT.length]};border-radius:3px"></div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function piilotaLobbausNakyma() {
+  document.getElementById("lobbausNakyma").style.display = "none";
+  document.getElementById("btnLobbaus").classList.remove("active");
+}
+
+document.getElementById("btnLobbaus").addEventListener("click", () => {
+  if (document.getElementById("lobbausNakyma").style.display !== "none") {
+    piilotaLobbausNakyma();
+  } else {
+    naytaLobbausNakyma();
+  }
 });
 
 lataaHakemisto();
