@@ -462,8 +462,6 @@
     /* ── HEADER SEARCH ── */
     .header-search {
       position: relative;
-      margin: 1.5rem auto 0;
-      width: min(520px, 88%);
     }
     .header-search input {
       width: 100%;
@@ -492,6 +490,48 @@
       font-size: 1.3rem;
       pointer-events: none;
     }
+
+    /* ── HEADER SEARCH ROW ── */
+    .header-search-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 1.5rem auto 0;
+      width: min(820px, 92%);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .header-search {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    .header-filters {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .hdr-btn {
+      background: rgba(11,17,40,.85);
+      border: 1px solid #1a2a55;
+      border-radius: 5px;
+      color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .hdr-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+    .hdr-btn.active { background: rgba(0,212,255,.08); border-color: #00d4ff; color: #00d4ff; }
+    .hdr-nykyiset { border-color: #1e4d2a !important; color: #3ec63e !important; }
+    .hdr-nykyiset:hover, .hdr-nykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; }
+    .hdr-historialliset { border-color: #4d3a1a !important; color: #f5a623 !important; }
+    .hdr-historialliset:hover, .hdr-historialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; }
 
     /* ── SPLASH ── */
     #splash {
@@ -635,9 +675,19 @@
   <h1>Politiikkapörssi</h1>
   <div class="header-sub">KANSANEDUSTAJIEN TIETOKANTA // BETA v0.1</div>
   <span class="scanline"></span>
-  <div class="header-search">
-    <input id="searchInput" type="text" placeholder="Hae kansanedustajaa…" autocomplete="off" spellcheck="false"/>
-    <span class="search-icon">⌕</span>
+  <div class="header-search-row">
+    <div class="header-search">
+      <input id="searchInput" type="text" placeholder="Hae kansanedustajaa…" autocomplete="off" spellcheck="false"/>
+      <span class="search-icon">⌕</span>
+    </div>
+    <div class="header-filters">
+      <div class="puolue-dropdown-wrap">
+        <button class="hdr-btn" id="btnPuolue">Puolue ▾</button>
+        <div class="puolue-dropdown" id="puolueDropdown"></div>
+      </div>
+      <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset</button>
+      <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Historialliset</button>
+    </div>
   </div>
 </header>
 
@@ -668,19 +718,10 @@
   </div>
 </div>
 
-<!-- TOOLBAR (piilotettu, ilmestyy haun jälkeen) -->
-<div class="toolbar" id="toolbar" style="display:none">
-  <button class="filter-btn active" id="btnKaikki">Kaikki</button>
-
-  <div class="puolue-dropdown-wrap">
-    <button class="filter-btn" id="btnPuolue">Puolue ▾</button>
-    <div class="puolue-dropdown" id="puolueDropdown"></div>
-  </div>
-
-  <button class="filter-btn" id="btnNykyiset" style="border-color:#3ec63e;color:#3ec63e">Nykyiset</button>
-  <button class="filter-btn" id="btnHistorialliset" style="border-color:#f5a623;color:#f5a623">Historialliset</button>
-
-  <span class="count-badge" id="countBadge"></span>
+<!-- TULOSRIVI -->
+<div id="tulosrivi" style="display:none;padding:.5rem 2rem;font-size:.78rem;letter-spacing:.12em;color:#5a7a99;">
+  <span id="countBadge"></span>
+  <button id="btnTyhjenna" onclick="tyhjennaHaku()" style="margin-left:1rem;background:none;border:1px solid #1a2a55;border-radius:3px;color:#5a7a99;font-family:'Rajdhani',sans-serif;font-size:.72rem;letter-spacing:.1em;padding:.2rem .5rem;cursor:pointer;">✕ TYHJENNÄ</button>
 </div>
 
 <!-- KORTTINÄKYMÄ -->
@@ -750,12 +791,12 @@ function rakennaPuoluePainikkeet() {
       dropdown.querySelectorAll(".dp-btn").forEach(b => b.classList.remove("active"));
       if (!isActive) {
         btn.classList.add("active");
-        setPuolue(p, btn);
+        setPuolue(p);
         document.getElementById("btnPuolue").textContent = p + " ▾";
         document.getElementById("btnPuolue").style.borderColor = "#00d4ff";
         document.getElementById("btnPuolue").style.color = "#00d4ff";
       } else {
-        setPuolue("", null);
+        setPuolue("");
         document.getElementById("btnPuolue").textContent = "Puolue ▾";
         document.getElementById("btnPuolue").style.borderColor = "";
         document.getElementById("btnPuolue").style.color = "";
@@ -799,64 +840,65 @@ function suodataJaRenderöi() {
 
 document.getElementById("searchInput").addEventListener("input", function() {
   const q = this.value.trim();
-  const splash   = document.getElementById("splash");
-  const toolbar  = document.getElementById("toolbar");
-  const grid     = document.getElementById("grid");
-
-  if (q.length > 0) {
-    // Piilota splash, näytä toolbar + grid
-    if (splash)  splash.style.display = "none";
-    if (toolbar) toolbar.style.display = "flex";
-    if (grid)    grid.style.display = "grid";
-  } else if (!aktiivisuusPuolue && !aikasuodatin) {
-    // Tyhjä haku ja ei suodattimia — näytä splash
-    if (splash)  splash.style.display = "flex";
-    if (toolbar) toolbar.style.display = "none";
-    if (grid)    grid.style.display = "none";
-    document.getElementById("countBadge").textContent = "";
-    return;
+  if (q.length > 0 || aktiivisuusPuolue || aikasuodatin) {
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+    naytaSplash();
   }
-  suodataJaRenderöi();
 });
 
-function setPuolue(p, btn) {
+function naytaTulokset() {
+  document.getElementById("splash").style.display    = "none";
+  document.getElementById("grid").style.display      = "grid";
+  document.getElementById("tulosrivi").style.display = "flex";
+  document.getElementById("tulosrivi").style.alignItems = "center";
+}
+
+function naytaSplash() {
+  document.getElementById("splash").style.display    = "flex";
+  document.getElementById("grid").style.display      = "none";
+  document.getElementById("tulosrivi").style.display = "none";
+  document.getElementById("countBadge").textContent  = "";
+  aktiivisuusPuolue = "";
+  aikasuodatin = "";
+  document.getElementById("btnNykyiset").classList.remove("active");
+  document.getElementById("btnHistorialliset").classList.remove("active");
+  document.getElementById("btnPuolue").textContent = "Puolue ▾";
+  document.getElementById("btnPuolue").classList.remove("active");
+  document.getElementById("puolueDropdown").querySelectorAll(".dp-btn").forEach(b=>b.classList.remove("active"));
+}
+
+function tyhjennaHaku() {
+  document.getElementById("searchInput").value = "";
+  naytaSplash();
+}
+
+function setPuolue(p) {
   aktiivisuusPuolue = p;
-  // Kaikki-nappi aktiiviseksi jos ei puoluetta valittu
-  document.getElementById("btnKaikki").classList.toggle("active", !p);
-  suodataJaRenderöi();
+  if (p || aikasuodatin || document.getElementById("searchInput").value.trim()) {
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+    naytaSplash();
+  }
 }
 
 function setAika(tila) {
   aikasuodatin = (aikasuodatin === tila) ? "" : tila;
   document.getElementById("btnNykyiset").classList.toggle("active", aikasuodatin === "nykyiset");
   document.getElementById("btnHistorialliset").classList.toggle("active", aikasuodatin === "hist");
-  // Näytä grid ja toolbar kun suodatin aktivoitu
-  if (aikasuodatin) {
-    document.getElementById("splash").style.display  = "none";
-    document.getElementById("toolbar").style.display = "flex";
-    document.getElementById("grid").style.display    = "grid";
-  } else if (!aktiivisuusPuolue && !document.getElementById("searchInput").value.trim()) {
-    document.getElementById("splash").style.display  = "flex";
-    document.getElementById("toolbar").style.display = "none";
-    document.getElementById("grid").style.display    = "none";
-    document.getElementById("countBadge").textContent = "";
-    return;
+  if (aikasuodatin || aktiivisuusPuolue || document.getElementById("searchInput").value.trim()) {
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+    naytaSplash();
   }
-  suodataJaRenderöi();
 }
 
 document.getElementById("btnNykyiset").addEventListener("click", () => setAika("nykyiset"));
 document.getElementById("btnHistorialliset").addEventListener("click", () => setAika("hist"));
-document.getElementById("btnKaikki").addEventListener("click", function() {
-  aktiivisuusPuolue = "";
-  this.classList.add("active");
-  // Nollaa dropdown
-  document.getElementById("puolueDropdown").querySelectorAll(".dp-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("btnPuolue").textContent = "Puolue ▾";
-  document.getElementById("btnPuolue").style.borderColor = "";
-  document.getElementById("btnPuolue").style.color = "";
-  suodataJaRenderöi();
-});
+
 
 /* ── Renderöi kortit ── */
 function renderEdustajat(lista) {
