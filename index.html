@@ -34,6 +34,7 @@
 
     html { scroll-behavior: auto; }
 
+
     body {
       background: var(--bg-deep);
       color: var(--text-primary);
@@ -614,12 +615,25 @@
     }
     .puolue-dropdown .dp-btn:hover { border-color: #00d4ff; color: #00d4ff; }
     .puolue-dropdown .dp-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
-    #btnNykyiset:hover, #btnNykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; color: #3ec63e !important; }
+    #btnNykyiset {
+      border-color: #3ec63e !important;
+      color: #3ec63e !important;
+      animation: neon-pulse 1.8s ease-in-out infinite;
+    }
+    #btnNykyiset:hover, #btnNykyiset.active {
+      background: rgba(62,198,62,.1) !important;
+      animation: none;
+    }
+    @keyframes neon-pulse {
+      0%, 100% { box-shadow: 0 0 4px #3ec63e88, 0 0 10px #3ec63e44; }
+      50%       { box-shadow: 0 0 10px #3ec63ecc, 0 0 22px #3ec63e66; }
+    }
     .hdr-hallitus { border-color: #00d4ff !important; color: #00d4ff !important; }
     .hdr-hallitus:hover, .hdr-hallitus.active { background: rgba(0,212,255,.1) !important; border-color: #00d4ff !important; color: #00d4ff !important; }
     .hdr-lobbaus { border-color: #ff9500 !important; color: #ff9500 !important; }
     .hdr-lobbaus:hover, .hdr-lobbaus.active { background: rgba(255,149,0,.1) !important; border-color: #ff9500 !important; color: #ff9500 !important; }
-    #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; color: #f5a623 !important; }
+    .hdr-historialliset { border-color: #a855f7 !important; color: #a855f7 !important; }
+    #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(168,85,247,.1) !important; border-color: #a855f7 !important; color: #a855f7 !important; }
 
     /* ── SIVUTUS ── */
     #pagination {
@@ -844,9 +858,9 @@
         <div class="puolue-dropdown" id="puolueDropdown"></div>
       </div>
       <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset</button>
-      <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Historialliset</button>
       <button class="hdr-btn hdr-hallitus" id="btnHallitus">Hallitus</button>
-      <button class="hdr-btn hdr-lobbaus" id="btnLobbaus">Lobbaus ↗</button>
+      <button class="hdr-btn hdr-lobbaus" id="btnLobbaus">Lobbaus</button>
+      <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Edustajahistoria</button>
     </div>
   </div>
 </header>
@@ -1126,6 +1140,7 @@ function setAika(tila) {
   document.getElementById("btnNykyiset").classList.toggle("active", aikasuodatin === "nykyiset");
   document.getElementById("btnHistorialliset").classList.toggle("active", aikasuodatin === "hist");
   piilotaHallitusNakyma();
+
   if (aikasuodatin || aktiivisuusPuolue || document.getElementById("searchInput").value.trim()) {
     naytaTulokset();
     suodataJaRenderöi();
