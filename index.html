@@ -1460,8 +1460,17 @@ async function naytaLobbausTiedot(m, vari) {
   }
 
   const yhteensa      = tiData ? tiData.yhteensa : (keData ? keData.yhteensa : 0);
-  const sijoitus      = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : (tiData && tiData.sijoitus_viimeisin) ? tiData.sijoitus_viimeisin : "–";
-  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : (tiData && tiData.sijoitus_kausi) ? tiData.sijoitus_kausi : "";
+  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : "";
+
+  // Laske sijoitus dynaamisesti kansanedustajat-datasta jos keData puuttuu
+  let sijoitus = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : "–";
+  if (sijoitus === "–" && idx.toimintailmoitukset && yhteensa > 0) {
+    const kaikki = Object.entries(idx.toimintailmoitukset)
+      .map(([nimi, d]) => ({ nimi, n: d.yhteensa || 0 }))
+      .sort((a, b) => b.n - a.n);
+    const sij = kaikki.findIndex(x => x.nimi === m.nimi) + 1;
+    if (sij > 0) sijoitus = sij;
+  }
 
   // Rakenna UI pala kerrallaan — ei yhtä isoa innerHTML
   el.innerHTML = "";
@@ -1738,8 +1747,17 @@ async function renderLobbausKortti(m, el) {
   }
 
   const yhteensa      = tiData ? tiData.yhteensa : (keData ? keData.yhteensa : 0);
-  const sijoitus      = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : (tiData && tiData.sijoitus_viimeisin) ? tiData.sijoitus_viimeisin : "–";
-  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : (tiData && tiData.sijoitus_kausi) ? tiData.sijoitus_kausi : "";
+  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : "";
+
+  // Laske sijoitus dynaamisesti kansanedustajat-datasta jos keData puuttuu
+  let sijoitus = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : "–";
+  if (sijoitus === "–" && idx.toimintailmoitukset && yhteensa > 0) {
+    const kaikki = Object.entries(idx.toimintailmoitukset)
+      .map(([nimi, d]) => ({ nimi, n: d.yhteensa || 0 }))
+      .sort((a, b) => b.n - a.n);
+    const sij = kaikki.findIndex(x => x.nimi === m.nimi) + 1;
+    if (sij > 0) sijoitus = sij;
+  }
 
   el.innerHTML = "";
 
