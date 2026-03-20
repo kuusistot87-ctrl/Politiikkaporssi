@@ -32,7 +32,7 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
 
     body {
       background: var(--bg-deep);
@@ -42,6 +42,9 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+    /* Modal auki — poista raskas taustakuvio */
+    body.modal-open::before { display: none; }
 
     /* ── Taustakuvio ── */
     body::before {
@@ -54,6 +57,8 @@
       background-size: 48px 48px;
       pointer-events: none;
       z-index: 0;
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     /* ── HEADER ── */
@@ -256,15 +261,14 @@
     #modalOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.78);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,.82);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .25s;
+      transition: opacity .2s;
     }
     #modalOverlay.open {
       opacity: 1;
@@ -274,21 +278,15 @@
     /* ── MODAL BOX ── */
     #modalBox {
       position: relative;
-      will-change: transform;
-      contain: layout style paint;
-      transform: translateZ(0);
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: 8px;
       width: min(620px, 96vw);
       max-height: 90vh;
-      overflow-y: auto;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
       box-shadow: 0 4px 24px rgba(0,0,0,.8);
-      transform: translateY(20px) scale(.97);
-      transition: transform .28s;
-    }
-    #modalOverlay.open #modalBox {
-      transform: translateY(0) scale(1);
     }
 
     .modal-topbar {
@@ -1222,7 +1220,7 @@ function renderSivu(sivu) {
 
   const prev = document.createElement("button");
   prev.className = "page-btn"; prev.textContent = "‹"; prev.disabled = sivu === 1;
-  prev.addEventListener("click", () => { renderSivu(sivu-1); window.scrollTo({top:0,behavior:"smooth"}); });
+  prev.addEventListener("click", () => { renderSivu(sivu-1); window.scrollTo({top:0,behavior:"auto"}); });
   pagin.appendChild(prev);
 
   // Sivunumerot älykkäällä ellipsillä
@@ -1240,14 +1238,14 @@ function renderSivu(sivu) {
       const btn = document.createElement("button");
       btn.className = "page-btn" + (s === sivu ? " active" : "");
       btn.textContent = s;
-      btn.addEventListener("click", () => { renderSivu(s); window.scrollTo({top:0,behavior:"smooth"}); });
+      btn.addEventListener("click", () => { renderSivu(s); window.scrollTo({top:0,behavior:"auto"}); });
       pagin.appendChild(btn);
     }
   });
 
   const next = document.createElement("button");
   next.className = "page-btn"; next.textContent = "›"; next.disabled = sivu === sivuja;
-  next.addEventListener("click", () => { renderSivu(sivu+1); window.scrollTo({top:0,behavior:"smooth"}); });
+  next.addEventListener("click", () => { renderSivu(sivu+1); window.scrollTo({top:0,behavior:"auto"}); });
   pagin.appendChild(next);
 }
 
@@ -1274,7 +1272,7 @@ function openTTLProfile(m) {
   overlay.style.setProperty("--modal-party-color", vari);
   document.documentElement.style.setProperty("--modal-party-color", vari);
   overlay.classList.add("open");
-  document.body.style.overflow = "clip";
+  document.body.style.overflow = "hidden";
   // Renderöi sisältö seuraavassa frame:ssa — ei blokoi animaatiota
   requestAnimationFrame(() => {
     requestAnimationFrame(() => renderModalSkeleton(m, vari));
@@ -1813,6 +1811,7 @@ async function renderLobbausKortti(m, el) {
 function closeTTLProfile() {
   document.getElementById("modalOverlay").classList.remove("open");
   document.body.style.overflow = "";
+  document.body.classList.remove("modal-open");
   // Nollaa ladattu-flagit jotta uudelleenavauksessa data latautuu
   document.querySelectorAll("[data-ladattu]").forEach(el => delete el.dataset.ladattu);
 }
