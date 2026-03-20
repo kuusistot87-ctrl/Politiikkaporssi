@@ -1103,15 +1103,14 @@ const puolueVari = p => PUOLUEVARIT[p] || "#00d4ff";
 // Muuntaa kuva-URL:n oikeaan muotoon lähteestä riippuen
 function kuvaUrl(url, leveys) {
   if (!url) return "";
-  const w = leveys || 120;
-  // Wikimedia Commons: Special:FilePath → Special:Redirect/file
+  // eduskunta.fi-kuvat toimivat suoraan
+  if (url.includes("eduskunta.fi")) return url;
+  // Wikimedia Commons: Special:FilePath → Special:Redirect/file (CORS-yhteensopiva)
   if (url.includes("Special:FilePath")) {
     const tiedosto = url.replace(/^.*Special:FilePath\//, "");
-    return "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/" + tiedosto + "&width=" + w;
+    return "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/" + tiedosto + "&width=" + (leveys || 120);
   }
-  // eduskunta.fi ja muut: images.weserv.nl proxy lisää CORS-headerit
-  const puhdas = url.replace(/^https?:\/\//, "");
-  return "https://images.weserv.nl/?url=" + encodeURIComponent(puhdas) + "&w=" + w + "&output=jpg&il";
+  return url;
 }
 
 let KAIKKI = [];
@@ -1299,7 +1298,7 @@ function luoKortti(m) {
   const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
                : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
   const kuvaHtml = m.kuva
-    ? `<img src="${kuvaUrl(m.kuva, 88)}" alt="${m.nimi}"
+    ? `<img src="${kuvaUrl(m.kuva, 88)}" alt="${m.nimi}" loading="lazy"
          onerror="this.style.display='none'"
          style="position:absolute;top:.7rem;right:.7rem;width:44px;height:54px;
                 object-fit:cover;border-radius:3px;
@@ -2271,7 +2270,7 @@ async function naytaHallitusNakyma() {
 
     const imgEl = document.createElement(kuva ? "img" : "div");
     if (kuva) {
-      imgEl.src = kuvaUrl(kuva, 120); imgEl.alt = ministeri.nimi;
+      imgEl.src = kuva; imgEl.alt = ministeri.nimi;
       imgEl.onerror = function(){ this.style.display="none"; };
       imgEl.style.cssText = "width:60px;height:74px;object-fit:cover;border-radius:4px;border:1px solid "+vari+"44;flex-shrink:0";
     } else {
