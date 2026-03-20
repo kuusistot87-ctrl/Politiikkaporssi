@@ -1112,14 +1112,14 @@ const puolueVari = p => PUOLUEVARIT[p] || "#00d4ff";
 // Muuntaa kuva-URL:n oikeaan muotoon lähteestä riippuen
 function kuvaUrl(url, leveys) {
   if (!url) return "";
-  // eduskunta.fi-kuvat toimivat suoraan
-  if (url.includes("eduskunta.fi")) return url;
-  // Wikimedia Commons: Special:FilePath → Special:Redirect/file (CORS-yhteensopiva)
+  const w = leveys || 120;
+  // Wikimedia Commons: Special:FilePath → Special:Redirect/file
   if (url.includes("Special:FilePath")) {
     const tiedosto = url.replace(/^.*Special:FilePath\//, "");
-    return "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/" + tiedosto + "&width=" + (leveys || 120);
+    return "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/" + tiedosto + "&width=" + w;
   }
-  return url;
+  // Kaikki muut kuvat (ml. eduskunta.fi) wsrv.nl-proxyn kautta — lisää CORS-headerit
+  return "https://wsrv.nl/?url=" + encodeURIComponent(url) + "&w=" + w + "&output=jpg";
 }
 
 let KAIKKI = [];
