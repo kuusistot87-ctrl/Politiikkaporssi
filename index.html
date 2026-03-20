@@ -857,7 +857,7 @@
         <button class="hdr-btn" id="btnPuolue">Puolue ▾</button>
         <div class="puolue-dropdown" id="puolueDropdown"></div>
       </div>
-      <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset</button>
+      <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset edustajat</button>
       <button class="hdr-btn hdr-hallitus" id="btnHallitus">Hallitus</button>
       <button class="hdr-btn hdr-lobbaus" id="btnLobbaus">Lobbaus</button>
       <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Edustajahistoria</button>
@@ -1517,7 +1517,7 @@ async function naytaLobbausTiedot(m, vari) {
             tiData.top_lobbarit.slice(0,5).map(([org,n]) => {
               const pct   = Math.round(n/maxN*100);
               const lyhyt = org.length > 38 ? org.slice(0,36)+"…" : org;
-              return `<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>${lyhyt}</span><span style="color:${vari}">${n}</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:${pct}%;background:${vari}"></div></div></div>`;
+              return '<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>'+lyhyt+'</span><span style="color:'+vari+'">'+n+'</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div></div>';
             }).join("");
           el.appendChild(lobDiv);
         }
@@ -1757,8 +1757,20 @@ async function renderLobbausKortti(m, el) {
         <div class="d-label">Sijoitus ${sijoitusKausi}</div>
         <div style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:700;color:${vari}">${sijoitus !== "–" ? "#"+sijoitus : "–"}</div>
       </div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid #1a2a5588;border-radius:4px;
+      padding:.55rem .75rem;margin-top:.75rem;font-size:.72rem;color:#5a7a99;line-height:1.5">
+      ⓘ <strong style="color:#8899aa">Maininnat yhteensä</strong> = kaikki roolit (toimintailmoitukset).
+      <strong style="color:#8899aa">Kausittain</strong> = vain kansanedustajana (avoimuusrekisterin raportit).
+      Luvut voivat poiketa.
     </div>`;
   el.appendChild(header);
+
+  // Selityslaatikko
+  const selitys = document.createElement("div");
+  selitys.style.cssText = "background:rgba(255,255,255,.03);border:1px solid #1a2a5588;border-radius:4px;padding:.55rem .75rem;margin-bottom:1rem;font-size:.72rem;color:#5a7a99;line-height:1.5";
+  selitys.innerHTML = "ⓘ <strong style='color:#8899aa'>Maininnat yhteensä</strong> = kaikki roolit (toimintailmoitukset). <strong style='color:#8899aa'>Kausittain</strong> = kansanedustajana (avoimuusrekisterin raportit). Luvut voivat poiketa.";
+  el.appendChild(selitys);
 
   // Aikasarjapalkit
   if (keData && keData.kaudet && keData.kaudet.length) {
@@ -1773,10 +1785,10 @@ async function renderLobbausKortti(m, el) {
       const px = maxM > 0 ? Math.max(4, Math.round(k.maara/maxM*70)) : 4;
       const col = document.createElement("div");
       col.style.cssText = "flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end";
-      col.innerHTML = `
-        <div style="font-size:.6rem;color:${vari};margin-bottom:3px;font-family:'Orbitron',monospace">${k.maara}</div>
-        <div style="width:100%;height:${px}px;background:${vari};border-radius:3px 3px 0 0;opacity:.8"></div>
-        <div style="font-size:.6rem;color:#5a7a99;text-align:center;margin-top:4px">${k.kausi_label}</div>`;
+      col.innerHTML =
+        '<div style="font-size:.6rem;color:'+vari+';margin-bottom:3px;font-family:Orbitron,monospace">'+k.maara+'</div>'+
+        '<div style="width:100%;height:'+px+'px;background:'+vari+';border-radius:3px 3px 0 0;opacity:.8"></div>'+
+        '<div style="font-size:.6rem;color:#5a7a99;text-align:center;margin-top:4px">'+k.kausi_label+'</div>';
       barRow.appendChild(col);
     });
     aikaDiv.appendChild(barRow);
@@ -1793,7 +1805,7 @@ async function renderLobbausKortti(m, el) {
         tiData.top_lobbarit.slice(0,8).map(([org,n]) => {
           const pct = Math.round(n/maxN*100);
           const lyhyt = org.length > 45 ? org.slice(0,43)+"…" : org;
-          return `<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>${lyhyt}</span><span style="color:${vari}">${n}</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:${pct}%;background:${vari}"></div></div></div>`;
+          return '<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>'+lyhyt+'</span><span style="color:'+vari+'">'+n+'</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div></div>';
         }).join("");
       el.appendChild(lobDiv);
     }
@@ -1805,7 +1817,7 @@ async function renderLobbausKortti(m, el) {
       tavDiv.style.marginBottom = "1.25rem";
       tavDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">YHTEYDENPIDON TAVAT</div><div style="display:flex;flex-wrap:wrap;gap:.35rem">' +
         Object.entries(tavat).sort((a,b)=>b[1]-a[1]).map(([tapa,n]) =>
-          `<span style="background:rgba(255,255,255,.05);border:1px solid ${vari}55;border-radius:3px;padding:.25rem .6rem;font-size:.75rem;color:${vari}">${tapa} <strong style="color:#fff">${n}</strong></span>`
+          '<span style="background:rgba(255,255,255,.05);border:1px solid '+vari+'55;border-radius:3px;padding:.25rem .6rem;font-size:.75rem;color:'+vari+'">'+tapa+' <strong style="color:#fff">'+n+'</strong></span>'
         ).join("") + "</div>";
       el.appendChild(tavDiv);
     }
@@ -1816,7 +1828,7 @@ async function renderLobbausKortti(m, el) {
       aihDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">LOBBAUSAIHEET</div>' +
         tiData.top_aiheet.slice(0,5).map(([aihe,n]) => {
           const lyhyt = aihe.length > 90 ? aihe.slice(0,88)+"…" : aihe;
-          return `<div style="font-size:.78rem;color:#8899aa;padding:.3rem 0;border-bottom:1px solid #1a2a5566;line-height:1.5">${lyhyt}<span style="color:${vari};margin-left:.5rem;font-size:.7rem">${n}x</span></div>`;
+          return '<div style="font-size:.78rem;color:#8899aa;padding:.3rem 0;border-bottom:1px solid #1a2a5566;line-height:1.5">'+lyhyt+'<span style="color:'+vari+';margin-left:.5rem;font-size:.7rem">'+n+'x</span></div>';
         }).join("");
       el.appendChild(aihDiv);
     }
@@ -1950,12 +1962,12 @@ function renderKausiChart(yht) {
     const tot = Object.values(d.ke||{}).reduce((a,b)=>a+b,0);
     const px  = maxVal > 0 ? Math.max(6, Math.round(tot/maxVal*BAR_H)) : 6;
     const aktv = AKTIIVINEN_KAUSI === id ? "border:1px solid #ff9500;" : "";
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer"
-              onclick="AKTIIVINEN_KAUSI='${id}';document.querySelectorAll('.lb-kausi-btn').forEach((b,j)=>b.classList.toggle('active',j===${i+1}));paivitaLobbausData(LOBBAUS_YHT)">
-      <div style="font-size:.58rem;color:#ff9500;margin-bottom:3px;font-family:'Orbitron',monospace">${tot}</div>
-      <div style="width:100%;height:${px}px;background:#ff9500;opacity:.75;border-radius:3px 3px 0 0;${aktv}"></div>
-      <div style="font-size:.58rem;color:#5a7a99;text-align:center;margin-top:4px">${d.label}</div>
-    </div>`;
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer"'+
+      ' onclick="AKTIIVINEN_KAUSI=\''+id+'\';document.querySelectorAll(\'.lb-kausi-btn\').forEach((b,j)=>b.classList.toggle(\'active\',j==='+(i+1)+'));paivitaLobbausData(LOBBAUS_YHT)">'
+      +'<div style="font-size:.58rem;color:#ff9500;margin-bottom:3px;font-family:Orbitron,monospace">'+tot+'</div>'
+      +'<div style="width:100%;height:'+px+'px;background:#ff9500;opacity:.75;border-radius:3px 3px 0 0;'+aktv+'"></div>'
+      +'<div style="font-size:.58rem;color:#5a7a99;text-align:center;margin-top:4px">'+d.label+'</div>'
+      +'</div>';
   }).join("");
 }
 
@@ -1986,24 +1998,24 @@ function _renderPalkitSivu(elId) {
   const rivit = lista.slice(alku, loppu).map(([label, n]) => {
     const pct   = Math.round(n/maxN*100);
     const lyhyt = label.length > 40 ? label.slice(0,38)+"…" : label;
-    return `<div class="lb-bar-row" style="${onClick?'cursor:pointer':''}" data-nimi="${label.replace(/"/g,'&quot;')}">
-      <div class="lb-bar-label"><span>${lyhyt}</span><span>${n}</span></div>
-      <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${pct}%;background:${vari}"></div></div>
-    </div>`;
+    return '<div class="lb-bar-row" style="'+(onClick?'cursor:pointer':'')+'" data-nimi="'+label.replace(/"/g,'&quot;')+'">'
+      +'<div class="lb-bar-label"><span>'+lyhyt+'</span><span>'+n+'</span></div>'
+      +'<div class="lb-bar-track"><div class="lb-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div>'
+      +'</div>';
   }).join("");
 
   let pagin = "";
   if (sivuja > 1) {
     const btns = Array.from({length: sivuja}, (_,i) =>
-      `<button onclick="PALKIT_SIVUT['${elId}']=${i};_renderPalkitSivu('${elId}')"
-        style="background:${i===sivu?'rgba(0,212,255,.08)':'transparent'};
-               border:1px solid ${i===sivu?vari:'#1a2a55'};border-radius:3px;
-               color:${i===sivu?vari:'#5a7a99'};font-family:'Rajdhani',sans-serif;
-               font-size:.68rem;padding:.2rem .5rem;cursor:pointer;margin:.1rem">${i+1}</button>`
+      '<button onclick="PALKIT_SIVUT[\''+elId+'\']='+(i)+';_renderPalkitSivu(\''+elId+'\');"'
+        +' style="background:'+(i===sivu?'rgba(0,212,255,.08)':'transparent')+';'
+        +'border:1px solid '+(i===sivu?vari:'#1a2a55')+';border-radius:3px;'
+        +'color:'+(i===sivu?vari:'#5a7a99')+';font-family:Rajdhani,sans-serif;'
+        +'font-size:.68rem;padding:.2rem .5rem;cursor:pointer;margin:.1rem">'+(i+1)+'</button>'
     ).join("");
-    pagin = `<div style="display:flex;align-items:center;gap:.25rem;margin-top:.5rem;flex-wrap:wrap">
-      <span style="font-size:.65rem;color:#5a7a99;margin-right:.25rem">${alku+1}–${loppu} / ${lista.length}</span>
-      ${btns}</div>`;
+    pagin = '<div style="display:flex;align-items:center;gap:.25rem;margin-top:.5rem;flex-wrap:wrap">'
+    +'<span style="font-size:.65rem;color:#5a7a99;margin-right:.25rem">'+(alku+1)+'–'+loppu+' / '+lista.length+'</span>'
+    +btns+'</div>';
   }
 
   el.innerHTML = rivit + pagin;
@@ -2022,14 +2034,14 @@ function renderTavat(tavat) {
   const yhteensa = lista.reduce((s,[,n])=>s+n,0);
   el.innerHTML = lista.map(([tapa,n],i) => {
     const pct = Math.round(n/yhteensa*100);
-    return `<div class="lb-donut-row">
-      <div class="lb-donut-dot" style="background:${LOBBAUS_VARIT[i%LOBBAUS_VARIT.length]}"></div>
-      <div style="flex:1;font-size:.75rem;color:#8899aa">${tapa}</div>
-      <div style="font-size:.72rem;color:#fff;font-family:'Orbitron',monospace;min-width:80px;text-align:right">${n.toLocaleString()} <span style="color:#5a7a99">(${pct}%)</span></div>
-      <div style="width:60px;background:rgba(255,255,255,.05);border-radius:3px;height:6px;margin-left:.5rem">
-        <div style="width:${pct}%;height:100%;background:${LOBBAUS_VARIT[i%LOBBAUS_VARIT.length]};border-radius:3px"></div>
-      </div>
-    </div>`;
+    const c = LOBBAUS_VARIT[i%LOBBAUS_VARIT.length];
+    return '<div class="lb-donut-row">'
+      +'<div class="lb-donut-dot" style="background:'+c+'"></div>'
+      +'<div style="flex:1;font-size:.75rem;color:#8899aa">'+tapa+'</div>'
+      +'<div style="font-size:.72rem;color:#fff;font-family:Orbitron,monospace;min-width:80px;text-align:right">'+n.toLocaleString()+' <span style="color:#5a7a99">('+pct+'%)</span></div>'
+      +'<div style="width:60px;background:rgba(255,255,255,.05);border-radius:3px;height:6px;margin-left:.5rem">'
+      +'<div style="width:'+pct+'%;height:100%;background:'+c+';border-radius:3px"></div>'
+      +'</div></div>';
   }).join("");
 }
 
@@ -2104,33 +2116,31 @@ async function naytaHallitusNakyma() {
     card.style.setProperty("--party-color", vari);
     card.style.cursor = edustaja ? "pointer" : "default";
 
-    const kuvaHtml = kuva
-      ? `<img src="${kuva}" alt="${ministeri.nimi}"
-             onerror="this.style.display='none'"
-             style="width:60px;height:74px;object-fit:cover;border-radius:4px;
-                    border:1px solid ${vari}44;flex-shrink:0">`
-      : `<div style="width:60px;height:74px;background:#0a0f1e;border-radius:4px;
-                     border:1px solid #1a2a55;flex-shrink:0;display:flex;align-items:center;
-                     justify-content:center;color:#1a2a55;font-size:1.5rem">?</div>`;
+    const imgEl = document.createElement(kuva ? "img" : "div");
+    if (kuva) {
+      imgEl.src = kuva; imgEl.alt = ministeri.nimi;
+      imgEl.onerror = function(){ this.style.display="none"; };
+      imgEl.style.cssText = "width:60px;height:74px;object-fit:cover;border-radius:4px;border:1px solid "+vari+"44;flex-shrink:0";
+    } else {
+      imgEl.style.cssText = "width:60px;height:74px;background:#0a0f1e;border-radius:4px;border:1px solid #1a2a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#1a2a55;font-size:1.5rem";
+      imgEl.textContent = "?";
+    }
+    const kuvaHtml = imgEl.outerHTML;
 
     const lobbausHtml = yhteensa > 0
-      ? `<div style="margin-top:.5rem;font-size:.7rem;color:${vari};font-family:'Orbitron',monospace">
-           ↗ ${yhteensa} lobbausmerkintää
-         </div>`
+      ? '<div style="margin-top:.5rem;font-size:.7rem;color:'+vari+';font-family:Orbitron,monospace">↗ '+yhteensa+' lobbausmerkintää</div>'
       : "";
 
-    card.innerHTML = `
-      <div style="height:3px;background:${vari};border-radius:3px 3px 0 0;margin:-1rem -1rem .75rem"></div>
-      <div style="display:flex;gap:.85rem;align-items:flex-start">
-        ${kuvaHtml}
-        <div style="flex:1;min-width:0">
-          <div style="font-size:.65rem;letter-spacing:.12em;color:${vari};margin-bottom:.2rem">${ministeri.puolue}</div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;
-                      color:#e8f4ff;line-height:1.2;margin-bottom:.3rem">${ministeri.nimi}</div>
-          <div style="font-size:.75rem;color:#5a7a99;line-height:1.4">${ministeri.salkku}</div>
-          ${lobbausHtml}
-        </div>
-      </div>`;
+    card.innerHTML =
+      '<div style="height:3px;background:'+vari+';border-radius:3px 3px 0 0;margin:-1rem -1rem .75rem"></div>'
+      +'<div style="display:flex;gap:.85rem;align-items:flex-start">'
+      +kuvaHtml
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:.65rem;letter-spacing:.12em;color:'+vari+';margin-bottom:.2rem">'+ministeri.puolue+'</div>'
+      +'<div style="font-family:Rajdhani,sans-serif;font-size:1.05rem;font-weight:700;color:#e8f4ff;line-height:1.2;margin-bottom:.3rem">'+ministeri.nimi+'</div>'
+      +'<div style="font-size:.75rem;color:#5a7a99;line-height:1.4">'+ministeri.salkku+'</div>'
+      +lobbausHtml
+      +'</div></div>';
 
     if (edustaja) {
       card.addEventListener("click", () => openTTLProfile(edustaja));
