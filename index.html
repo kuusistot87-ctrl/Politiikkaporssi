@@ -709,6 +709,25 @@
       letter-spacing: .05em;
     }
 
+    /* ── XML-OSIOT ── */
+    .xml-osio { min-height: 40px; }
+    .xml-rivi {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: .35rem 0; border-bottom: 1px solid #1a2a5566;
+      font-size: .78rem; gap: .75rem; line-height: 1.4;
+    }
+    .xml-rivi:last-child { border-bottom: none; }
+    .xml-rivi-nimi  { color: #c8d8e8; flex: 1; }
+    .xml-rivi-aika  { color: #5a7a99; font-size: .7rem; white-space: nowrap; flex-shrink: 0; }
+    .xml-rivi-rooli { color: #00d4ff; font-size: .7rem; }
+    .xml-ryhmaotsikko {
+      font-family: 'Orbitron', monospace; font-size: .6rem;
+      letter-spacing: .15em; color: #5a7a99;
+      margin: .75rem 0 .3rem; padding-top: .5rem;
+      border-top: 1px solid #1a2a55;
+    }
+    .xml-ryhmaotsikko:first-child { margin-top: 0; border-top: none; }
+
     /* ── HALLITUS-KORTIT ── */
     .hallitus-card {
       background: #080d1f;
@@ -1298,11 +1317,15 @@ function renderModalSkeleton(m, vari) {
         <div style="display:flex;flex-direction:column;gap:.6rem">
           ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
         </div>`)}
+      ${accordionItem("tyoura","TYÖ- JA URAHISTORIA",`<div id="xml-tyoura-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("valiokunnat","VALIOKUNTAJÄSENYYDET",`<div id="xml-valiokunnat-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("ministeriydet","HALLITUSJÄSENYYDET",`<div id="xml-ministeriydet-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("sidonnaisuudet2","SIDONNAISUUDET & TULOT",`<div id="xml-sidonnaisuudet-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
     </div>`;
 
   // Accordion-logiikka
   content.querySelectorAll(".accordion-header").forEach((h, idx) => {
-    const ids = ["perustiedot","lobbaus","linkit","toiminta","sidonnaisuudet"];
+    const ids = ["perustiedot","lobbaus","linkit","toiminta","sidonnaisuudet","tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
     h.addEventListener("click", () => {
       const body = h.nextElementSibling;
       const isOpen = body.style.maxHeight && body.style.maxHeight !== "0px";
@@ -1526,6 +1549,103 @@ async function lataaOrgData(m, keData, vari, orgElId) {
 /* ── Kutsutaan kun accordionin lobbaus-osio avataan ── */
 function onAccordionOpen(id, m, vari) {
   if (id === "lobbaus") naytaLobbausTiedot(m, vari);
+  const xmlOsiot = ["tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
+  if (xmlOsiot.includes(id)) lataaXmlOsio(id, m, vari);
+}
+
+const XML_CACHE = {};
+
+async function lataaXmlOsio(osio, m, vari) {
+  const slug = m.nimi.replace(/\s+/g,"-");
+  const elId = `xml-${osio === "sidonnaisuudet2" ? "sidonnaisuudet" : osio}-${slug}`;
+  const el   = document.getElementById(elId);
+  if (!el || el.dataset.ladattu) return;
+
+  // Hae personId eduskunta-linkistä
+  const pidM = (m.eduskunta||"").match(/\/(\d+)\.aspx/);
+  if (!pidM) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei dataa saatavilla</span>'; return; }
+  const pid = pidM[1];
+
+  // Käytä välimuistia
+  if (!XML_CACHE[pid]) {
+    try {
+      const res = await fetch(`edustajat_json/${pid}_xml.json?v=1`);
+      if (!res.ok) throw new Error("404");
+      XML_CACHE[pid] = await res.json();
+    } catch(_) {
+      el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei dataa saatavilla</span>';
+      el.dataset.ladattu = "1";
+      return;
+    }
+  }
+
+  const d = XML_CACHE[pid];
+  el.dataset.ladattu = "1";
+
+  let html2 = "";
+
+  if (osio === "tyoura") {
+    const tyot = d.tyoura || [];
+    if (!tyot.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei tietoja</span>'; return; }
+    html2 = tyot.map(t =>
+      `<div class="xml-rivi"><span class="xml-rivi-nimi">${t.nimi}</span><span class="xml-rivi-aika">${t.aika||""}</span></div>`
+    ).join("");
+
+  } else if (osio === "valiokunnat") {
+    const vk = d.valiokunnat || [];
+    if (!vk.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei valiokuntajäsenyyksiä</span>'; return; }
+    // Ryhmittele valiokunnan mukaan
+    const grouped = {};
+    vk.forEach(v => {
+      if (!grouped[v.nimi]) grouped[v.nimi] = [];
+      grouped[v.nimi].push(v);
+    });
+    html2 = Object.entries(grouped).map(([nimi, jasenydet]) => {
+      const rivit = jasenydet.map(j => {
+        const aika = [j.alku, j.loppu].filter(Boolean).join("–");
+        return `<div style="font-size:.72rem;color:#8899aa;padding:.15rem 0">${j.rooli||""} ${aika ? "("+aika+")" : ""}</div>`;
+      }).join("");
+      return `<div class="xml-rivi" style="flex-direction:column;align-items:flex-start">
+        <span class="xml-rivi-nimi" style="color:${vari}">${nimi}</span>${rivit}</div>`;
+    }).join("");
+
+  } else if (osio === "ministeriydet") {
+    const min = d.ministeriydet || [];
+    if (!min.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei hallitusjäsenyyksiä</span>'; return; }
+    html2 = min.map(j => {
+      const aika = [j.alku, j.loppu||"nykyinen"].filter(Boolean).join("–");
+      return `<div class="xml-rivi">
+        <div style="flex:1">
+          <div class="xml-rivi-nimi">${j.nimi}</div>
+          <div style="font-size:.7rem;color:#5a7a99">Hallitus: ${j.hallitus||"?"}</div>
+        </div>
+        <span class="xml-rivi-aika">${aika}</span>
+      </div>`;
+    }).join("");
+
+  } else if (osio === "sidonnaisuudet2") {
+    const sid = d.sidonnaisuudet || {};
+    const lahjat = d.lahjat || [];
+    const tulot  = d.tulot  || [];
+    if (!Object.keys(sid).length && !lahjat.length && !tulot.length) {
+      el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei ilmoitettavia sidonnaisuuksia</span>'; return;
+    }
+    html2 = Object.entries(sid).map(([ryhma, lista]) =>
+      `<div class="xml-ryhmaotsikko">${ryhma}</div>` +
+      lista.map(s => `<div class="xml-rivi"><span class="xml-rivi-nimi">${s}</span></div>`).join("")
+    ).join("");
+    if (tulot.length) {
+      html2 += `<div class="xml-ryhmaotsikko">TULOT</div>` +
+        tulot.map(t => `<div class="xml-rivi"><span class="xml-rivi-nimi">${t.sidonta}</span></div>`).join("");
+    }
+    if (lahjat.length) {
+      html2 += `<div class="xml-ryhmaotsikko">LAHJAILMOITUKSET</div>` +
+        lahjat.map(l => `<div class="xml-rivi"><span class="xml-rivi-nimi">${l}</span></div>`).join("");
+    }
+  }
+
+  el.innerHTML = html2;
+  setTimeout(() => paivitaAccordionKorkeus(el), 50);
 }
 
 /* ── Modal sulje ── */
