@@ -614,6 +614,8 @@
     .puolue-dropdown .dp-btn:hover { border-color: #00d4ff; color: #00d4ff; }
     .puolue-dropdown .dp-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
     #btnNykyiset:hover, #btnNykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; color: #3ec63e !important; }
+    .hdr-hallitus { border-color: #00d4ff !important; color: #00d4ff !important; }
+    .hdr-hallitus:hover, .hdr-hallitus.active { background: rgba(0,212,255,.1) !important; border-color: #00d4ff !important; color: #00d4ff !important; }
     .hdr-lobbaus { border-color: #ff9500 !important; color: #ff9500 !important; }
     .hdr-lobbaus:hover, .hdr-lobbaus.active { background: rgba(255,149,0,.1) !important; border-color: #ff9500 !important; color: #ff9500 !important; }
     #btnHistorialliset:hover, #btnHistorialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; color: #f5a623 !important; }
@@ -705,6 +707,20 @@
       font-size: .6rem; color: #5a7a99;
       text-align: center; margin-top: .25rem;
       letter-spacing: .05em;
+    }
+
+    /* ── HALLITUS-KORTIT ── */
+    .hallitus-card {
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: 1rem;
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .hallitus-card:hover {
+      border-color: var(--party-color, #00d4ff);
+      box-shadow: 0 0 12px rgba(0,212,255,.08);
     }
 
     /* ── LOBBAUS-NÄKYMÄ ── */
@@ -806,6 +822,7 @@
       </div>
       <button class="hdr-btn hdr-nykyiset" id="btnNykyiset">Nykyiset</button>
       <button class="hdr-btn hdr-historialliset" id="btnHistorialliset">Historialliset</button>
+      <button class="hdr-btn hdr-hallitus" id="btnHallitus">Hallitus</button>
       <button class="hdr-btn hdr-lobbaus" id="btnLobbaus">Lobbaus ↗</button>
     </div>
   </div>
@@ -847,6 +864,13 @@
 <!-- KORTTINÄKYMÄ -->
 <main id="grid" style="display:none"></main>
 <div id="pagination"></div>
+
+<!-- HALLITUS-NÄKYMÄ -->
+<div id="hallitusNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+  <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;
+              color:#5a7a99;margin-bottom:1.25rem">ORPON HALLITUS 2023–</div>
+  <div id="hallitusGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
+</div>
 
 <!-- LOBBAUS-NÄKYMÄ -->
 <div id="lobbausNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
@@ -1063,6 +1087,7 @@ function setAika(tila) {
   aikasuodatin = (aikasuodatin === tila) ? "" : tila;
   document.getElementById("btnNykyiset").classList.toggle("active", aikasuodatin === "nykyiset");
   document.getElementById("btnHistorialliset").classList.toggle("active", aikasuodatin === "hist");
+  piilotaHallitusNakyma();
   if (aikasuodatin || aktiivisuusPuolue || document.getElementById("searchInput").value.trim()) {
     naytaTulokset();
     suodataJaRenderöi();
@@ -1687,6 +1712,123 @@ document.getElementById("btnLobbaus").addEventListener("click", () => {
     piilotaLobbausNakyma();
   } else {
     naytaLobbausNakyma();
+  }
+});
+
+
+/* ================================================================
+   HALLITUSNÄKYMÄ — Orpon hallitus 2023–
+   ================================================================ */
+const HALLITUS = [
+  {nimi:"Petteri Orpo",        salkku:"Pääministeri",                              puolue:"KOK"},
+  {nimi:"Riikka Purra",        salkku:"Valtiovarainministeri",                     puolue:"PS"},
+  {nimi:"Elina Valtonen",      salkku:"Ulkoministeri",                             puolue:"KOK"},
+  {nimi:"Antti Häkkänen",      salkku:"Oikeusministeri",                           puolue:"KOK"},
+  {nimi:"Mari Rantanen",       salkku:"Sisäministeri",                             puolue:"PS"},
+  {nimi:"Antti Kaikkonen",     salkku:"Puolustusministeri",                        puolue:"KESK"},
+  {nimi:"Sari Essayah",        salkku:"Sosiaali- ja terveysministeri",             puolue:"KD"},
+  {nimi:"Anders Adlercreutz",  salkku:"Opetusministeri",                           puolue:"RKP"},
+  {nimi:"Sari Multala",        salkku:"Tiede- ja kulttuuriministeri",              puolue:"KOK"},
+  {nimi:"Vilhelm Junnila",     salkku:"Elinkeinoministeri (ent.)",                 puolue:"PS"},
+  {nimi:"Wille Rydman",        salkku:"Elinkeinoministeri",                        puolue:"PS"},
+  {nimi:"Anna-Kaisa Ikonen",   salkku:"Kuntaministeri",                            puolue:"KOK"},
+  {nimi:"Kai Mykkänen",        salkku:"Ympäristö- ja ilmastoministeri",            puolue:"KOK"},
+  {nimi:"Jari Koskela",        salkku:"Maa- ja metsätalousministeri",              puolue:"PS"},
+  {nimi:"Lulu Ranne",          salkku:"Sosiaali- ja terveysministeri (varamini.)", puolue:"PS"},
+  {nimi:"Joakim Strand",       salkku:"Eurooppa- ja omistajaohjausministeri",      puolue:"RKP"},
+  {nimi:"Janne Jukkola",       salkku:"Liikenne- ja viestintäministeri",           puolue:"PS"},
+  {nimi:"Arto Satonen",        salkku:"Työministeri",                              puolue:"KOK"},
+  {nimi:"Sakari Puisto",       salkku:"Ulkomaankauppa- ja kehitysministeri",       puolue:"PS"},
+  {nimi:"Ville Kaunisto",      salkku:"Asuntoministeri",                           puolue:"KOK"},
+];
+
+async function naytaHallitusNakyma() {
+  const nakyma  = document.getElementById("hallitusNakyma");
+  const grid    = document.getElementById("grid");
+  const pagin   = document.getElementById("pagination");
+  const splash  = document.getElementById("splash");
+  const lobbaus = document.getElementById("lobbausNakyma");
+
+  if (splash)  splash.style.display  = "none";
+  if (grid)    grid.style.display    = "none";
+  if (pagin)   pagin.style.display   = "none";
+  if (lobbaus) lobbaus.style.display = "none";
+  document.getElementById("tulosrivi").style.display = "none";
+  nakyma.style.display = "block";
+
+  document.getElementById("btnHallitus").classList.add("active");
+  document.getElementById("btnNykyiset").classList.remove("active");
+  document.getElementById("btnHistorialliset").classList.remove("active");
+  document.getElementById("btnLobbaus").classList.remove("active");
+
+  // Hae lobbaustiedot
+  const idx = await lataaLobbausIndex();
+
+  const container = document.getElementById("hallitusGrid");
+  container.innerHTML = "";
+
+  for (const ministeri of HALLITUS) {
+    const vari = puolueVari(ministeri.puolue);
+
+    // Etsi edustaja hakemistosta kuvan ja lobbauksen saamiseksi
+    const edustaja = KAIKKI ? KAIKKI.find(e => e.nimi === ministeri.nimi) : null;
+    const kuva     = edustaja ? edustaja.kuva : "";
+
+    // Lobbaustiedot
+    const tiData = idx && idx.toimintailmoitukset ? idx.toimintailmoitukset[ministeri.nimi] : null;
+    const yhteensa = tiData ? tiData.yhteensa : 0;
+
+    const card = document.createElement("div");
+    card.className = "hallitus-card";
+    card.style.setProperty("--party-color", vari);
+    card.style.cursor = edustaja ? "pointer" : "default";
+
+    const kuvaHtml = kuva
+      ? `<img src="${kuva}" alt="${ministeri.nimi}"
+             onerror="this.style.display='none'"
+             style="width:60px;height:74px;object-fit:cover;border-radius:4px;
+                    border:1px solid ${vari}44;flex-shrink:0">`
+      : `<div style="width:60px;height:74px;background:#0a0f1e;border-radius:4px;
+                     border:1px solid #1a2a55;flex-shrink:0;display:flex;align-items:center;
+                     justify-content:center;color:#1a2a55;font-size:1.5rem">?</div>`;
+
+    const lobbausHtml = yhteensa > 0
+      ? `<div style="margin-top:.5rem;font-size:.7rem;color:${vari};font-family:'Orbitron',monospace">
+           ↗ ${yhteensa} lobbausmerkintää
+         </div>`
+      : "";
+
+    card.innerHTML = `
+      <div style="height:3px;background:${vari};border-radius:3px 3px 0 0;margin:-1rem -1rem .75rem"></div>
+      <div style="display:flex;gap:.85rem;align-items:flex-start">
+        ${kuvaHtml}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.65rem;letter-spacing:.12em;color:${vari};margin-bottom:.2rem">${ministeri.puolue}</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;
+                      color:#e8f4ff;line-height:1.2;margin-bottom:.3rem">${ministeri.nimi}</div>
+          <div style="font-size:.75rem;color:#5a7a99;line-height:1.4">${ministeri.salkku}</div>
+          ${lobbausHtml}
+        </div>
+      </div>`;
+
+    if (edustaja) {
+      card.addEventListener("click", () => openTTLProfile(edustaja));
+    }
+    container.appendChild(card);
+  }
+}
+
+function piilotaHallitusNakyma() {
+  document.getElementById("hallitusNakyma").style.display = "none";
+  document.getElementById("btnHallitus").classList.remove("active");
+}
+
+document.getElementById("btnHallitus").addEventListener("click", () => {
+  if (document.getElementById("hallitusNakyma").style.display !== "none") {
+    piilotaHallitusNakyma();
+    naytaSplash();
+  } else {
+    naytaHallitusNakyma();
   }
 });
 
