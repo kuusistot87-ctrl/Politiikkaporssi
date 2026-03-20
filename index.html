@@ -1299,11 +1299,15 @@ function renderModalSkeleton(m, vari) {
           <div class="detail-item" style="grid-column:1/-1"><div class="d-label">Vaalikaudet</div><div class="d-value" style="font-size:.85rem">${m.vaalikaudet_lista || (m.vaalikaudet ? m.vaalikaudet+" kautta" : "–")}</div></div>
           <div class="detail-item"><div class="d-label">Koulutus</div><div class="d-value">${m.koulutus||"–"}</div></div>
           <div class="detail-item"><div class="d-label">Status</div><div class="d-value" style="color:${m.nykyinen?"#3ec63e":"#f5a623"}">${m.nykyinen?"● aktiivinen":"● päättynyt"}</div></div>
-        </div>`, true)}
-      ${accordionItem("lobbaus","LOBBAUSMERKINNÄT",`
-        <div id="lobbaus-${m.nimi.replace(/\s+/g,'-')}" class="lobbaus-container">
-          <span style="color:#5a7a99;font-size:.8rem">Klikkaa avataksesi →</span>
-        </div>`)}
+        </div>
+        ${(() => {
+          const ti = (LOBBAUS_INDEX && LOBBAUS_INDEX.toimintailmoitukset) ? LOBBAUS_INDEX.toimintailmoitukset[m.nimi] : null;
+          const ke = (LOBBAUS_INDEX && LOBBAUS_INDEX.kansanedustajat) ? LOBBAUS_INDEX.kansanedustajat[m.nimi] : null;
+          const yht = ti ? ti.yhteensa : (ke ? ke.yhteensa : 0);
+          if (!yht) return "";
+          return '<div style="margin-top:.75rem;padding:.6rem .75rem;background:rgba(0,212,255,.05);border:1px solid #00d4ff33;border-radius:4px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:.75rem;color:#5a7a99">Lobbausmerkinnät</span><span style="font-family:Orbitron,monospace;font-size:1rem;color:#00d4ff;font-weight:700">'+yht+'</span></div>';
+        })()}`, true)}
+
       ${accordionItem("linkit","LINKIT & YHTEYSTIEDOT",`
         <div style="display:flex;flex-direction:column;gap:.6rem">
           ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
@@ -1329,7 +1333,7 @@ function renderModalSkeleton(m, vari) {
 
   // Accordion-logiikka
   content.querySelectorAll(".accordion-header").forEach((h, idx) => {
-    const ids = ["perustiedot","lobbaus","linkit","toiminta","sidonnaisuudet","tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
+    const ids = ["perustiedot","linkit","toiminta","sidonnaisuudet","tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
     h.addEventListener("click", () => {
       const body = h.nextElementSibling;
       const isOpen = body.style.maxHeight && body.style.maxHeight !== "0px";
