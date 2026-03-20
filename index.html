@@ -1944,19 +1944,60 @@ function renderKausiChart(yht) {
   }).join("");
 }
 
-function renderPalkit(elId, lista, vari, onClick) {
+const PALKIT_DATA = {};
+const PALKIT_SIVUT = {};
+
+function renderPalkit(elId, lista, vari, onClick, sivulla=10) {
+  if (!lista || !lista.length) {
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = '<div style="color:#5a7a99;font-size:.78rem">Ei dataa</div>';
+    return;
+  }
+  PALKIT_DATA[elId]  = {lista, vari, onClick, sivulla};
+  PALKIT_SIVUT[elId] = 0;
+  _renderPalkitSivu(elId);
+}
+
+function _renderPalkitSivu(elId) {
   const el = document.getElementById(elId);
-  if (!el || !lista.length) return;
-  const maxN = lista[0][1];
-  el.innerHTML = lista.map(([label, n]) => {
+  if (!el || !PALKIT_DATA[elId]) return;
+  const {lista, vari, onClick, sivulla} = PALKIT_DATA[elId];
+  const sivu  = PALKIT_SIVUT[elId] || 0;
+  const alku  = sivu * sivulla;
+  const loppu = Math.min(alku + sivulla, lista.length);
+  const maxN  = lista[0][1];
+  const sivuja = Math.ceil(lista.length / sivulla);
+
+  const rivit = lista.slice(alku, loppu).map(([label, n]) => {
     const pct   = Math.round(n/maxN*100);
-    const lyhyt = label;
-    const klik  = onClick ? `style="cursor:pointer" onclick="(${onClick.toString()})('${label.replace(/'/g,"\'")}')"`  : "";
-    return `<div class="lb-bar-row" ${klik}>
+    const lyhyt = label.length > 40 ? label.slice(0,38)+"…" : label;
+    return `<div class="lb-bar-row" style="${onClick?'cursor:pointer':''}" data-nimi="${label.replace(/"/g,'&quot;')}">
       <div class="lb-bar-label"><span>${lyhyt}</span><span>${n}</span></div>
       <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${pct}%;background:${vari}"></div></div>
     </div>`;
   }).join("");
+
+  let pagin = "";
+  if (sivuja > 1) {
+    const btns = Array.from({length: sivuja}, (_,i) =>
+      `<button onclick="PALKIT_SIVUT['${elId}']=${i};_renderPalkitSivu('${elId}')"
+        style="background:${i===sivu?'rgba(0,212,255,.08)':'transparent'};
+               border:1px solid ${i===sivu?vari:'#1a2a55'};border-radius:3px;
+               color:${i===sivu?vari:'#5a7a99'};font-family:'Rajdhani',sans-serif;
+               font-size:.68rem;padding:.2rem .5rem;cursor:pointer;margin:.1rem">${i+1}</button>`
+    ).join("");
+    pagin = `<div style="display:flex;align-items:center;gap:.25rem;margin-top:.5rem;flex-wrap:wrap">
+      <span style="font-size:.65rem;color:#5a7a99;margin-right:.25rem">${alku+1}–${loppu} / ${lista.length}</span>
+      ${btns}</div>`;
+  }
+
+  el.innerHTML = rivit + pagin;
+
+  if (onClick) {
+    el.querySelectorAll(".lb-bar-row[data-nimi]").forEach(row => {
+      row.addEventListener("click", () => onClick(row.dataset.nimi));
+    });
+  }
 }
 
 function renderTavat(tavat) {
