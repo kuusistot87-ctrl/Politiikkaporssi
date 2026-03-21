@@ -1,0 +1,2971 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>POLITIIKKAPÖRSSI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-deep:     #03050f;
+      --bg-panel:    #080d1f;
+      --bg-card:     #0b1128;
+      --border:      #1a2a55;
+      --glow-cyan:   #00f5ff;
+      --glow-pink:   #ff007a;
+      --glow-green:  #39ff14;
+      --text-primary:#e8f4ff;
+      --text-muted:  #5a7a99;
+      --accent:      #00d4ff;
+
+      /* Puoluevärit */
+      --kok:   #003580;
+      --ps:    #ffd700;
+      --sdp:   #cc0000;
+      --kesk:  #007a3d;
+      --vihr:  #39c639;
+      --vas:   #c8001e;
+      --rkp:   #ffd700;
+      --kd:    #003c8f;
+      --liik:  #6a0dad;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: auto; }
+
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Modal auki — poista raskas taustakuvio */
+    body.modal-open::before { display: none; }
+
+    /* ── Taustakuvio ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 3rem 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,212,255,.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-eyebrow {
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem;
+      letter-spacing: .35em;
+      color: var(--glow-cyan);
+      text-transform: uppercase;
+      margin-bottom: .75rem;
+      opacity: .8;
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 10%, var(--glow-cyan) 55%, var(--glow-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 24px rgba(0,212,255,.4));
+      line-height: 1.05;
+    }
+
+    .header-sub {
+      margin-top: .9rem;
+      font-size: .95rem;
+      letter-spacing: .15em;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Scanline dekoratiivinen viiva otsikossa */
+    .scanline {
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glow-cyan), var(--glow-pink), transparent);
+      margin: 1.4rem auto 0;
+      width: 60%;
+      opacity: .6;
+      animation: pulse-line 3s ease-in-out infinite;
+    }
+    @keyframes pulse-line {
+      0%,100% { opacity:.3; } 50% { opacity:.9; }
+    }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .75rem;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,13,31,.7);
+      /* backdrop-filter: blur(6px); */ /* Poistettu - liian raskas */
+    }
+
+    .toolbar label {
+      font-size: .8rem;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .1em;
+      padding: .4rem .85rem;
+      cursor: pointer;
+      transition: all .2s;
+      text-transform: uppercase;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 8px rgba(0,212,255,.2);
+    }
+
+    .count-badge {
+      margin-left: auto;
+      font-size: .78rem;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+    }
+
+    /* ── GRID ── */
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform .25s, border-color .25s;
+      animation: fadeIn .4s ease both;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform: translateY(14px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: none;
+      border-color: var(--party-color, var(--accent));
+    }
+
+    /* Yläpalkki puoluevärillä */
+    .card-topbar {
+      height: 4px;
+      background: var(--party-color, var(--accent));
+      box-shadow: 0 0 12px var(--party-color, var(--accent));
+    }
+
+    .card-body { padding: 1.1rem 1.2rem 1.2rem; }
+
+    .card-party-tag {
+      display: inline-block;
+      font-size: .65rem;
+      letter-spacing: .18em;
+      padding: .2rem .6rem;
+      border-radius: 2px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--party-color, var(--border));
+      color: var(--party-color, var(--text-muted));
+      text-transform: uppercase;
+      margin-bottom: .6rem;
+    }
+
+    .card-name {
+      font-family: 'Orbitron', monospace;
+      font-size: .88rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: .45rem;
+    }
+
+    .card-meta {
+      font-size: .78rem;
+      color: var(--text-muted);
+      letter-spacing: .05em;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: .9rem;
+      right: 1rem;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--party-color, var(--accent));
+      opacity: 0;
+      transition: opacity .2s, transform .2s;
+    }
+    .card:hover .card-arrow { opacity:1; transform: translateX(4px); }
+
+    /* ── MODAL OVERLAY ── */
+    #modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    #modalOverlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── MODAL BOX ── */
+    #modalBox {
+      position: relative;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: min(620px, 96vw);
+      max-height: 90vh;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      box-shadow: 0 4px 24px rgba(0,0,0,.8);
+    }
+
+    .modal-topbar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink));
+    }
+
+    #modalContent {
+      padding: 2rem 2rem 2.5rem;
+    }
+
+    .modal-label {
+      font-size: .7rem;
+      letter-spacing: .22em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+    .modal-party-tag {
+      display: inline-block;
+      font-size: .72rem;
+      letter-spacing: .16em;
+      padding: .25rem .7rem;
+      border-radius: 3px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--modal-party-color, var(--border));
+      color: var(--modal-party-color, var(--text-muted));
+      text-transform: uppercase;
+      margin-bottom: .9rem;
+    }
+    .modal-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      letter-spacing: .04em;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--modal-party-color, var(--accent)), transparent);
+      margin: 1.25rem 0;
+      opacity: .5;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.5rem;
+    }
+
+    .detail-item {}
+    .detail-item .d-label {
+      font-size: .7rem;
+      letter-spacing: .18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+    .detail-item .d-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: .04em;
+    }
+
+    .puheenvuorot-bar {
+      margin-top: 1.5rem;
+    }
+    .puheenvuorot-bar .d-label {
+      font-size: .7rem;
+      letter-spacing: .18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+    }
+    .bar-track {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--modal-party-color, var(--accent)), var(--glow-cyan));
+      box-shadow: 0 0 8px var(--modal-party-color, var(--accent));
+      border-radius: 4px;
+      transition: width .7s cubic-bezier(.4,0,.2,1);
+      width: 0%;
+    }
+    .bar-count {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--modal-party-color, var(--accent));
+      margin-top: .4rem;
+    }
+
+    /* Loading / error */
+    .modal-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: .9rem;
+      letter-spacing: .1em;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--glow-cyan);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Sulje-nappi */
+    #closeBtn {
+      position: absolute;
+      top: .85rem;
+      right: 1rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem;
+      letter-spacing: .15em;
+      padding: .3rem .65rem;
+      transition: all .2s;
+    }
+    #closeBtn:hover {
+      border-color: var(--glow-pink);
+      color: var(--glow-pink);
+      box-shadow: 0 0 8px rgba(255,0,122,.3);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 5rem 1rem;
+      color: var(--text-muted);
+    }
+    .empty-state span {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      display: block;
+      margin-bottom: .5rem;
+      opacity: .3;
+    }
+
+    /* ── HEADER SEARCH ── */
+    .header-search {
+      position: relative;
+      overflow: visible;
+    }
+    .header-search input {
+      width: 100%;
+      background: rgba(11,17,40,.9);
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      color: #e8f4ff;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: .06em;
+      padding: .75rem 1.25rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .header-search input:focus {
+      border-color: #00d4ff;
+      box-shadow: 0 0 20px rgba(0,212,255,.2);
+    }
+    .header-search input::placeholder { color: #2a4a66; }
+    .search-icon-left {
+      position: absolute;
+      right: .85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: .35;
+      color: #5a7a99;
+    }
+
+    /* ── HEADER SEARCH ROW ── */
+    .header-search-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin: 1.5rem auto 0;
+      width: min(820px, 92%);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .header-search {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    /* Puolue-nappi hakukentän vieressä */
+    .header-filters {
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+    .hdr-btn {
+      background: rgba(11,17,40,.85);
+      border: 1px solid #1a2a55;
+      border-radius: 5px;
+      color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .hdr-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+    .hdr-btn.active { background: rgba(0,212,255,.08); border-color: #00d4ff; color: #00d4ff; }
+
+    /* ── ISO NAVIGAATIORIVI ── */
+    .nav-btn-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: min(900px, 92%);
+      margin: 1.5rem auto 0;
+    }
+
+    .nav-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      flex: 1;
+      min-width: 140px;
+      max-width: 200px;
+      padding: 1.2rem .75rem 1.1rem;
+      background: rgba(8,13,31,.9);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      overflow: hidden;
+      border: none;
+    }
+
+    /* Yläviiva värin mukaan */
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--nb-color);
+      box-shadow: 0 0 12px var(--nb-color);
+      transition: height .2s;
+    }
+
+    /* Taustahohtokuvio hover */
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--nb-glow), transparent 70%);
+      opacity: 0;
+      transition: opacity .25s;
+      pointer-events: none;
+    }
+    .nav-btn:hover::after, .nav-btn.active::after { opacity: 1; }
+
+    .nav-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px var(--nb-shadow);
+      border-color: var(--nb-color);
+    }
+    .nav-btn.active {
+      background: var(--nb-bg);
+      box-shadow: 0 0 24px var(--nb-shadow);
+    }
+    .nav-btn.active::before { height: 4px; }
+
+    .nav-btn-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+      filter: drop-shadow(0 0 6px var(--nb-color));
+      transition: transform .2s;
+    }
+    .nav-btn:hover .nav-btn-icon { transform: scale(1.15); }
+
+    .nav-btn-label {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--nb-color);
+      letter-spacing: .14em;
+    }
+    .nav-btn-sub {
+      font-size: .62rem;
+      color: #3a5a77;
+      letter-spacing: .08em;
+      font-weight: 400;
+      transition: color .2s;
+    }
+    .nav-btn:hover .nav-btn-sub, .nav-btn.active .nav-btn-sub { color: #6a9abb; }
+
+    /* Värit per nappi */
+    #btnNykyiset  { --nb-color:#3ec63e; --nb-glow:rgba(62,198,62,.12); --nb-shadow:rgba(62,198,62,.25); --nb-bg:rgba(62,198,62,.07); border:1px solid #1e4d2a; }
+    #btnHallitus  { --nb-color:#00d4ff; --nb-glow:rgba(0,212,255,.12); --nb-shadow:rgba(0,212,255,.25); --nb-bg:rgba(0,212,255,.07); border:1px solid #0a3a55; }
+    #btnLobbaus   { --nb-color:#ff9500; --nb-glow:rgba(255,149,0,.12);  --nb-shadow:rgba(255,149,0,.25);  --nb-bg:rgba(255,149,0,.07);  border:1px solid #553200; }
+    #btnHistorialliset { --nb-color:#a855f7; --nb-glow:rgba(168,85,247,.12); --nb-shadow:rgba(168,85,247,.25); --nb-bg:rgba(168,85,247,.07); border:1px solid #3d1a66; }
+    #btnSignaali { --nb-color:#ff4d6d; --nb-glow:rgba(255,77,109,.12); --nb-shadow:rgba(255,77,109,.25); --nb-bg:rgba(255,77,109,.07); border:1px solid #661a2a; }
+
+    /* Neonpulssi nykyiset-napissa */
+    #btnNykyiset:not(.active) {
+      animation: neon-pulse-nav 2.2s ease-in-out infinite;
+    }
+    @keyframes neon-pulse-nav {
+      0%,100% { box-shadow: 0 0 6px rgba(62,198,62,.2), inset 0 0 8px rgba(62,198,62,.04); }
+      50%      { box-shadow: 0 0 18px rgba(62,198,62,.45), inset 0 0 16px rgba(62,198,62,.08); }
+    }
+    #btnNykyiset.active, #btnNykyiset:hover { animation: none; }
+
+    .hdr-nykyiset { border-color: #1e4d2a !important; color: #3ec63e !important; }
+    .hdr-nykyiset:hover, .hdr-nykyiset.active { background: rgba(62,198,62,.1) !important; border-color: #3ec63e !important; }
+    .hdr-historialliset { border-color: #4d3a1a !important; color: #f5a623 !important; }
+    .hdr-historialliset:hover, .hdr-historialliset.active { background: rgba(245,166,35,.1) !important; border-color: #f5a623 !important; }
+
+
+
+    /* ── ANIMOITU PLACEHOLDER ── */
+    .header-search input::placeholder {
+      color: #00f5ff;
+      text-shadow: 0 0 8px #00f5ff;
+      animation: none;
+    }
+    @keyframes placeholder-pulse {
+      from { opacity: 1; }
+      to   { opacity: .4; }
+    }
+    .header-search input.pulse-placeholder::placeholder {
+      animation: placeholder-pulse .9s ease-in-out infinite alternate;
+    }
+
+    /* ── SPLASH ── */
+    #splash {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+      animation: fadeIn .5s ease;
+    }
+    .splash-inner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    #reticle {
+      width: 160px;
+      height: 160px;
+      opacity: .7;
+    }
+    .reticle-rotate {
+      transform-origin: 100px 100px;
+      animation: rot 8s linear infinite;
+    }
+    .reticle-rotate-slow {
+      transform-origin: 100px 100px;
+      animation: rot 20s linear infinite reverse;
+    }
+    @keyframes rot { to { transform: rotate(360deg); } }
+    .splash-hint {
+      font-family: 'Orbitron', monospace;
+      font-size: .7rem;
+      letter-spacing: .3em;
+      color: #00d4ff;
+      opacity: .7;
+      animation: pulse-line 2s ease-in-out infinite;
+    }
+    .splash-sub {
+      font-size: .85rem;
+      letter-spacing: .1em;
+      color: #2a4a66;
+    }
+
+    /* ── PUOLUE DROPDOWN ── */
+    .puolue-dropdown-wrap {
+      position: relative;
+    }
+    .puolue-dropdown {
+      display: none;
+      position: fixed;
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: .5rem;
+      z-index: 99999;
+      min-width: 320px;
+      flex-wrap: wrap;
+      gap: .35rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.8), 0 0 16px rgba(0,212,255,.1);
+    }
+    .puolue-dropdown.open {
+      display: flex;
+    }
+    .puolue-dropdown .dp-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 3px;
+      color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      padding: .3rem .6rem;
+      cursor: pointer;
+      transition: all .15s;
+      text-transform: uppercase;
+    }
+    .puolue-dropdown .dp-btn:hover { border-color: #00d4ff; color: #00d4ff; }
+    .puolue-dropdown .dp-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
+    /* Vanhat hdr-btn-tyylit poistettu — korvattu .nav-btn-tyyleillä */
+
+    /* ── SIVUTUS ── */
+    #pagination {
+      position: relative;
+      z-index: 1;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: 1.25rem 1rem 2rem;
+      flex-wrap: wrap;
+    }
+    .page-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 4px;
+      color: #5a7a99;
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem;
+      letter-spacing: .1em;
+      padding: .4rem .7rem;
+      cursor: pointer;
+      transition: all .2s;
+      min-width: 36px;
+    }
+    .page-btn:hover  { border-color: #00d4ff; color: #00d4ff; }
+    .page-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.1); }
+    .page-btn:disabled { opacity: .25; cursor: default; }
+    .page-info {
+      font-size: .72rem;
+      letter-spacing: .12em;
+      color: #5a7a99;
+      padding: 0 .5rem;
+    }
+
+    /* ── LOBBAUS ── */
+    .lobbaus-container { min-height: 60px; }
+    .lobbaus-bar-wrap { margin-bottom: .35rem; }
+    .lobbaus-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: .72rem; letter-spacing: .06em;
+      color: var(--text-muted); margin-bottom: .18rem;
+    }
+    .lobbaus-bar-track {
+      background: rgba(255,255,255,.05);
+      border-radius: 3px; height: 8px; overflow: hidden;
+    }
+    .lobbaus-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--party-c, #00d4ff), #00f5ff);
+      transition: width .6s cubic-bezier(.4,0,.2,1);
+    }
+    .lobbaus-kausi-tabs {
+      display: flex; gap: .35rem; flex-wrap: wrap;
+      margin-bottom: .85rem;
+    }
+    .lobbaus-kausi-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 3px; color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .7rem; letter-spacing: .1em;
+      padding: .2rem .55rem; cursor: pointer;
+      transition: all .15s;
+    }
+    .lobbaus-kausi-btn:hover  { border-color: #00d4ff; color: #00d4ff; }
+    .lobbaus-kausi-btn.active { border-color: #00d4ff; color: #00d4ff; background: rgba(0,212,255,.08); }
+    .lobbaus-rank {
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem; color: var(--text-muted);
+      margin-bottom: .5rem; letter-spacing: .1em;
+    }
+    .lobbaus-aikasarja {
+      display: flex; align-items: flex-end;
+      gap: 8px; height: 90px; margin-top: .5rem;
+      padding: 0 .25rem;
+    }
+    .lobbaus-aikasarja-bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      background: var(--party-c, #00d4ff);
+      opacity: .7; transition: height .5s ease;
+      position: relative; min-width: 20px;
+    }
+    .lobbaus-aikasarja-bar:hover { opacity: 1; }
+    .lobbaus-aikasarja-label {
+      font-size: .6rem; color: #5a7a99;
+      text-align: center; margin-top: .25rem;
+      letter-spacing: .05em;
+    }
+
+    /* ── XML-OSIOT ── */
+    .xml-osio { min-height: 40px; }
+    .xml-rivi {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: .35rem 0; border-bottom: 1px solid #1a2a5566;
+      font-size: .78rem; gap: .75rem; line-height: 1.4;
+    }
+    .xml-rivi:last-child { border-bottom: none; }
+    .xml-rivi-nimi  { color: #c8d8e8; flex: 1; }
+    .xml-rivi-aika  { color: #5a7a99; font-size: .7rem; white-space: nowrap; flex-shrink: 0; }
+    .xml-rivi-rooli { color: #00d4ff; font-size: .7rem; }
+    .xml-ryhmaotsikko {
+      font-family: 'Orbitron', monospace; font-size: .6rem;
+      letter-spacing: .15em; color: #5a7a99;
+      margin: .75rem 0 .3rem; padding-top: .5rem;
+      border-top: 1px solid #1a2a55;
+    }
+    .xml-ryhmaotsikko:first-child { margin-top: 0; border-top: none; }
+
+    .hidden-overlay { display: none !important; }
+    .hidden-overlay.open { display: flex !important; }
+
+    /* ── HALLITUS-KORTIT ── */
+    .hallitus-card {
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: 1rem;
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .hallitus-card:hover {
+      border-color: var(--party-color, #00d4ff);
+      box-shadow: 0 0 12px rgba(0,212,255,.08);
+    }
+
+    /* ── LOBBAUS-NÄKYMÄ ── */
+    .lobbaus-panel {
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+    }
+    .lobbaus-panel-title {
+      font-family: 'Orbitron', monospace;
+      font-size: .62rem;
+      letter-spacing: .2em;
+      color: #5a7a99;
+      margin-bottom: .85rem;
+    }
+    .lb-bar-row { margin-bottom: .4rem; cursor: pointer; }
+    .lb-bar-row:hover .lb-bar-fill { opacity: 1; }
+    .lb-bar-label { display:flex; justify-content:space-between; align-items:flex-start; gap:.5rem; font-size:.72rem; color:#8899aa; margin-bottom:.15rem; line-height:1.4; }
+    .lb-bar-label span:first-child { flex:1; word-break:break-word; }
+    .lb-bar-label span:last-child { color: #00d4ff; font-family:'Orbitron',monospace; font-size:.65rem; }
+    .lb-bar-track { background:rgba(255,255,255,.04); border-radius:3px; height:7px; overflow:hidden; }
+    .lb-bar-fill  { height:100%; border-radius:3px; background:#00d4ff; opacity:.7; transition:width .5s ease,opacity .2s; }
+    .lb-kausi-btn {
+      background:transparent; border:1px solid #1a2a55; border-radius:3px;
+      color:#5a7a99; font-family:'Rajdhani',sans-serif; font-size:.72rem;
+      letter-spacing:.1em; padding:.25rem .6rem; cursor:pointer; transition:all .15s;
+    }
+    .lb-kausi-btn:hover  { border-color:#ff9500; color:#ff9500; }
+    .lb-kausi-btn.active { border-color:#ff9500; color:#ff9500; background:rgba(255,149,0,.08); }
+    .lb-donut-row { display:flex; align-items:center; gap:.6rem; margin-bottom:.35rem; }
+    .lb-donut-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+    /* ── ACCORDION ── */
+    .accordion-item {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: .5rem;
+      overflow: hidden;
+    }
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .6rem 1rem;
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: .65rem;
+      letter-spacing: .18em;
+      color: var(--text-muted);
+      background: rgba(255,255,255,.02);
+      transition: background .2s, color .2s;
+      user-select: none;
+    }
+    .accordion-header:hover { background: rgba(0,212,255,.05); color: var(--accent); }
+    .accordion-arrow { font-size: 1.1rem; line-height: 1; color: var(--accent); }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      color: var(--text-muted);
+    }
+    footer strong { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      main { padding: 1rem; gap: .85rem; }
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+    /* ── SIGNAALI RYHMÄPAINIKKEET ── */
+    .signaali-ryhma-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      flex: 1;
+      min-width: 160px;
+      padding: 1.2rem .75rem 1.1rem;
+      background: rgba(8,13,31,.9);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      overflow: hidden;
+      border: 1px solid #1a2a55;
+    }
+    .signaali-ryhma-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--sr-color);
+      box-shadow: 0 0 12px var(--sr-color);
+      transition: height .2s;
+    }
+    .signaali-ryhma-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--sr-glow), transparent 70%);
+      opacity: 0;
+      transition: opacity .25s;
+      pointer-events: none;
+    }
+    .signaali-ryhma-btn:hover::after,
+    .signaali-ryhma-btn.active::after { opacity: 1; }
+    .signaali-ryhma-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px var(--sr-shadow);
+      border-color: var(--sr-color);
+    }
+    .signaali-ryhma-btn.active {
+      background: var(--sr-bg);
+      box-shadow: 0 0 24px var(--sr-shadow);
+      border-color: var(--sr-color);
+    }
+    .signaali-ryhma-btn.active::before { height: 4px; }
+    .signaali-ryhma-label {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--sr-color);
+      letter-spacing: .14em;
+    }
+    .signaali-ryhma-sub {
+      font-size: .65rem;
+      color: #3a5a77;
+      letter-spacing: .08em;
+    }
+
+    /* RSS LISTA OVERLAY */
+    #rssListaOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    #rssListaOverlay.open { opacity: 1; pointer-events: all; }
+    #rssListaBox {
+      background: #080d1f;
+      border: 1px solid #1a2a55;
+      border-radius: 8px;
+      width: min(600px, 96vw);
+      max-height: 88vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 0 60px rgba(0,0,0,.8);
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-eyebrow">Suomen eduskunta · 2023–2027</div>
+  <h1>Politiikkapörssi</h1>
+  <div class="header-sub">KANSANEDUSTAJIEN TIETOKANTA // BETA v0.1</div>
+  <span class="scanline"></span>
+  <div class="header-search-row">
+    <div class="header-search" style="position:relative">
+      <input id="searchInput" type="text" placeholder="Hae kansanedustajaa…" autocomplete="off" spellcheck="false"/>
+    </div>
+    <div class="header-filters">
+      <div class="puolue-dropdown-wrap">
+        <button class="hdr-btn" id="btnPuolue">Puolue ▾</button>
+        <div class="puolue-dropdown" id="puolueDropdown"></div>
+      </div>
+    </div>
+  </div>
+  <!-- ISO NAVIGAATIORIVI -->
+  <div class="nav-btn-row">
+    <button class="nav-btn" id="btnNykyiset">
+      <span class="nav-btn-icon">🏛️</span>
+      <span class="nav-btn-label">Nykyiset</span>
+      <span class="nav-btn-sub">Istuvat kansanedustajat</span>
+    </button>
+    <button class="nav-btn" id="btnHallitus">
+      <span class="nav-btn-icon">⚡</span>
+      <span class="nav-btn-label">Hallitus</span>
+      <span class="nav-btn-sub">Orpon hallitus 2023–</span>
+    </button>
+    <button class="nav-btn" id="btnLobbaus">
+      <span class="nav-btn-icon">📡</span>
+      <span class="nav-btn-label">Lobbaus</span>
+      <span class="nav-btn-sub">Avoimuusrekisteri</span>
+    </button>
+    <button class="nav-btn" id="btnHistorialliset">
+      <span class="nav-btn-icon">📂</span>
+      <span class="nav-btn-label">Historia</span>
+      <span class="nav-btn-sub">Entiset edustajat</span>
+    </button>
+    <button class="nav-btn" id="btnSignaali">
+      <span class="nav-btn-icon">📡</span>
+      <span class="nav-btn-label">Signaali</span>
+      <span class="nav-btn-sub">Poliittiset uutiset</span>
+    </button>
+  </div>
+</header>
+
+<!-- SPLASH (näkyy ennen hakua) -->
+<div id="splash">
+  <div class="splash-inner">
+    <svg id="reticle" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="60" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="100" cy="100" r="40" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="100" cy="100" r="4" fill="#00d4ff" opacity="0.8"/>
+      <line x1="100" y1="20" x2="100" y2="70" stroke="#00d4ff" stroke-width="0.5" opacity="0.5"/>
+      <line x1="100" y1="130" x2="100" y2="180" stroke="#00d4ff" stroke-width="0.5" opacity="0.5"/>
+      <line x1="20" y1="100" x2="70" y2="100" stroke="#00d4ff" stroke-width="0.5" opacity="0.5"/>
+      <line x1="130" y1="100" x2="180" y2="100" stroke="#00d4ff" stroke-width="0.5" opacity="0.5"/>
+      <circle cx="100" cy="100" r="75" fill="none" stroke="#ff007a" stroke-width="0.3" opacity="0.2" stroke-dasharray="4 8"/>
+      <g class="reticle-rotate">
+        <circle cx="100" cy="25" r="3" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+        <circle cx="175" cy="100" r="3" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+        <circle cx="100" cy="175" r="3" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+        <circle cx="25" cy="100" r="3" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+      </g>
+      <g class="reticle-rotate-slow">
+        <line x1="100" y1="100" x2="140" y2="60" stroke="#ff007a" stroke-width="0.4" opacity="0.3"/>
+      </g>
+    </svg>
+    <div class="splash-hint">SYÖTÄ HAKUTERMI ALOITTAAKSESI</div>
+    <div class="splash-sub">Hae nimellä, puolueella tai kotikunnalla</div>
+  </div>
+</div>
+
+<!-- TULOSRIVI -->
+<div id="tulosrivi" style="display:none;padding:.5rem 2rem;font-size:.78rem;letter-spacing:.12em;color:#5a7a99;">
+  <span id="countBadge"></span>
+  <button id="btnTyhjenna" onclick="tyhjennaHaku()" style="margin-left:1rem;background:none;border:1px solid #1a2a55;border-radius:3px;color:#5a7a99;font-family:'Rajdhani',sans-serif;font-size:.72rem;letter-spacing:.1em;padding:.2rem .5rem;cursor:pointer;">✕ TYHJENNÄ</button>
+</div>
+
+<!-- KORTTINÄKYMÄ -->
+<main id="grid" style="display:none"></main>
+<div id="pagination"></div>
+
+<!-- LOBBAUSKORTTI -->
+<div id="lobbausKorttiOverlay" style="display:none;position:fixed;inset:0;z-index:3000;
+  background:rgba(2,6,23,.96);
+  display:flex;align-items:center;justify-content:center;padding:1rem" class="hidden-overlay">
+  <div id="lobbausKorttiBox" style="background:#080d1f;border:1px solid #1a2a55;border-radius:8px;
+    width:min(600px,96vw);max-height:90vh;overflow-y:auto;position:relative;
+    box-shadow:0 0 60px rgba(0,0,0,.8)">
+    <button onclick="suljeLobbausKortti()" style="position:sticky;top:.5rem;float:right;
+      margin:.5rem .5rem 0 0;background:transparent;border:1px solid #1a2a55;
+      border-radius:4px;color:#5a7a99;padding:.2rem .6rem;cursor:pointer;
+      font-size:.8rem;z-index:1">ESC ×</button>
+    <div id="lobbausKorttiSisalto" style="padding:1.5rem"></div>
+  </div>
+</div>
+
+<!-- UUTISET-KORTTI -->
+<div id="uutisetKorttiOverlay" style="display:none;position:fixed;inset:0;z-index:4000;
+  background:rgba(2,6,23,.96);display:flex;align-items:center;justify-content:center;padding:1rem" class="hidden-overlay">
+  <div style="background:#080d1f;border:1px solid #1a2a55;border-radius:8px;
+    width:min(600px,96vw);max-height:90vh;overflow-y:auto;position:relative;
+    box-shadow:0 0 60px rgba(0,0,0,.8)">
+    <button onclick="suljeUutisetKortti()" style="position:sticky;top:.5rem;float:right;
+      margin:.5rem .5rem 0 0;background:transparent;border:1px solid #1a2a55;
+      border-radius:4px;color:#5a7a99;padding:.2rem .6rem;cursor:pointer;font-size:.8rem;z-index:1">ESC ×</button>
+    <div id="uutisetKorttiSisalto" style="padding:1.5rem"></div>
+  </div>
+</div>
+
+<!-- HALLITUS-NÄKYMÄ -->
+<div id="hallitusNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+  <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;
+              color:#5a7a99;margin-bottom:1.25rem">ORPON HALLITUS 2023–</div>
+  <div id="hallitusGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
+</div>
+
+<!-- LOBBAUS-NÄKYMÄ -->
+<div id="lobbausNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+
+  <!-- Kausisuodatin -->
+  <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap">
+    <span style="font-size:.72rem;letter-spacing:.15em;color:#5a7a99">KAUSI:</span>
+    <div id="lobbausKausiTabit" style="display:flex;gap:.35rem;flex-wrap:wrap"></div>
+  </div>
+
+  <!-- Tilastot grid -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem" id="lobbausTilastot">
+    <div class="lobbaus-panel" style="grid-column:1/-1">
+      <div class="lobbaus-panel-title">KAUSIVERTAILU — KOKONAISYHTEYDENOTOT</div>
+      <div id="lobbausKausiChart" style="display:flex;align-items:flex-end;gap:12px;height:100px;padding:.5rem 0"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">TOP LOBATUT HENKILÖT</div>
+      <div id="lobbausTopKE"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">TOP LOBBARIORGANISAATIOT</div>
+      <div id="lobbausTopOrg"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">AIHEITTAIN</div>
+      <div id="lobbausAiheet"></div>
+    </div>
+    <div class="lobbaus-panel">
+      <div class="lobbaus-panel-title">YHTEYDENPIDON TAVAT</div>
+      <div id="lobbausTavat" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNAALI-NÄKYMÄ -->
+<div id="signaalinNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+  <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff4d6d;margin-bottom:1.5rem">
+    📡 SIGNAALI — POLIITTISET UUTISET
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem" id="signaalinRyhmaPainikkeet"></div>
+  <div id="signaalinGrid" style="display:none;flex-direction:column;gap:.5rem">
+    <div style="color:#5a7a99;font-size:.85rem;letter-spacing:.1em">
+      <div class="spinner" style="margin:2rem auto"></div>
+    </div>
+  </div>
+
+  <!-- Poliitikkomaininnat -->
+  <div class="lobbaus-panel" style="margin-bottom:1.5rem">
+    <div class="lobbaus-panel-title" style="color:#ff4d6d;display:flex;justify-content:space-between;align-items:center">
+      <span>👤 POLIITIKKOMAININNAT — KAIKKI LÄHTEET</span>
+      <span id="mainintaLkm" style="font-size:.65rem;color:#5a7a99"></span>
+    </div>
+    <div id="poliitikkoMaininnat" style="display:flex;flex-direction:column;gap:.35rem;max-height:420px;overflow-y:auto;padding-right:.25rem">
+      <div class="spinner" style="margin:1rem auto"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- RSS LISTA OVERLAY -->
+<div id="rssListaOverlay">
+  <div id="rssListaBox">
+    <div id="rssListaTopbar" style="height:3px;background:#ff4d6d;border-radius:8px 8px 0 0"></div>
+    <button onclick="suljeRssLista()" style="position:sticky;top:.5rem;float:right;margin:.5rem .5rem 0 0;
+      background:transparent;border:1px solid #1a2a55;border-radius:4px;color:#5a7a99;
+      padding:.2rem .6rem;cursor:pointer;font-size:.8rem;z-index:1">ESC ×</button>
+    <div id="rssListaSisalto" style="padding:1.5rem 1.5rem 2rem"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalName">
+  <div id="modalBox">
+    <div class="modal-topbar"></div>
+    <button id="closeBtn" onclick="closeTTLProfile()" aria-label="Sulje">ESC ✕</button>
+    <div id="modalContent">
+      <!-- sisältö täytetään JS:llä -->
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+
+
+<script>
+const PUOLUEVARIT = {
+  KOK:  "#1a6fd8",  // sininen
+  PS:   "#ff9500",  // oranssi
+  SDP:  "#e01010",  // punainen
+  KESK: "#009b50",  // vihreä
+  VIHR: "#7bc142",  // vaaleanvihreä
+  VAS:  "#cc0033",  // tummanpunainen
+  RKP:  "#f5c400",  // keltainen
+  KD:   "#003c8f",  // tummansininen
+  LIIK: "#8a25cc",  // violetti
+  SIN:  "#1e90ff",  // teräväsininen
+  SKDL: "#cc2200",  // tiilenpunainen
+  SKP:  "#aa0000",  // tummanpunainen
+  SMP:  "#c87000",  // tummanruskea
+  LKP:  "#00aacc",  // vaaleansininen
+  ED:   "#558b2f",  // tummanvihreä
+};
+const puolueVari = p => PUOLUEVARIT[p] || "#00d4ff";
+
+// Muuntaa kuva-URL:n oikeaan muotoon lähteestä riippuen
+function kuvaUrl(url, leveys) {
+  if (!url) return "";
+  // eduskunta.fi-kuvat toimivat suoraan
+  if (url.includes("eduskunta.fi")) return url;
+  // Wikimedia Commons: Special:FilePath → Special:Redirect/file (CORS-yhteensopiva)
+  if (url.includes("Special:FilePath")) {
+    const tiedosto = url.replace(/^.*Special:FilePath\//, "");
+    return "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/" + tiedosto + "&width=" + (leveys || 120);
+  }
+  return url;
+}
+
+let KAIKKI = [];
+let aktiivisuusPuolue = "";
+let aikasuodatin = "";
+
+/* ── Lataa index.json ── */
+async function lataaHakemisto() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = `<div class="empty-state">
+    <div class="spinner" style="margin:0 auto 1rem"></div>
+    <div style="font-size:.85rem;color:#5a7a99;letter-spacing:.1em">LADATAAN HAKEMISTOA…</div>
+  </div>`;
+  try {
+    const res = await fetch("edustajat_json/index.json");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    KAIKKI = await res.json();
+    rakennaPuoluePainikkeet();
+    suodataJaRenderöi();
+  } catch(e) {
+    grid.innerHTML = `<div class="empty-state"><span>✗</span>
+      <div style="color:#e01010;font-size:.85rem;">Hakemistoa ei löydy:<br>
+      <code>edustajat_json/index.json</code><br><br>
+      Aja: <code>python luo_hakemisto.py</code></div></div>`;
+  }
+}
+
+/* ── Rakenna puolue-dropdown ── */
+function rakennaPuoluePainikkeet() {
+  const dropdown = document.getElementById("puolueDropdown");
+  const puolueet = [...new Set(KAIKKI.map(m => m.puolue).filter(p => p && p !== "–"))].sort();
+  dropdown.innerHTML = "";
+  puolueet.forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "dp-btn";
+    btn.textContent = p;
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActive = btn.classList.contains("active");
+      dropdown.querySelectorAll(".dp-btn").forEach(b => b.classList.remove("active"));
+      if (!isActive) {
+        btn.classList.add("active");
+        setPuolue(p);
+        document.getElementById("btnPuolue").textContent = p + " ▾";
+        document.getElementById("btnPuolue").style.borderColor = "#00d4ff";
+        document.getElementById("btnPuolue").style.color = "#00d4ff";
+      } else {
+        setPuolue("");
+        document.getElementById("btnPuolue").textContent = "Puolue ▾";
+        document.getElementById("btnPuolue").style.borderColor = "";
+        document.getElementById("btnPuolue").style.color = "";
+      }
+      dropdown.classList.remove("open");
+    });
+    dropdown.appendChild(btn);
+  });
+}
+
+// Dropdown toggle — position:fixed napin alle
+document.getElementById("btnPuolue").addEventListener("click", (e) => {
+  e.stopPropagation();
+  const dd  = document.getElementById("puolueDropdown");
+  const btn = document.getElementById("btnPuolue");
+  const rect = btn.getBoundingClientRect();
+  dd.style.top  = (rect.bottom + 6) + "px";
+  dd.style.left = rect.left + "px";
+  dd.classList.toggle("open");
+});
+
+// Sulje dropdown kun klikataan muualle
+document.addEventListener("click", () => {
+  document.getElementById("puolueDropdown").classList.remove("open");
+});
+
+/* ── Suodatus ── */
+function suodataJaRenderöi() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  const lista = KAIKKI.filter(m => {
+    if (aikasuodatin === "nykyiset" && !m.nykyinen) return false;
+    if (aikasuodatin === "hist"     &&  m.nykyinen) return false;
+    if (aktiivisuusPuolue && m.puolue !== aktiivisuusPuolue) return false;
+    if (!q) return true;
+    return (
+      (m.nimi       ||"").toLowerCase().includes(q) ||
+      (m.puolue     ||"").toLowerCase().includes(q) ||
+      (m.kotikunta  ||"").toLowerCase().includes(q) ||
+      (m.vaalipiiri ||"").toLowerCase().includes(q) ||
+      (m.koulutus   ||"").toLowerCase().includes(q) ||
+      (m.syntymavuosi||"").includes(q)
+    );
+  });
+  renderEdustajat(lista);
+}
+
+document.getElementById("searchInput").addEventListener("input", function() {
+  const q = this.value.trim();
+  const arrow = document.getElementById("searchArrow");
+  if (q.length > 0 || aktiivisuusPuolue || aikasuodatin) {
+  
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+
+    naytaSplash();
+  }
+});
+
+function naytaTulokset() {
+  document.getElementById("splash").style.display    = "none";
+  document.getElementById("grid").style.display      = "grid";
+  document.getElementById("tulosrivi").style.display = "flex";
+  document.getElementById("tulosrivi").style.alignItems = "center";
+  document.getElementById("pagination").style.display = "flex";
+}
+
+function naytaSplash() {
+  document.getElementById("splash").style.display    = "flex";
+  document.getElementById("grid").style.display      = "none";
+  document.getElementById("tulosrivi").style.display = "none";
+  document.getElementById("pagination").style.display = "none";
+  document.getElementById("countBadge").textContent  = "";
+  aktiivisuusPuolue = "";
+  aikasuodatin = "";
+  document.getElementById("btnNykyiset").classList.remove("active");
+  document.getElementById("btnHistorialliset").classList.remove("active");
+  document.getElementById("btnPuolue").textContent = "Puolue ▾";
+  document.getElementById("btnPuolue").classList.remove("active");
+  document.getElementById("puolueDropdown").querySelectorAll(".dp-btn").forEach(b=>b.classList.remove("active"));
+}
+
+function tyhjennaHaku() {
+  document.getElementById("searchInput").value = "";
+  naytaSplash();
+}
+
+function setPuolue(p) {
+  aktiivisuusPuolue = p;
+  if (p || aikasuodatin || document.getElementById("searchInput").value.trim()) {
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+    naytaSplash();
+  }
+}
+
+function setAika(tila) {
+  aikasuodatin = (aikasuodatin === tila) ? "" : tila;
+  piilotaKaikki();
+  document.getElementById("btnNykyiset").classList.toggle("active", aikasuodatin === "nykyiset");
+  document.getElementById("btnHistorialliset").classList.toggle("active", aikasuodatin === "hist");
+
+  if (aikasuodatin || aktiivisuusPuolue || document.getElementById("searchInput").value.trim()) {
+    naytaTulokset();
+    suodataJaRenderöi();
+  } else {
+    naytaSplash();
+  }
+}
+
+document.getElementById("btnNykyiset").addEventListener("click", () => setAika("nykyiset"));
+document.getElementById("btnHistorialliset").addEventListener("click", () => setAika("hist"));
+
+
+/* ── Sivutus ── */
+const SIVULLA = 20;
+let nykyinenSivu = 1;
+let suodatettuLista = [];
+
+function kaannaNimi(nimi) {
+  const osat = nimi.trim().split(" ");
+  if (osat.length < 2) return nimi;
+  const suku = osat[osat.length - 1];
+  const etu  = osat.slice(0, -1).join(" ");
+  return `${suku} ${etu}`;
+}
+
+function luoKortti(m) {
+  const vari = puolueVari(m.puolue);
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.setProperty("--party-color", vari);
+  card.style.setProperty("--party-glow", vari + "55");
+  card.setAttribute("role","button"); card.setAttribute("tabindex","0");
+  const paikkatieto = m.nykyinen ? (m.vaalipiiri||m.kotikunta||"") : (m.kotikunta||"");
+  const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
+               : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
+  const kuvaHtml = m.kuva
+    ? `<img src="${kuvaUrl(m.kuva, 88)}" alt="${m.nimi}" loading="lazy"
+         onerror="this.style.display='none'"
+         style="position:absolute;top:.7rem;right:.7rem;width:44px;height:54px;
+                object-fit:cover;border-radius:3px;
+                border:1px solid var(--party-color, #1a2a55);
+                opacity:.85;">`
+    : "";
+  card.innerHTML = `
+    <div class="card-topbar"></div>
+    <div class="card-body" style="position:relative">
+      ${kuvaHtml}
+      <div class="card-party-tag">${m.puolue||"–"}</div>
+      <div class="card-name" style="padding-right:${m.kuva?"54px":"0"}">${kaannaNimi(m.nimi)}</div>
+      <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
+    </div>
+    <div class="card-arrow">AVAA →</div>`;
+  card.addEventListener("click", () => openTTLProfile(m));
+  card.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" ") openTTLProfile(m); });
+  return card;
+}
+
+function renderSivu(sivu) {
+  nykyinenSivu = sivu;
+  const grid  = document.getElementById("grid");
+  const pagin = document.getElementById("pagination");
+  grid.innerHTML = "";
+
+  if (!suodatettuLista.length) {
+    grid.innerHTML = `<div class="empty-state"><span>∅</span>Ei hakutuloksia</div>`;
+    document.getElementById("countBadge").textContent = "";
+    pagin.style.display = "none";
+    return;
+  }
+
+  const alku  = (sivu - 1) * SIVULLA;
+  const loppu = Math.min(alku + SIVULLA, suodatettuLista.length);
+  const sivuja = Math.ceil(suodatettuLista.length / SIVULLA);
+
+  suodatettuLista.slice(alku, loppu).forEach((m, i) => {
+    const c = luoKortti(m);
+    c.style.animationDelay = `${Math.min(i,40)*30}ms`;
+    grid.appendChild(c);
+  });
+
+  // Päivitä count
+  const pohja = KAIKKI.filter(m =>
+    aikasuodatin === "nykyiset" ? m.nykyinen : aikasuodatin === "hist" ? !m.nykyinen : true
+  );
+  document.getElementById("countBadge").textContent =
+    `${alku+1}–${loppu} / ${suodatettuLista.length} edustajaa`;
+
+  // Sivutuspainikkeet
+  if (sivuja <= 1) { pagin.style.display = "none"; return; }
+  pagin.style.display = "flex";
+  pagin.innerHTML = "";
+
+  const prev = document.createElement("button");
+  prev.className = "page-btn"; prev.textContent = "‹"; prev.disabled = sivu === 1;
+  prev.addEventListener("click", () => { renderSivu(sivu-1); window.scrollTo({top:0,behavior:"auto"}); });
+  pagin.appendChild(prev);
+
+  // Sivunumerot älykkäällä ellipsillä
+  const nayta = [];
+  for (let s = 1; s <= sivuja; s++) {
+    if (s === 1 || s === sivuja || Math.abs(s - sivu) <= 2) nayta.push(s);
+    else if (nayta[nayta.length-1] !== "…") nayta.push("…");
+  }
+  nayta.forEach(s => {
+    if (s === "…") {
+      const sp = document.createElement("span");
+      sp.className = "page-info"; sp.textContent = "…";
+      pagin.appendChild(sp);
+    } else {
+      const btn = document.createElement("button");
+      btn.className = "page-btn" + (s === sivu ? " active" : "");
+      btn.textContent = s;
+      btn.addEventListener("click", () => { renderSivu(s); window.scrollTo({top:0,behavior:"auto"}); });
+      pagin.appendChild(btn);
+    }
+  });
+
+  const next = document.createElement("button");
+  next.className = "page-btn"; next.textContent = "›"; next.disabled = sivu === sivuja;
+  next.addEventListener("click", () => { renderSivu(sivu+1); window.scrollTo({top:0,behavior:"auto"}); });
+  pagin.appendChild(next);
+}
+
+/* ── Renderöi kortit ── */
+function renderEdustajat(lista) {
+  // Aakkosjärjestys sukunimen mukaan
+  suodatettuLista = [...lista].sort((a, b) =>
+    a.nimi.split(" ").pop().localeCompare(b.nimi.split(" ").pop(), "fi")
+  );
+  nykyinenSivu = 1;
+  renderSivu(1);
+}
+
+/* ================================================================
+   MODAL + EDUSKUNTA API
+   ================================================================ */
+const API = "https://avoindata.eduskunta.fi/api/v1/tables";
+
+function openTTLProfile(m) {
+  AKTIIVINEN_EDUSTAJA = m;
+  const overlay = document.getElementById("modalOverlay");
+  const vari    = puolueVari(m.puolue);
+  // Näytä overlay ensin tyhjänä — nopea
+  overlay.style.setProperty("--modal-party-color", vari);
+  document.documentElement.style.setProperty("--modal-party-color", vari);
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+  // Renderöi sisältö seuraavassa frame:ssa — ei blokoi animaatiota
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => renderModalSkeleton(m, vari));
+  });
+}
+
+function haePersonId(m) {
+  // Yritetään saada id eduskunta-linkistä: .../Sivut/1306.aspx
+  if (m.eduskunta) {
+    const match = m.eduskunta.match(/\/(\d+)\.aspx/);
+    if (match) return match[1];
+  }
+  // Yritetään tiedostonimestä: ei suoraan saatavilla
+  return null;
+}
+
+
+
+/* ── Skeleton: näytetään heti index.json:n tiedot ── */
+function renderModalSkeleton(m, vari) {
+  const content = document.getElementById("modalContent");
+  const vuodet = m.kuolinvuosi
+    ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
+    : m.syntymavuosi ? `${m.syntymavuosi}–` : "–";
+  const kuvaHtml = m.kuva
+    ? `${m.eduskunta ? `<a href="${m.eduskunta}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;float:right;margin:0 0 .5rem 1rem;cursor:pointer">` : ""}
+       <img src="${kuvaUrl(m.kuva, 144)}" alt="${m.nimi}" onerror="this.parentElement.style.display='none'"
+         style="width:72px;height:88px;object-fit:cover;border-radius:3px;
+                border:1px solid ${vari};
+                transition:opacity .2s,box-shadow .2s;
+                ${m.eduskunta ? "box-shadow:0 0 0 0 "+vari+"44;" : ""}"
+         onmouseover="${m.eduskunta ? "this.style.opacity='.75';this.style.boxShadow='0 0 10px "+vari+"88'" : ""}"
+         onmouseout="${m.eduskunta ? "this.style.opacity='1';this.style.boxShadow='0 0 0 0 transparent'" : ""}">
+       ${m.eduskunta ? "</a>" : ""}`
+    : "";
+  content.innerHTML = `
+    <div class="modal-label">Kansanedustaja · ${m.puolue||"–"}</div>
+    <div class="modal-party-tag" style="--modal-party-color:${vari}">${m.puolue||"–"}</div>
+    ${kuvaHtml}
+    <div class="modal-name" id="modalName">${m.nimi}</div>
+    <div class="modal-divider"></div>
+    ${m.nykyinen ? `<div style="display:flex;gap:.5rem;margin:0 0 .75rem 0">
+      <button onclick="avaaLobbausKortti()"
+        style="flex:1;background:transparent;border:1px solid ${vari}88;
+               border-radius:4px;color:${vari};font-family:'Rajdhani',sans-serif;
+               font-size:.78rem;letter-spacing:.12em;padding:.4rem 1rem;
+               cursor:pointer;transition:all .2s"
+        onmouseover="this.style.background='rgba(0,212,255,.08)'"
+        onmouseout="this.style.background='transparent'">
+        LOBBAUSDATA ↗
+      </button>
+      <button onclick="avaaUutisetKortti(AKTIIVINEN_EDUSTAJA)"
+        style="flex:1;background:transparent;border:1px solid #ff4d6d88;
+               border-radius:4px;color:#ff4d6d;font-family:'Rajdhani',sans-serif;
+               font-size:.78rem;letter-spacing:.12em;padding:.4rem 1rem;
+               cursor:pointer;transition:all .2s"
+        onmouseover="this.style.background='rgba(255,77,109,.08)'"
+        onmouseout="this.style.background='transparent'">
+        📡 VIIMEISIMMÄT UUTISET
+      </button>
+    </div>` : ""}
+    <div id="accordion-container">
+      ${accordionItem("perustiedot","PERUSTIEDOT",`
+        <div class="detail-grid">
+          <div class="detail-item"><div class="d-label">Kotikunta</div><div class="d-value">${m.kotikunta||"–"}</div></div>
+          <div class="detail-item"><div class="d-label">Vaalipiiri</div><div class="d-value">${m.vaalipiiri||"–"}</div></div>
+          <div class="detail-item"><div class="d-label">Syntymävuosi</div><div class="d-value">${vuodet}</div></div>
+          <div class="detail-item" style="grid-column:1/-1"><div class="d-label">Vaalikaudet</div><div class="d-value" style="font-size:.85rem">${m.vaalikaudet_lista || (m.vaalikaudet ? m.vaalikaudet+" kautta" : "–")}</div></div>
+          <div class="detail-item"><div class="d-label">Koulutus</div><div class="d-value">${m.koulutus||"–"}</div></div>
+          <div class="detail-item"><div class="d-label">Status</div><div class="d-value" style="color:${m.nykyinen?"#3ec63e":"#f5a623"}">${m.nykyinen?"● aktiivinen":"● päättynyt"}</div></div>
+        </div>
+`, true)}
+
+
+      ${accordionItem("linkit","LINKIT & YHTEYSTIEDOT",`
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
+          ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
+          ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER / X ↗","#1d9bf0") : ""}
+          ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
+        </div>`)}
+      ${accordionItem("toiminta","ALOITTEET & PUHEENVUOROT",`
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20(Asiakirjatyyppinimi:Lakialoite%20OR%20Asiakirjatyyppinimi:Toimenpidealoite)%22}","ALOITTEET ↗",vari)}
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20Asiakirjatyyppinimi:%5C%22Kirjallinen%20kysymys%5C%22%22}","KIRJALLISET KYSYMYKSET ↗",vari)}
+          ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22EDKPuhujaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi.split(" ").reverse().join(" "))+"%5C%22%22}","PUHEENVUOROT ↗",vari)}
+        </div>`)}
+      ${accordionItem("sidonnaisuudet","SIDONNAISUUDET",`
+        <div style="display:flex;flex-direction:column;gap:.6rem">
+          ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
+        </div>`)}
+      ${accordionItem("tyoura","TYÖ- JA URAHISTORIA",`<div id="xml-tyoura-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("valiokunnat","VALIOKUNTAJÄSENYYDET",`<div id="xml-valiokunnat-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("ministeriydet","HALLITUSJÄSENYYDET",`<div id="xml-ministeriydet-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+      ${accordionItem("sidonnaisuudet2","SIDONNAISUUDET & TULOT",`<div id="xml-sidonnaisuudet-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`)}
+    </div>`;
+
+  // Accordion-logiikka
+  content.querySelectorAll(".accordion-header").forEach((h, idx) => {
+    const ids = ["perustiedot","linkit","toiminta","sidonnaisuudet","tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
+    h.addEventListener("click", () => {
+      const body = h.nextElementSibling;
+      const isOpen = body.style.maxHeight && body.style.maxHeight !== "0px";
+      if (isOpen) {
+        body.style.maxHeight = "0px";
+      } else {
+        body.style.maxHeight = body.scrollHeight + "px";
+        // Poista max-height rajoitus animaation jälkeen
+        body.addEventListener("transitionend", () => {
+          if (body.style.maxHeight !== "0px") body.style.maxHeight = "none";
+        }, {once: true});
+      }
+      h.querySelector(".accordion-arrow").style.transform = isOpen ? "rotate(0deg)" : "rotate(90deg)";
+      if (!isOpen && ids[idx]) onAccordionOpen(ids[idx], m, vari);
+    });
+  });
+}
+
+function accordionItem(id, label, content, open=false) {
+  return `
+    <div class="accordion-item">
+      <div class="accordion-header">
+        <span>${label}</span>
+        <span class="accordion-arrow" style="transition:transform .2s;display:inline-block;transform:${open?"rotate(90deg)":"rotate(0deg)"}">›</span>
+      </div>
+      <div class="accordion-body" style="max-height:${open?"500px":"0px"};overflow:hidden;transition:max-height .2s ease">
+        <div style="padding:.75rem 1rem">${content}</div>
+      </div>
+    </div>`;
+}
+
+function lnk(url, teksti, vari) {
+  return `<a href="${url}" target="_blank" rel="noopener"
+    style="color:${vari};font-size:.75rem;letter-spacing:.1em;text-decoration:none;
+           border:1px solid ${vari}55;padding:.25rem .6rem;border-radius:3px;
+           display:inline-block">${teksti}</a>`;
+}
+
+/* ================================================================
+   LOBBAUS
+   ================================================================ */
+let LOBBAUS_INDEX = null;
+
+async function lataaLobbausIndex() {
+  if (LOBBAUS_INDEX) return LOBBAUS_INDEX;
+  try {
+    const res = await fetch("lobbaus_json/index.json");
+    if (res.ok) LOBBAUS_INDEX = await res.json();
+  } catch(_) {}
+  return LOBBAUS_INDEX;
+}
+
+function paivitaAccordionKorkeus(el) {
+  // Jos max-height on none, ei tarvitse päivittää
+  let body = el;
+  while (body && !body.classList.contains("accordion-body")) {
+    body = body.parentElement;
+  }
+  if (body && body.style.maxHeight && body.style.maxHeight !== "0px" && body.style.maxHeight !== "none") {
+    body.style.maxHeight = "none"; // Vapautetaan rajoitus
+  }
+}
+
+async function naytaLobbausTiedot(m, vari) {
+  const containerId = "lobbaus-" + m.nimi.replace(/\s+/g,"-");
+  const el = document.getElementById(containerId);
+  if (!el || el.dataset.ladattu) return;
+  el.dataset.ladattu = "1";
+
+  // Näytä spinner heti — ei blokkaa
+  el.innerHTML = '<div class="spinner" style="margin:.5rem auto"></div>';
+
+  // Lataa data taustalla — ei blokkaa renderöintiä
+  const idx = await lataaLobbausIndex();
+  if (!idx) {
+    el.innerHTML = '<span style="color:#5a7a99;font-size:.82rem">Lobbausdata ei saatavilla</span>';
+    return;
+  }
+
+  const keData = idx.kansanedustajat ? idx.kansanedustajat[m.nimi] : null;
+  const tiData = idx.toimintailmoitukset ? idx.toimintailmoitukset[m.nimi] : null;
+
+  if (!keData && !tiData) {
+    el.innerHTML = '<span style="color:#5a7a99;font-size:.82rem">Ei merkintöjä avoimuusrekisterissä</span>';
+    paivitaAccordionKorkeus(el);
+    return;
+  }
+
+  const yhteensa      = tiData ? tiData.yhteensa : (keData ? keData.yhteensa : 0);
+  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : "";
+
+  // Laske sijoitus dynaamisesti kansanedustajat-datasta jos keData puuttuu
+  let sijoitus = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : "–";
+  if (sijoitus === "–" && idx.toimintailmoitukset && yhteensa > 0) {
+    const kaikki = Object.entries(idx.toimintailmoitukset)
+      .map(([nimi, d]) => ({ nimi, n: d.yhteensa || 0 }))
+      .sort((a, b) => b.n - a.n);
+    const sij = kaikki.findIndex(x => x.nimi === m.nimi) + 1;
+    if (sij > 0) sijoitus = sij;
+  }
+
+  // Rakenna UI pala kerrallaan — ei yhtä isoa innerHTML
+  el.innerHTML = "";
+
+  // Yhteenveto
+  const topDiv = document.createElement("div");
+  topDiv.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.85rem";
+  topDiv.innerHTML = `
+    <div>
+      <div class="d-label">Maininnat yhteensä</div>
+      <div style="font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:${vari}">${yhteensa}</div>
+    </div>
+    <div>
+      <div class="d-label">Sijoitus ${sijoitusKausi}</div>
+      <div style="font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:${vari}">${sijoitus !== "–" ? "#"+sijoitus : "–"}</div>
+    </div>`;
+  el.appendChild(topDiv);
+  paivitaAccordionKorkeus(el);
+
+  // Aikasarjapalkit — rAF jotta ei blokkaa
+  requestAnimationFrame(() => {
+    if (keData && keData.kaudet && keData.kaudet.length) {
+      const maxMaara  = Math.max(...keData.kaudet.map(k => k.maara));
+      const BAR_MAX   = 56;
+      const aikaLabel = document.createElement("div");
+      aikaLabel.innerHTML = '<div class="d-label" style="margin-bottom:.4rem">Maininnat kausittain</div>';
+      el.appendChild(aikaLabel);
+      const barRow = document.createElement("div");
+      barRow.className = "lobbaus-aikasarja";
+      kausitiedot.forEach(k => {
+        const px  = maxMaara > 0 ? Math.max(4, Math.round(k.maara/maxMaara*BAR_MAX)) : 4;
+        const col = document.createElement("div");
+        col.style.cssText = "flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end";
+        col.innerHTML = `
+          <div style="font-size:.58rem;color:${vari};margin-bottom:2px;font-family:'Orbitron',monospace">${k.maara}</div>
+          <div style="width:100%;height:${px}px;background:${vari};border-radius:3px 3px 0 0;opacity:.8"></div>
+          <div style="font-size:.58rem;color:#5a7a99;text-align:center;margin-top:3px">${k.kausi_label.replace(/^\d+\.\d+–/,"").replace(/\.(\d{4})$/,"/$1")}</div>`;
+        barRow.appendChild(col);
+      });
+      el.appendChild(barRow);
+      paivitaAccordionKorkeus(el);
+    }
+
+    // Top lobbarit + tavat + aiheet toisessa rAF
+    requestAnimationFrame(() => {
+      if (tiData) {
+        // Top lobbarit
+        if (tiData.top_lobbarit && tiData.top_lobbarit.length) {
+          const maxN   = tiData.top_lobbarit[0][1];
+          const lobDiv = document.createElement("div");
+          lobDiv.style.cssText = "margin-top:1rem;border-top:1px solid #1a2a55;padding-top:.85rem";
+          lobDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">TOP LOBBARIT</div>' +
+            tiData.top_lobbarit.slice(0,5).map(([org,n]) => {
+              const pct   = Math.round(n/maxN*100);
+              const lyhyt = org.length > 38 ? org.slice(0,36)+"…" : org;
+              return '<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>'+lyhyt+'</span><span style="color:'+vari+'">'+n+'</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div></div>';
+            }).join("");
+          el.appendChild(lobDiv);
+        }
+
+        // Tavat
+        if (tiData.tavat) {
+          const tavat  = normTavat(tiData.tavat);
+          const tavDiv = document.createElement("div");
+          tavDiv.style.marginTop = ".85rem";
+          tavDiv.innerHTML = '<div class="d-label" style="margin-bottom:.4rem">YHTEYDENPIDON TAVAT</div><div style="display:flex;flex-wrap:wrap;gap:.3rem">' +
+            Object.entries(tavat).sort((a,b)=>b[1]-a[1]).map(([tapa,n]) =>
+              `<span style="background:rgba(255,255,255,.05);border:1px solid ${vari}55;border-radius:3px;padding:.2rem .5rem;font-size:.72rem;color:${vari}">${tapa} <strong style="color:#fff">${n}</strong></span>`
+            ).join("") + "</div>";
+          el.appendChild(tavDiv);
+        }
+
+        // Aiheet
+        if (tiData.top_aiheet && tiData.top_aiheet.length) {
+          const aihDiv = document.createElement("div");
+          aihDiv.style.marginTop = ".85rem";
+          aihDiv.innerHTML = '<div class="d-label" style="margin-bottom:.4rem">LOBBAUSAIHEET</div>' +
+            tiData.top_aiheet.slice(0,4).map(([aihe,n]) => {
+              const lyhyt = aihe.length > 85 ? aihe.slice(0,83)+"…" : aihe;
+              return `<div style="font-size:.73rem;color:#8899aa;padding:.25rem 0;border-bottom:1px solid #1a2a5588;line-height:1.45">${lyhyt}<span style="color:${vari};margin-left:.4rem;font-size:.68rem">${n}x</span></div>`;
+            }).join("");
+          el.appendChild(aihDiv);
+        }
+      }
+      paivitaAccordionKorkeus(el);
+    });
+  });
+}
+
+function lataaOrgData(m, keData, vari, orgElOrId) {
+  const orgEl = typeof orgElOrId === "string" ? document.getElementById(orgElOrId) : orgElOrId;
+  if (!orgEl) return;
+
+  const idx2 = LOBBAUS_INDEX || null;
+  const ti   = idx2 && idx2.toimintailmoitukset ? idx2.toimintailmoitukset[m.nimi] : null;
+  const orgLista = ti && ti.top_lobbarit ? ti.top_lobbarit.slice(0,8) : [];
+
+  if (!orgLista.length) {
+    orgEl.innerHTML = '<div style="color:#5a7a99;font-size:.78rem;padding:.25rem 0">Ei organisaatiodataa saatavilla</div>';
+    setTimeout(() => paivitaAccordionKorkeus(orgEl), 50);
+    return;
+  }
+
+  const maxOrg = orgLista[0][1];
+  const barsHtml = orgLista.map(([org, maara]) => {
+    const pct   = Math.round(maara / maxOrg * 100);
+    const lyhyt = org.length > 38 ? org.slice(0,36) + "…" : org;
+    return `<div class="lobbaus-bar-wrap">
+      <div class="lobbaus-bar-label">
+        <span>${lyhyt}</span><span style="color:${vari}">${maara}</span>
+      </div>
+      <div class="lobbaus-bar-track">
+        <div class="lobbaus-bar-fill" style="width:${pct}%;background:${vari}"></div>
+      </div>
+    </div>`;
+  }).join("");
+
+  orgEl.innerHTML = `<div class="d-label" style="margin-bottom:.5rem">TOP LOBBARIT</div>${barsHtml}`;
+  setTimeout(() => paivitaAccordionKorkeus(orgEl), 50);
+}
+
+/* ── Kutsutaan kun accordionin lobbaus-osio avataan ── */
+function onAccordionOpen(id, m, vari) {
+  if (id === "lobbaus") naytaLobbausTiedot(m, vari);
+  const xmlOsiot = ["tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
+  if (xmlOsiot.includes(id)) lataaXmlOsio(id, m, vari);
+}
+
+const XML_CACHE = {};
+
+async function lataaXmlOsio(osio, m, vari) {
+  const slug = m.nimi.replace(/\s+/g,"-");
+  const elId = `xml-${osio === "sidonnaisuudet2" ? "sidonnaisuudet" : osio}-${slug}`;
+  const el   = document.getElementById(elId);
+  if (!el || el.dataset.ladattu) return;
+
+  // Hae personId eduskunta-linkistä
+  const pidM = (m.eduskunta||"").match(/\/(\d+)\.aspx/);
+  if (!pidM) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei dataa saatavilla</span>'; return; }
+  const pid = pidM[1];
+
+  // Käytä välimuistia
+  if (!XML_CACHE[pid]) {
+    try {
+      const res = await fetch(`edustajat_json/${pid}_xml.json`);
+      if (!res.ok) throw new Error("404");
+      XML_CACHE[pid] = await res.json();
+    } catch(_) {
+      el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei dataa saatavilla</span>';
+      el.dataset.ladattu = "1";
+      return;
+    }
+  }
+
+  const d = XML_CACHE[pid];
+  el.dataset.ladattu = "1";
+
+  let html2 = "";
+
+  if (osio === "tyoura") {
+    const tyot = d.tyoura || [];
+    if (!tyot.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei tietoja</span>'; return; }
+    html2 = tyot.map(t =>
+      `<div class="xml-rivi"><span class="xml-rivi-nimi">${t.nimi}</span><span class="xml-rivi-aika">${t.aika||""}</span></div>`
+    ).join("");
+
+  } else if (osio === "valiokunnat") {
+    const vk = d.valiokunnat || [];
+    if (!vk.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei valiokuntajäsenyyksiä</span>'; return; }
+    // Ryhmittele valiokunnan mukaan
+    const grouped = {};
+    vk.forEach(v => {
+      if (!grouped[v.nimi]) grouped[v.nimi] = [];
+      grouped[v.nimi].push(v);
+    });
+    html2 = Object.entries(grouped).map(([nimi, jasenydet]) => {
+      const rivit = jasenydet.map(j => {
+        const aika = [j.alku, j.loppu].filter(Boolean).join("–");
+        return `<div style="font-size:.72rem;color:#8899aa;padding:.15rem 0">${j.rooli||""} ${aika ? "("+aika+")" : ""}</div>`;
+      }).join("");
+      return `<div class="xml-rivi" style="flex-direction:column;align-items:flex-start">
+        <span class="xml-rivi-nimi" style="color:${vari}">${nimi}</span>${rivit}</div>`;
+    }).join("");
+
+  } else if (osio === "ministeriydet") {
+    const min = d.ministeriydet || [];
+    if (!min.length) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei hallitusjäsenyyksiä</span>'; return; }
+    html2 = min.map(j => {
+      const aika = [j.alku, j.loppu||"nykyinen"].filter(Boolean).join("–");
+      return `<div class="xml-rivi">
+        <div style="flex:1">
+          <div class="xml-rivi-nimi">${j.nimi}</div>
+          <div style="font-size:.7rem;color:#5a7a99">Hallitus: ${j.hallitus||"?"}</div>
+        </div>
+        <span class="xml-rivi-aika">${aika}</span>
+      </div>`;
+    }).join("");
+
+  } else if (osio === "sidonnaisuudet2") {
+    const sid = d.sidonnaisuudet || {};
+    const lahjat = d.lahjat || [];
+    const tulot  = d.tulot  || [];
+    if (!Object.keys(sid).length && !lahjat.length && !tulot.length) {
+      el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei ilmoitettavia sidonnaisuuksia</span>'; return;
+    }
+    html2 = Object.entries(sid).map(([ryhma, lista]) =>
+      `<div class="xml-ryhmaotsikko">${ryhma}</div>` +
+      lista.map(s => `<div class="xml-rivi"><span class="xml-rivi-nimi">${s}</span></div>`).join("")
+    ).join("");
+    if (tulot.length) {
+      html2 += `<div class="xml-ryhmaotsikko">TULOT</div>` +
+        tulot.map(t => `<div class="xml-rivi"><span class="xml-rivi-nimi">${t.sidonta}</span></div>`).join("");
+    }
+    if (lahjat.length) {
+      html2 += `<div class="xml-ryhmaotsikko">LAHJAILMOITUKSET</div>` +
+        lahjat.map(l => `<div class="xml-rivi"><span class="xml-rivi-nimi">${l}</span></div>`).join("");
+    }
+  }
+
+  el.innerHTML = html2;
+  setTimeout(() => paivitaAccordionKorkeus(el), 50);
+}
+
+/* ── Modal sulje ── */
+/* ================================================================
+   LOBBAUSKORTTI — erillinen kortti henkilön lobbausdatalle
+   ================================================================ */
+let AKTIIVINEN_EDUSTAJA = null;
+
+function avaaLobbausKortti() {
+  if (!AKTIIVINEN_EDUSTAJA) return;
+  const overlay = document.getElementById("lobbausKorttiOverlay");
+  const sisalto = document.getElementById("lobbausKorttiSisalto");
+  overlay.classList.remove("hidden-overlay");
+  overlay.classList.add("open");
+  sisalto.innerHTML = '<div class="spinner" style="margin:2rem auto"></div>';
+  renderLobbausKortti(AKTIIVINEN_EDUSTAJA, sisalto);
+}
+
+function suljeLobbausKortti() {
+  const overlay = document.getElementById("lobbausKorttiOverlay");
+  overlay.classList.remove("open");
+  overlay.classList.add("hidden-overlay");
+}
+
+// Sulje ESC:llä
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") suljeLobbausKortti();
+});
+
+// Sulje klikkaamalla taustaa
+document.getElementById("lobbausKorttiOverlay").addEventListener("click", e => {
+  if (e.target.id === "lobbausKorttiOverlay") suljeLobbausKortti();
+});
+
+async function renderLobbausKortti(m, el) {
+  const vari = puolueVari(m.puolue);
+  const idx  = await lataaLobbausIndex();
+
+  if (!idx) {
+    el.innerHTML = '<p style="color:#5a7a99">Lobbausdata ei saatavilla</p>';
+    return;
+  }
+
+  const keData = idx.kansanedustajat ? idx.kansanedustajat[m.nimi] : null;
+  const tiData = idx.toimintailmoitukset ? idx.toimintailmoitukset[m.nimi] : null;
+
+  if (!keData && !tiData) {
+    el.innerHTML = `
+      <div style="color:${vari};font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.15em;margin-bottom:.5rem">LOBBAUSDATA</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#e8f4ff;margin-bottom:1rem">${m.nimi}</div>
+      <p style="color:#5a7a99;font-size:.85rem">Ei merkintöjä avoimuusrekisterissä.</p>`;
+    return;
+  }
+
+  const yhteensa      = tiData ? tiData.yhteensa : (keData ? keData.yhteensa : 0);
+  const sijoitusKausi = (keData && keData.sijoitus_kausi) ? keData.sijoitus_kausi : "";
+
+  // Laske sijoitus dynaamisesti kansanedustajat-datasta jos keData puuttuu
+  let sijoitus = (keData && keData.sijoitus_viimeisin) ? keData.sijoitus_viimeisin : "–";
+  if (sijoitus === "–" && idx.toimintailmoitukset && yhteensa > 0) {
+    const kaikki = Object.entries(idx.toimintailmoitukset)
+      .map(([nimi, d]) => ({ nimi, n: d.yhteensa || 0 }))
+      .sort((a, b) => b.n - a.n);
+    const sij = kaikki.findIndex(x => x.nimi === m.nimi) + 1;
+    if (sij > 0) sijoitus = sij;
+  }
+
+  el.innerHTML = "";
+
+  // Header
+  const header = document.createElement("div");
+  header.innerHTML = `
+    <div style="color:${vari};font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.15em;margin-bottom:.4rem">LOBBAUSDATA</div>
+    <div style="font-size:1.2rem;font-weight:700;color:#e8f4ff;margin-bottom:1.25rem">${m.nimi}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem">
+      <div style="background:#0a0f1e;border:1px solid #1a2a55;border-radius:6px;padding:.85rem">
+        <div class="d-label">Maininnat yhteensä</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:700;color:${vari}">${yhteensa}</div>
+      </div>
+      <div style="background:#0a0f1e;border:1px solid #1a2a55;border-radius:6px;padding:.85rem">
+        <div class="d-label">Sijoitus ${sijoitusKausi}</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:700;color:${vari}">${sijoitus !== "–" ? "#"+sijoitus : "–"}</div>
+      </div>
+    </div>`;
+  el.appendChild(header);
+
+  // Selityslaatikko
+  const selitys = document.createElement("div");
+  selitys.style.cssText = "background:rgba(255,255,255,.03);border:1px solid #1a2a5588;border-radius:4px;padding:.55rem .75rem;margin-bottom:1rem;font-size:.82rem;color:#5a7a99;line-height:1.5";
+  selitys.innerHTML = "ⓘ <strong style='color:#8899aa'>Maininnat yhteensä</strong> = kaikki roolit (toimintailmoitukset). <strong style='color:#8899aa'>Kausittain</strong> = kansanedustajana (avoimuusrekisterin raportit). Luvut voivat poiketa.";
+  el.appendChild(selitys);
+
+  // Aikasarjapalkit
+  // Käytä tiData-kausitietoja jos keData puuttuu
+  // Hae kausien labelit idx.kaudet-listasta
+  const kausiLabelMap = {};
+  if (idx.kaudet) idx.kaudet.forEach(k => { kausiLabelMap[k.id] = k.label; });
+
+  const kausitiedot = (keData && keData.kaudet && keData.kaudet.length) ? keData.kaudet
+    : (tiData && tiData.kaudet
+        ? Object.entries(tiData.kaudet)
+            .sort((a,b) => a[0].localeCompare(b[0]))
+            .map(([id,n]) => ({kausi_id:id, kausi_label: kausiLabelMap[id]||id, maara:n}))
+        : []);
+
+  if (kausitiedot.length) {
+    const maxM = Math.max(...kausitiedot.map(k => k.maara));
+    const aikaDiv = document.createElement("div");
+    aikaDiv.style.marginBottom = "1.25rem";
+    const label = keData ? "MAININNAT KAUSITTAIN" : "MAININNAT KAUSITTAIN (kaikki roolit)";
+    aikaDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">'+label+'</div>';
+    const barRow = document.createElement("div");
+    barRow.className = "lobbaus-aikasarja";
+    barRow.style.height = "80px";
+    kausitiedot.forEach(k => {
+      const px = maxM > 0 ? Math.max(4, Math.round(k.maara/maxM*70)) : 4;
+      const col = document.createElement("div");
+      col.style.cssText = "flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end";
+      col.innerHTML =
+        '<div style="font-size:.6rem;color:'+vari+';margin-bottom:3px;font-family:Orbitron,monospace">'+k.maara+'</div>'+
+        '<div style="width:100%;height:'+px+'px;background:'+vari+';border-radius:3px 3px 0 0;opacity:.8"></div>'+
+        '<div style="font-size:.6rem;color:#5a7a99;text-align:center;margin-top:4px">'+k.kausi_label+'</div>';
+      barRow.appendChild(col);
+    });
+    aikaDiv.appendChild(barRow);
+    el.appendChild(aikaDiv);
+  }
+
+  if (tiData) {
+    // Top lobbarit
+    if (tiData.top_lobbarit && tiData.top_lobbarit.length) {
+      const maxN   = tiData.top_lobbarit[0][1];
+      const lobDiv = document.createElement("div");
+      lobDiv.style.marginBottom = "1.25rem";
+      lobDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">TOP LOBBARIT</div>' +
+        tiData.top_lobbarit.slice(0,8).map(([org,n]) => {
+          const pct = Math.round(n/maxN*100);
+          const lyhyt = org.length > 45 ? org.slice(0,43)+"…" : org;
+          return '<div class="lobbaus-bar-wrap"><div class="lobbaus-bar-label"><span>'+lyhyt+'</span><span style="color:'+vari+'">'+n+'</span></div><div class="lobbaus-bar-track"><div class="lobbaus-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div></div>';
+        }).join("");
+      el.appendChild(lobDiv);
+    }
+
+    // Tavat
+    if (tiData.tavat) {
+      const tavat  = normTavat(tiData.tavat);
+      const tavDiv = document.createElement("div");
+      tavDiv.style.marginBottom = "1.25rem";
+      tavDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">YHTEYDENPIDON TAVAT</div><div style="display:flex;flex-wrap:wrap;gap:.35rem">' +
+        Object.entries(tavat).sort((a,b)=>b[1]-a[1]).map(([tapa,n]) =>
+          '<span style="background:rgba(255,255,255,.05);border:1px solid '+vari+'55;border-radius:3px;padding:.25rem .6rem;font-size:.75rem;color:'+vari+'">'+tapa+' <strong style="color:#fff">'+n+'</strong></span>'
+        ).join("") + "</div>";
+      el.appendChild(tavDiv);
+    }
+
+    // Aiheet
+    if (tiData.top_aiheet && tiData.top_aiheet.length) {
+      const aihDiv = document.createElement("div");
+      aihDiv.innerHTML = '<div class="d-label" style="margin-bottom:.5rem">LOBBAUSAIHEET</div>' +
+        tiData.top_aiheet.slice(0,5).map(([aihe,n]) => {
+          const lyhyt = aihe.length > 90 ? aihe.slice(0,88)+"…" : aihe;
+          return '<div style="font-size:.78rem;color:#8899aa;padding:.3rem 0;border-bottom:1px solid #1a2a5566;line-height:1.5">'+lyhyt+'<span style="color:'+vari+';margin-left:.5rem;font-size:.7rem">'+n+'x</span></div>';
+        }).join("");
+      el.appendChild(aihDiv);
+    }
+  }
+}
+
+function closeTTLProfile() {
+  document.getElementById("modalOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+  document.body.classList.remove("modal-open");
+  // Nollaa ladattu-flagit jotta uudelleenavauksessa data latautuu
+  document.querySelectorAll("[data-ladattu]").forEach(el => delete el.dataset.ladattu);
+}
+document.addEventListener("keydown", e => {
+  if (e.key==="Escape") {
+    closeTTLProfile();
+    suljeLobbausKortti();
+    suljeUutisetKortti();
+    suljeRssLista();
+  }
+});
+document.getElementById("modalOverlay").addEventListener("click", e => {
+  if(e.target===document.getElementById("modalOverlay")) closeTTLProfile();
+});
+
+/* ================================================================
+   LOBBAUS-NÄKYMÄ
+   ================================================================ */
+let LOBBAUS_YHT   = null;
+let AKTIIVINEN_KAUSI = "kaikki";
+const LOBBAUS_VARIT = ["#00d4ff","#ff9500","#3ec63e","#d00020","#8a25cc","#f5c400","#1a6fd8","#009b50"];
+
+async function lataaLobbausYhteenveto() {
+  if (LOBBAUS_YHT) return LOBBAUS_YHT;
+  try {
+    const res = await fetch("lobbaus_json/yhteenveto.json");
+    if (res.ok) LOBBAUS_YHT = await res.json();
+  } catch(_) {}
+  return LOBBAUS_YHT;
+}
+
+async function naytaLobbausNakyma() {
+  const nakyma = document.getElementById("lobbausNakyma");
+  const grid   = document.getElementById("grid");
+  const pagin  = document.getElementById("pagination");
+  const splash = document.getElementById("splash");
+
+  piilotaKaikki();
+  nakyma.style.display = "block";
+  document.getElementById("btnLobbaus").classList.add("active");
+
+  const yht = await lataaLobbausYhteenveto();
+  if (!yht) {
+    nakyma.innerHTML = '<div style="color:#e01010;padding:2rem">Lobbausdataa ei löydy. Aja muunna_toimintailmoitukset.py.</div>';
+    return;
+  }
+
+  // Rakenna kausisuodattimet
+  const kaudet = Object.entries(yht.kausi_data || {}).sort((a,b) => a[0].localeCompare(b[0]));
+  const tabEl  = document.getElementById("lobbausKausiTabit");
+  tabEl.innerHTML = "";
+  [["kaikki","Kaikki kaudet"], ...kaudet.map(([id,d]) => [id, d.label])].forEach(([id, label]) => {
+    const btn = document.createElement("button");
+    btn.className = "lb-kausi-btn" + (id === AKTIIVINEN_KAUSI ? " active" : "");
+    btn.textContent = label;
+    btn.addEventListener("click", () => {
+      AKTIIVINEN_KAUSI = id;
+      tabEl.querySelectorAll(".lb-kausi-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      paivitaLobbausData(yht);
+    });
+    tabEl.appendChild(btn);
+  });
+
+  paivitaLobbausData(yht);
+}
+
+function paivitaLobbausData(yht) {
+  renderKausiChart(yht);
+
+  const kausi     = AKTIIVINEN_KAUSI;
+  const kausiData = kausi !== "kaikki" ? (yht.kausi_data[kausi] || {}) : null;
+
+  // Top KE
+  const topKE = kausiData
+    ? Object.entries(kausiData.ke||{}).sort((a,b)=>b[1]-a[1])
+    : yht.top_ke;
+  PALKIT_SIVUT["lobbausTopKE"]=0; renderPalkit("lobbausTopKE", topKE.slice(0,50), "#00d4ff", (nimi) => {
+    piilotaLobbausNakyma();
+    document.getElementById("searchInput").value = nimi;
+    naytaTulokset();
+    suodataJaRenderöi();
+  });
+
+  // Top Org
+  const topOrg = kausiData && kausiData.org
+    ? Object.entries(kausiData.org).sort((a,b)=>b[1]-a[1])
+    : yht.top_org;
+  PALKIT_SIVUT["lobbausTopOrg"]=0; renderPalkit("lobbausTopOrg", topOrg.slice(0,30), "#ff9500");
+
+  // Aiheet
+  const topAiheet = kausiData && kausiData.aiheet
+    ? Object.entries(kausiData.aiheet).sort((a,b)=>b[1]-a[1])
+    : yht.top_aiheet;
+  PALKIT_SIVUT["lobbausAiheet"]=0; renderPalkit("lobbausAiheet", topAiheet.slice(0,20), "#3ec63e");
+
+  // Tavat
+  const tavat = kausiData && kausiData.tavat
+    ? normTavat(kausiData.tavat)
+    : yht.tavat;
+  renderTavat(tavat);
+}
+
+function normTavat(raw) {
+  const kat = {"Sähköposti":0,"Tapaaminen":0,"Puhelu":0,"Verkkovierailu":0,"Viesti/some":0,"Tapahtuma":0,"Muu":0};
+  Object.entries(raw).forEach(([tapa,n]) => {
+    const t = tapa.toLowerCase();
+    if (t.includes("hköposti")||t.includes("kirjeenvaihto")) kat["Sähköposti"]+=n;
+    if (t.includes("tapaaminen")||t.includes("vierailu")) kat["Tapaaminen"]+=n;
+    if (t.includes("puhelin")) kat["Puhelu"]+=n;
+    if (t.includes("verkkotapaaminen")) kat["Verkkovierailu"]+=n;
+    if (t.includes("tekstiviesti")||t.includes("pikaviesti")||t.includes("yksityisviesti")||t.includes("linkedin")) kat["Viesti/some"]+=n;
+    if (["tapahtuma","tilaisuus","osallistuminen","avajaiset","julkaisu"].some(x=>t.includes(x))) kat["Tapahtuma"]+=n;
+  });
+  const tot=Object.values(kat).reduce((a,b)=>a+b,0);
+  const raaka=Object.values(raw).reduce((a,b)=>a+b,0);
+  kat["Muu"]+=Math.max(0,raaka-tot);
+  return Object.fromEntries(Object.entries(kat).filter(([,v])=>v>0));
+}
+
+function renderKausiChart(yht) {
+  const el = document.getElementById("lobbausKausiChart");
+  if (!el || !yht.kausi_data) return;
+  const kaudet = Object.entries(yht.kausi_data);
+  const maxVal = Math.max(...kaudet.map(([,d]) => Object.values(d.ke||{}).reduce((a,b)=>a+b,0)));
+  const BAR_H  = 80;
+  el.innerHTML = kaudet.map(([id, d], i) => {
+    const tot = Object.values(d.ke||{}).reduce((a,b)=>a+b,0);
+    const px  = maxVal > 0 ? Math.max(6, Math.round(tot/maxVal*BAR_H)) : 6;
+    const aktv = AKTIIVINEN_KAUSI === id ? "border:1px solid #ff9500;" : "";
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer"'+
+      ' onclick="AKTIIVINEN_KAUSI=\''+id+'\';document.querySelectorAll(\'.lb-kausi-btn\').forEach((b,j)=>b.classList.toggle(\'active\',j==='+(i+1)+'));paivitaLobbausData(LOBBAUS_YHT)">'
+      +'<div style="font-size:.58rem;color:#ff9500;margin-bottom:3px;font-family:Orbitron,monospace">'+tot+'</div>'
+      +'<div style="width:100%;height:'+px+'px;background:#ff9500;opacity:.75;border-radius:3px 3px 0 0;'+aktv+'"></div>'
+      +'<div style="font-size:.58rem;color:#5a7a99;text-align:center;margin-top:4px">'+d.label+'</div>'
+      +'</div>';
+  }).join("");
+}
+
+const PALKIT_DATA = {};
+const PALKIT_SIVUT = {};
+
+function renderPalkit(elId, lista, vari, onClick, sivulla=10) {
+  if (!lista || !lista.length) {
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = '<div style="color:#5a7a99;font-size:.78rem">Ei dataa</div>';
+    return;
+  }
+  PALKIT_DATA[elId]  = {lista, vari, onClick, sivulla};
+  PALKIT_SIVUT[elId] = 0;
+  _renderPalkitSivu(elId);
+}
+
+function _renderPalkitSivu(elId) {
+  const el = document.getElementById(elId);
+  if (!el || !PALKIT_DATA[elId]) return;
+  const {lista, vari, onClick, sivulla} = PALKIT_DATA[elId];
+  const sivu  = PALKIT_SIVUT[elId] || 0;
+  const alku  = sivu * sivulla;
+  const loppu = Math.min(alku + sivulla, lista.length);
+  const maxN  = lista[0][1];
+  const sivuja = Math.ceil(lista.length / sivulla);
+
+  const rivit = lista.slice(alku, loppu).map(([label, n]) => {
+    const pct   = Math.round(n/maxN*100);
+    const lyhyt = label.length > 40 ? label.slice(0,38)+"…" : label;
+    return '<div class="lb-bar-row" style="'+(onClick?'cursor:pointer':'')+'" data-nimi="'+label.replace(/"/g,'&quot;')+'">'
+      +'<div class="lb-bar-label"><span>'+lyhyt+'</span><span>'+n+'</span></div>'
+      +'<div class="lb-bar-track"><div class="lb-bar-fill" style="width:'+pct+'%;background:'+vari+'"></div></div>'
+      +'</div>';
+  }).join("");
+
+  let pagin = "";
+  if (sivuja > 1) {
+    const btns = Array.from({length: sivuja}, (_,i) =>
+      '<button onclick="PALKIT_SIVUT[\''+elId+'\']='+(i)+';_renderPalkitSivu(\''+elId+'\');"'
+        +' style="background:'+(i===sivu?'rgba(0,212,255,.08)':'transparent')+';'
+        +'border:1px solid '+(i===sivu?vari:'#1a2a55')+';border-radius:3px;'
+        +'color:'+(i===sivu?vari:'#5a7a99')+';font-family:Rajdhani,sans-serif;'
+        +'font-size:.68rem;padding:.2rem .5rem;cursor:pointer;margin:.1rem">'+(i+1)+'</button>'
+    ).join("");
+    pagin = '<div style="display:flex;align-items:center;gap:.25rem;margin-top:.5rem;flex-wrap:wrap">'
+    +'<span style="font-size:.65rem;color:#5a7a99;margin-right:.25rem">'+(alku+1)+'–'+loppu+' / '+lista.length+'</span>'
+    +btns+'</div>';
+  }
+
+  el.innerHTML = rivit + pagin;
+
+  if (onClick) {
+    el.querySelectorAll(".lb-bar-row[data-nimi]").forEach(row => {
+      row.addEventListener("click", () => onClick(row.dataset.nimi));
+    });
+  }
+}
+
+function renderTavat(tavat) {
+  const el = document.getElementById("lobbausTavat");
+  if (!el || !tavat) return;
+  const lista  = Object.entries(tavat).sort((a,b)=>b[1]-a[1]);
+  const yhteensa = lista.reduce((s,[,n])=>s+n,0);
+  el.innerHTML = lista.map(([tapa,n],i) => {
+    const pct = Math.round(n/yhteensa*100);
+    const c = LOBBAUS_VARIT[i%LOBBAUS_VARIT.length];
+    return '<div class="lb-donut-row">'
+      +'<div class="lb-donut-dot" style="background:'+c+'"></div>'
+      +'<div style="flex:1;font-size:.75rem;color:#8899aa">'+tapa+'</div>'
+      +'<div style="font-size:.72rem;color:#fff;font-family:Orbitron,monospace;min-width:80px;text-align:right">'+n.toLocaleString()+' <span style="color:#5a7a99">('+pct+'%)</span></div>'
+      +'<div style="width:60px;background:rgba(255,255,255,.05);border-radius:3px;height:6px;margin-left:.5rem">'
+      +'<div style="width:'+pct+'%;height:100%;background:'+c+';border-radius:3px"></div>'
+      +'</div></div>';
+  }).join("");
+}
+
+function piilotaLobbausNakyma() {
+  document.getElementById("lobbausNakyma").style.display = "none";
+  document.getElementById("btnLobbaus").classList.remove("active");
+}
+
+document.getElementById("btnLobbaus").addEventListener("click", () => {
+  // Piilota KAIKKI ensin, sitten näytä lobbaus
+  piilotaKaikki();
+  naytaLobbausNakyma();
+});
+
+
+/* ================================================================
+   HALLITUSNÄKYMÄ — Orpon hallitus 2023–
+   ================================================================ */
+const HALLITUS = [
+  {nimi:"Alexander Stubb",     salkku:"Tasavallan presidentti",                    puolue:"KOK"},
+  {nimi:"Petteri Orpo",        salkku:"Pääministeri",                              puolue:"KOK"},
+  {nimi:"Riikka Purra",        salkku:"Valtiovarainministeri",                     puolue:"PS"},
+  {nimi:"Elina Valtonen",      salkku:"Ulkoministeri",                             puolue:"KOK"},
+  {nimi:"Antti Häkkänen",      salkku:"Oikeusministeri",                           puolue:"KOK"},
+  {nimi:"Mari Rantanen",       salkku:"Sisäministeri",                             puolue:"PS"},
+  {nimi:"Antti Kaikkonen",     salkku:"Puolustusministeri",                        puolue:"KESK"},
+  {nimi:"Sari Essayah",        salkku:"Sosiaali- ja terveysministeri",             puolue:"KD"},
+  {nimi:"Anders Adlercreutz",  salkku:"Opetusministeri",                           puolue:"RKP"},
+  {nimi:"Sari Multala",        salkku:"Tiede- ja kulttuuriministeri",              puolue:"KOK"},
+  {nimi:"Vilhelm Junnila",     salkku:"Elinkeinoministeri (ent.)",                 puolue:"PS"},
+  {nimi:"Wille Rydman",        salkku:"Elinkeinoministeri",                        puolue:"PS"},
+  {nimi:"Anna-Kaisa Ikonen",   salkku:"Kuntaministeri",                            puolue:"KOK"},
+  {nimi:"Kai Mykkänen",        salkku:"Ympäristö- ja ilmastoministeri",            puolue:"KOK"},
+  {nimi:"Jari Koskela",        salkku:"Maa- ja metsätalousministeri",              puolue:"PS"},
+  {nimi:"Lulu Ranne",          salkku:"Sosiaali- ja terveysministeri (varamini.)", puolue:"PS"},
+  {nimi:"Joakim Strand",       salkku:"Eurooppa- ja omistajaohjausministeri",      puolue:"RKP"},
+  {nimi:"Janne Jukkola",       salkku:"Liikenne- ja viestintäministeri",           puolue:"PS"},
+  {nimi:"Arto Satonen",        salkku:"Työministeri",                              puolue:"KOK"},
+  {nimi:"Sakari Puisto",       salkku:"Ulkomaankauppa- ja kehitysministeri",       puolue:"PS"},
+  {nimi:"Ville Kaunisto",      salkku:"Asuntoministeri",                           puolue:"KOK"},
+];
+
+async function naytaHallitusNakyma() {
+  const nakyma  = document.getElementById("hallitusNakyma");
+  const grid    = document.getElementById("grid");
+  const pagin   = document.getElementById("pagination");
+  const splash  = document.getElementById("splash");
+  const lobbaus = document.getElementById("lobbausNakyma");
+
+  piilotaKaikki();
+  nakyma.style.display = "block";
+  document.getElementById("btnHallitus").classList.add("active");
+
+  // Hae lobbaustiedot
+  const idx = await lataaLobbausIndex();
+
+  const container = document.getElementById("hallitusGrid");
+  container.innerHTML = "";
+
+  for (const ministeri of HALLITUS) {
+    const vari = puolueVari(ministeri.puolue);
+
+    // Etsi edustaja hakemistosta kuvan ja lobbauksen saamiseksi
+    const edustaja = KAIKKI ? KAIKKI.find(e => e.nimi === ministeri.nimi) : null;
+    const kuva     = edustaja ? edustaja.kuva : "";
+
+    // Lobbaustiedot
+    const tiData = idx && idx.toimintailmoitukset ? idx.toimintailmoitukset[ministeri.nimi] : null;
+    const yhteensa = tiData ? tiData.yhteensa : 0;
+
+    const card = document.createElement("div");
+    card.className = "hallitus-card";
+    card.style.setProperty("--party-color", vari);
+    card.style.cursor = edustaja ? "pointer" : "default";
+
+    const imgEl = document.createElement(kuva ? "img" : "div");
+    if (kuva) {
+      imgEl.src = kuva; imgEl.alt = ministeri.nimi;
+      imgEl.onerror = function(){ this.style.display="none"; };
+      imgEl.style.cssText = "width:60px;height:74px;object-fit:cover;border-radius:4px;border:1px solid "+vari+"44;flex-shrink:0";
+    } else {
+      imgEl.style.cssText = "width:60px;height:74px;background:#0a0f1e;border-radius:4px;border:1px solid #1a2a55;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#1a2a55;font-size:1.5rem";
+      imgEl.textContent = "?";
+    }
+    const kuvaHtml = imgEl.outerHTML;
+
+    const lobbausHtml = yhteensa > 0
+      ? '<div style="margin-top:.5rem;font-size:.7rem;color:'+vari+';font-family:Orbitron,monospace">↗ '+yhteensa+' lobbausmerkintää</div>'
+      : "";
+
+    card.innerHTML =
+      '<div style="height:3px;background:'+vari+';border-radius:3px 3px 0 0;margin:-1rem -1rem .75rem"></div>'
+      +'<div style="display:flex;gap:.85rem;align-items:flex-start">'
+      +kuvaHtml
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:.65rem;letter-spacing:.12em;color:'+vari+';margin-bottom:.2rem">'+ministeri.puolue+'</div>'
+      +'<div style="font-family:Rajdhani,sans-serif;font-size:1.05rem;font-weight:700;color:#e8f4ff;line-height:1.2;margin-bottom:.3rem">'+ministeri.nimi+'</div>'
+      +'<div style="font-size:.75rem;color:#5a7a99;line-height:1.4">'+ministeri.salkku+'</div>'
+      +lobbausHtml
+      +'</div></div>';
+
+    if (edustaja) {
+      card.addEventListener("click", () => openTTLProfile(edustaja));
+    }
+    container.appendChild(card);
+  }
+}
+
+function piilotaHallitusNakyma() {
+  document.getElementById("hallitusNakyma").style.display = "none";
+  document.getElementById("btnHallitus").classList.remove("active");
+}
+
+document.getElementById("btnHallitus").addEventListener("click", () => {
+  piilotaKaikki();
+  naytaHallitusNakyma();
+});
+
+function piilotaKaikki() {
+  const ids = ["splash","grid","pagination","tulosrivi","lobbausNakyma","hallitusNakyma","signaalinNakyma"];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+  ["btnNykyiset","btnHistorialliset","btnLobbaus","btnHallitus"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("active");
+  });
+}
+
+/* ================================================================
+   UUTISET-KORTTI — Henkilökohtaiset uutiset RSS-syötteistä
+   ================================================================ */
+function avaaUutisetKortti(m) {
+  if (!m) return;
+  const overlay  = document.getElementById("uutisetKorttiOverlay");
+  const sisalto  = document.getElementById("uutisetKorttiSisalto");
+  overlay.classList.remove("hidden-overlay");
+  overlay.classList.add("open");
+  const vari = puolueVari(m.puolue);
+  sisalto.innerHTML =
+    '<div style="color:#ff4d6d;font-family:Orbitron,monospace;font-size:.65rem;letter-spacing:.15em;margin-bottom:.4rem">📡 VIIMEISIMMÄT UUTISET</div>'+
+    '<div style="font-size:1.2rem;font-weight:700;color:#e8f4ff;margin-bottom:1rem">'+m.nimi+'</div>'+
+    '<div style="color:#5a7a99;font-size:.78rem;margin-bottom:1rem;letter-spacing:.08em">Haetaan uutisia kaikista lähteistä...</div>'+
+    '<div id="uutisetLista" style="display:flex;flex-direction:column;gap:.35rem"><div class="spinner" style="margin:1rem auto"></div></div>';
+
+  haeHenkilonUutiset(m, vari);
+}
+
+// Luo klikattava poliitikkobadge
+function luoBadge(pol) {
+  if (!pol) return '';
+  const span = document.createElement('span');
+  span.style.cssText = 'display:inline-block;background:'+pol.vari+'22;border:1px solid '+pol.vari+'66;'
+    +'border-radius:3px;font-size:.65rem;color:'+pol.vari+';padding:.1rem .4rem;margin-right:.4rem;'
+    +'font-family:Orbitron,monospace;letter-spacing:.08em;vertical-align:middle;'
+    +'transition:transform .15s,box-shadow .15s';
+  span.textContent = '👤 ' + pol.sukunimi;
+  if (pol.edustaja) {
+    span.style.cursor = 'pointer';
+    span.addEventListener('mouseover', () => { span.style.transform='scale(1.08)'; span.style.boxShadow='0 0 8px '+pol.vari+'88'; });
+    span.addEventListener('mouseout',  () => { span.style.transform='scale(1)';    span.style.boxShadow='none'; });
+    span.addEventListener('click', e  => { e.preventDefault(); e.stopPropagation(); openTTLProfile(pol.edustaja); });
+  }
+  return span.outerHTML;
+}
+
+
+async function haeHenkilonUutiset(m, vari) {
+  const el = document.getElementById("uutisetLista");
+  if (!el) return;
+
+  const osat = m.nimi.split(' ');
+  const suku = osat[osat.length - 1].toLowerCase();
+  const osumia = [];
+
+  // Taivutusmuodot
+  function nimiOsuu(teksti, suku) {
+    if (teksti.includes(suku)) return true;
+    const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä','tta','ttä'];
+    return paatteet.some(p => teksti.includes(suku + p));
+  }
+
+  // Käy läpi kaikki RSS-lähteet
+  const haut = RSS_LAHTEET.map(async lahde => {
+    try {
+      const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=50");
+      const data = await res.json();
+      if (!data.items) return;
+      data.items.forEach(item => {
+        const teksti = (item.title + ' ' + (item.description||'')).toLowerCase();
+        if (nimiOsuu(teksti, suku)) {
+          osumia.push({ item, lahde });
+        }
+      });
+    } catch(e) {}
+  });
+
+  await Promise.all(haut);
+
+  if (!el) return;
+
+  if (!osumia.length) {
+    el.innerHTML = '<div style="color:#5a7a99;font-size:.82rem;padding:.5rem 0">Ei uutisia löytynyt tällä hetkellä.</div>';
+    return;
+  }
+
+  // Järjestä uusimmat ensin, näytä max 10
+  osumia.sort((a,b) => new Date(b.item.pubDate||0) - new Date(a.item.pubDate||0));
+  el.innerHTML = osumia.slice(0,10).map(({item, lahde}) => {
+    const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fi-FI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+    return '<a href="'+item.link+'" target="_blank" rel="noopener"'+
+      ' style="display:block;padding:.5rem .6rem;border:1px solid #1a2a55;border-radius:4px;text-decoration:none;margin-bottom:.35rem;background:rgba(255,255,255,.02)">' +
+      '<div style="font-size:.65rem;color:'+lahde.vari+';font-family:Orbitron,monospace;letter-spacing:.1em;margin-bottom:.25rem">'+lahde.nimi+'</div>'+
+      '<div style="font-size:.85rem;color:#c8d8e8;line-height:1.4;margin-bottom:.2rem;font-weight:500">'+item.title+'</div>'+
+      '<div style="font-size:.7rem;color:#5a7a99">'+pvm+'</div>'+
+      '</a>';
+  }).join('');
+}
+
+function suljeUutisetKortti() {
+  const overlay = document.getElementById("uutisetKorttiOverlay");
+  overlay.classList.remove("open");
+  overlay.classList.add("hidden-overlay");
+}
+
+document.getElementById("uutisetKorttiOverlay").addEventListener("click", e => {
+  if (e.target.id === "uutisetKorttiOverlay") suljeUutisetKortti();
+});
+
+/* ================================================================
+   SIGNAALI — RSS-UUTISET
+   ================================================================ */
+const RSS_LAHTEET = [
+  // Uutismediat
+  { nimi: "Iltalehti Tuoreimmat",    url: "https://www.iltalehti.fi/rss/uutiset.xml",                                                                                                                                                                                                                                                                           vari: "#ff7733", ryhma: "Media" },
+  { nimi: "Iltalehti Politiikka",    url: "https://www.iltalehti.fi/rss/politiikka.xml",                                                                                                                                                                                                                                                                vari: "#ff9500", ryhma: "Media" },
+  { nimi: "Ilta-Sanomat Politiikka", url: "https://www.is.fi/rss/politiikka.xml",                                                                                                                                                                                                                                                                       vari: "#ff4d6d", ryhma: "Media" },
+  { nimi: "Yle Uutiset (fi)",         url: "https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET",                                                                                                                                                                                                                                             vari: "#00aaff", ryhma: "Media" },
+  { nimi: "Yle Politiikka",           url: "https://yle.fi/rss/t/18-38033/fi",                                                                                                                                                                                                                                                                               vari: "#00d4ff", ryhma: "Media" },
+  { nimi: "Yle Tuoreimmat",          url: "https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_NEWS",                                                                                                                                                                                                                                            vari: "#00aaff", ryhma: "Media" },
+  // Eduskunta
+  { nimi: "Eduskunnan tiedotteet",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=f9da32bd-3b14-433b-8205-71a52f570b09&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fdefault%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=fdd65402-3b0a-4310-a0ba-ba310c157922&xsl=1",                                                                                       vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Hallituksen esitykset",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=09a1389c-9905-432f-a68b-dad4d2992beb&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FHEt%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=aae94984-39b7-459a-9912-7bf5d970b356&xsl=1",                                                                                           vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Kirjalliset kysymykset",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=a4011b50-8132-4c08-906f-ad8089958fd5&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fkirjalliset%2Dkysymykset%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=9971a60e-1c4e-4269-9c21-2ab800e34953&xsl=1",                                                                      vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Täysistunnon pöytäkirjat",url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=8192fae7-172f-46ba-8605-75c1e750007a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FTaysistuntojen%2Dpoytakirjat%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=3527e156-7a72-443c-8698-9b5596317471&xsl=1",                                                           vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Eduskunnan vastaukset",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=69b97f55-ed58-4b2e-aac6-0936374b842a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FEduskunnan%2Dvastaukset%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=c05021c0-702c-4ceb-a200-2d5a93e57156&xsl=1",                                                                 vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Eduskunnan kirjelmät",    url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=ec8fa660-6762-47e3-87cd-00039b3e19c9&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FEduskunnan%2Dkirjelmat%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=84ce04a6-a119-48aa-b6ef-0f8be1f9d594&xsl=1",                                                                  vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Valiokuntien mietinnöt",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=fe15ad98-fba4-48d8-a772-e8a8ee7c5b5a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FValiokuntien%2Dmietinn%C3%B6t%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=edd3f5a9-7395-4868-905d-62dbd6579f16&xsl=1",                                                         vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Valiokuntien tiedotteet", url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=7a49dce1-188a-44b6-aecf-82e274fbaeb3&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FValiokuntien%2Dtiedotteet%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=46e1dcd7-8235-4020-94a2-8580b3d6a33d&xsl=1",                                                                     vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Vireille tulleet asiat",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=1464b969-e96f-41d8-b741-a26e49ea0fbc&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fvireilletulleet%2Dvpasiat%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=e7568274-be64-435c-9901-9d4aa9e3d7a3&xsl=1",                                                                     vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Kansalaisinfon tapahtumat",url:"https://www.eduskunta.fi/_layouts/15/feed.aspx?page=1eb6349c-c04b-465c-a2d4-f76065cd4dee&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fkansalaisinfon%2Dtapahtumat%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=f8068861-8686-4d82-acdb-bb73a0de885c&xsl=1",                                                                    vari: "#3ec63e", ryhma: "Eduskunta" },
+  // Valtioneuvosto
+  { nimi: "VN Tiedotteet",           url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/Kh4WBNNjLkT0/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "VN Sisältöjulkaisija",    url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/0QdyGs8zToLU/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Raha-asiainvaliokunta",   url: "https://valtioneuvosto.fi/staatliset-feedit/-/asset_publisher/mC1kW66famCW/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Presidentin esittelyt",   url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/fBqCYPX7caPN/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Ilmasto- ja energiaryhmä",url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/qzXKaUHySRbV/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+];
+
+const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+// Etsi uutistekstistä tunnettu poliitikko — palauttaa {sukunimi, vari} tai null
+function etsiPoliitikko(teksti) {
+  // Tarkista sukunimi taivutusmuotoineen
+  function nimiOsuu(suku) {
+    if (teksti.includes(suku)) return true;
+    const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','lle','ssa','ssä','ksi','na','nä','tta','ttä'];
+    return paatteet.some(p => teksti.includes(suku + p));
+  }
+  // Hallituksen jäsenet (+ presidentti)
+  for (const m of HALLITUS) {
+    const osat = m.nimi.split(' ');
+    const suku = osat[osat.length - 1].toLowerCase();
+    if (nimiOsuu(suku)) {
+      const edustaja = KAIKKI ? KAIKKI.find(e => e.nimi === m.nimi) : null;
+      return { sukunimi: osat[osat.length-1], vari: puolueVari(m.puolue), edustaja };
+    }
+  }
+  // Nykyiset kansanedustajat
+  if (KAIKKI && KAIKKI.length) {
+    for (const e of KAIKKI) {
+      if (!e.nykyinen) continue;
+      const osat = e.nimi.split(' ');
+      const suku = osat[osat.length - 1].toLowerCase();
+      if (nimiOsuu(suku)) {
+        return { sukunimi: osat[osat.length-1], vari: puolueVari(e.puolue), edustaja: e };
+      }
+    }
+  }
+  return null;
+}
+
+async function lataaSignaali() {
+  const grid = document.getElementById("signaalinGrid");
+  grid.innerHTML = "";
+
+  // Ryhmittele lähteet
+  const ryhmat = {};
+  RSS_LAHTEET.forEach(l => {
+    if (!ryhmat[l.ryhma]) ryhmat[l.ryhma] = [];
+    ryhmat[l.ryhma].push(l);
+  });
+
+  const ryhmaVarit = { "Media": "#ff4d6d", "Eduskunta": "#3ec63e", "Valtioneuvosto": "#f5c400" };
+
+  for (const [ryhma, lahteet] of Object.entries(ryhmat)) {
+    // Ryhmäotsikko
+    const otsikko = document.createElement("div");
+    otsikko.style.cssText = "grid-column:1/-1;font-family:'Orbitron',monospace;font-size:.75rem;letter-spacing:.2em;color:"+ryhmaVarit[ryhma]+";margin:.5rem 0 .25rem;padding-top:.5rem;border-top:1px solid #1a2a55";
+    otsikko.textContent = "— " + ryhma.toUpperCase() + " —";
+    grid.appendChild(otsikko);
+
+    for (const lahde of lahteet) {
+      const id = "rss-" + lahde.nimi.replace(/[^a-zA-Z0-9]/g, '-');
+
+      const panel = document.createElement("div");
+      panel.className = "lobbaus-panel";
+      panel.style.cursor = "pointer";
+
+      const header = document.createElement("div");
+      header.style.cssText = "display:flex;justify-content:space-between;align-items:center";
+
+      const title = document.createElement("div");
+      title.className = "lobbaus-panel-title";
+      title.style.cssText = "color:" + lahde.vari + ";margin-bottom:0";
+      title.textContent = lahde.nimi;
+
+      const arrow = document.createElement("span");
+      arrow.id = id + "-arrow";
+      arrow.style.cssText = "color:" + lahde.vari + ";font-size:1rem";
+      arrow.textContent = "▸";
+
+      header.appendChild(title);
+      header.appendChild(arrow);
+
+      const body = document.createElement("div");
+      body.id = id + "-body";
+      body.style.cssText = "display:none;flex-direction:column;gap:.35rem;overflow-y:auto;max-height:280px;padding-right:.25rem;margin-top:.6rem";
+      body.innerHTML = '<div class="spinner" style="margin:.5rem auto"></div>';
+
+      header.addEventListener("click", function() {
+        const isOpen = body.style.display !== "none";
+        body.style.display = isOpen ? "none" : "flex";
+        arrow.textContent = isOpen ? "▸" : "▾";
+      });
+
+      panel.appendChild(header);
+      panel.appendChild(body);
+      grid.appendChild(panel);
+
+      // Lataa asynkronisesti — ei blokkaa muita
+      (async (lahde, id) => {
+        try {
+          const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=15");
+          const data = await res.json();
+          const el   = document.getElementById(id+'-body');
+          if (!el) return;
+          if (!data.items || !data.items.length) {
+            el.innerHTML = '<span style="color:#5a7a99;font-size:.88rem">Ei uutisia saatavilla</span>';
+            return;
+          }
+          el.innerHTML = data.items.map(item => {
+            const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fi-FI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+
+            // Tarkista löytyykö otsikosta tunnettu poliitikko
+            const teksti = (item.title + ' ' + (item.description||'')).toLowerCase();
+            const osuma = etsiPoliitikko(teksti);
+
+            const indikaattori = osuma ? luoBadge(osuma) : '';
+
+            return '<a href="' + item.link + '" target="_blank" rel="noopener" class="rss-item" style="display:block;padding:.45rem 0;border-bottom:1px solid #1a2a5544;text-decoration:none;color:inherit">'
+              + '<div style="font-size:1rem;color:#c8d8e8;line-height:1.5;margin-bottom:.25rem;font-weight:500">' + indikaattori + item.title + '</div>'
+              + '<div style="font-size:.82rem;color:#5a7a99">' + pvm + '</div>'
+              + '</a>';
+          }).join('');
+        } catch(e) {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = '<span style="color:#5a7a99;font-size:.88rem">Lataus epäonnistui</span>';
+        }
+      })(lahde, id);
+    }
+  }
+}
+
+async function lataaPoliitikkoMaininnat() {
+  const el = document.getElementById("poliitikkoMaininnat");
+  const lkm = document.getElementById("mainintaLkm");
+  if (!el) return;
+
+  // Kerää kaikki poliitikkojen nimet (hallitus + nykyiset edustajat)
+  const poliitikot = [];
+  HALLITUS.forEach(m => {
+    const osat = m.nimi.split(' ');
+    poliitikot.push({ nimi: m.nimi, suku: osat[osat.length-1].toLowerCase(), etu: osat[0].toLowerCase(), vari: puolueVari(m.puolue), puolue: m.puolue });
+  });
+  if (KAIKKI && KAIKKI.length) {
+    KAIKKI.filter(e => e.nykyinen).forEach(e => {
+      const osat = e.nimi.split(' ');
+      const suku = osat[osat.length-1].toLowerCase();
+      // Älä lisää duplikaatteja
+      if (!poliitikot.find(p => p.suku === suku && p.etu === osat[0].toLowerCase())) {
+        poliitikot.push({ nimi: e.nimi, suku, etu: osat[0].toLowerCase(), vari: puolueVari(e.puolue), puolue: e.puolue });
+      }
+    });
+  }
+
+  const osumia = [];
+
+  // Hae kaikista lähteistä rinnakkain
+  await Promise.all(RSS_LAHTEET.map(async lahde => {
+    try {
+      const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=20");
+      const data = await res.json();
+      if (!data.items) return;
+      data.items.forEach(item => {
+        const teksti = (item.title + ' ' + (item.description||'')).toLowerCase();
+        const pol = poliitikot.find(p => {
+          if (teksti.includes(p.suku)) return true;
+          const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä'];
+          return paatteet.some(e => teksti.includes(p.suku + e));
+        });
+        if (pol) {
+          osumia.push({ item, lahde, pol });
+        }
+      });
+    } catch(e) {}
+  }));
+
+  if (!el) return;
+
+  // Järjestä uusimmat ensin, poista duplikaatit saman otsikon perusteella
+  const nahdyt = new Set();
+  const uniikit = osumia
+    .sort((a,b) => new Date(b.item.pubDate||0) - new Date(a.item.pubDate||0))
+    .filter(({item}) => {
+      if (nahdyt.has(item.title)) return false;
+      nahdyt.add(item.title);
+      return true;
+    });
+
+  if (lkm) lkm.textContent = uniikit.length + ' mainintaa';
+
+  if (!uniikit.length) {
+    el.innerHTML = '<div style="color:#5a7a99;font-size:.92rem;padding:.5rem 0">Ei mainintoja löytynyt tällä hetkellä.</div>';
+    return;
+  }
+
+  el.innerHTML = uniikit.map(({item, lahde, pol}) => {
+    const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fi-FI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+    return '<a href="'+item.link+'" target="_blank" rel="noopener"'
+      +' style="display:flex;align-items:flex-start;gap:.6rem;padding:.45rem 0;border-bottom:1px solid #1a2a5544;text-decoration:none">'
+      +'<span style="flex-shrink:0;background:'+pol.vari+'22;border:1px solid '+pol.vari+'66;border-radius:3px;'
+        +'font-size:.7rem;color:'+pol.vari+';padding:.15rem .4rem;font-family:Orbitron,monospace;'
+        +'letter-spacing:.06em;margin-top:.15rem">'+pol.puolue+'</span>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:.95rem;color:#c8d8e8;line-height:1.45;margin-bottom:.2rem;font-weight:500">'
+          +'<span style="color:'+pol.vari+';font-weight:700">'+pol.nimi.split(' ').pop()+'</span>'
+          +' — '+item.title
+        +'</div>'
+        +'<div style="font-size:.78rem;color:#5a7a99">'+lahde.nimi+' · '+pvm+'</div>'
+      +'</div>'
+      +'</a>';
+  }).join('');
+}
+
+/* ── RSS-ryhmäpainikkeet ── */
+const RYHMA_IKONIT = { "Media": "📰", "Eduskunta": "🏛️", "Valtioneuvosto": "⚡" };
+const RYHMA_VARIT  = { "Media": "#ff4d6d", "Eduskunta": "#3ec63e", "Valtioneuvosto": "#f5c400" };
+let AKTIIVINEN_RSS_RYHMA = null;
+let RSS_CACHE = {}; // { lahdeNimi: [items] }
+
+function rakennaSIgnaaliPainikkeet() {
+  const wrap = document.getElementById("signaalinRyhmaPainikkeet");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const ryhmat = [...new Set(RSS_LAHTEET.map(l => l.ryhma))];
+  ryhmat.forEach(ryhma => {
+    const vari   = RYHMA_VARIT[ryhma]   || "#00d4ff";
+    const ikoni  = RYHMA_IKONIT[ryhma]  || "📡";
+    const lahteet = RSS_LAHTEET.filter(l => l.ryhma === ryhma);
+    const btn = document.createElement("button");
+    btn.className = "signaali-ryhma-btn";
+    btn.style.setProperty("--sr-color",  vari);
+    btn.style.setProperty("--sr-glow",   vari.replace(")", ",.12)").replace("rgb","rgba"));
+    btn.style.setProperty("--sr-shadow", vari.replace(")", ",.25)").replace("rgb","rgba"));
+    btn.style.setProperty("--sr-bg",     vari.replace(")", ",.07)").replace("rgb","rgba"));
+    btn.innerHTML =
+      '<span style="font-size:1.5rem;line-height:1">'+ikoni+'</span>'+
+      '<span class="signaali-ryhma-label">'+ryhma+'</span>'+
+      '<span class="signaali-ryhma-sub">'+lahteet.length+' lähdettä</span>';
+    btn.addEventListener("click", () => avaaRssRyhma(ryhma, btn));
+    wrap.appendChild(btn);
+  });
+}
+
+function avaaRssRyhma(ryhma, btn) {
+  const overlay  = document.getElementById("rssListaOverlay");
+  const sisalto  = document.getElementById("rssListaSisalto");
+  const topbar   = document.getElementById("rssListaTopbar");
+  const vari     = RYHMA_VARIT[ryhma] || "#ff4d6d";
+  topbar.style.background = vari;
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  const lahteet = RSS_LAHTEET.filter(l => l.ryhma === ryhma);
+  sisalto.innerHTML =
+    '<div style="color:'+vari+';font-family:Orbitron,monospace;font-size:.65rem;letter-spacing:.15em;margin-bottom:.3rem">'+RYHMA_IKONIT[ryhma]+' '+ryhma.toUpperCase()+'</div>'+
+    '<div style="font-size:1.15rem;font-weight:700;color:#e8f4ff;margin-bottom:1.25rem">'+lahteet.length+' uutislähdettä</div>'+
+    '<div id="rssListaItems"></div>';
+
+  renderRssRyhmaItems(lahteet, vari);
+}
+
+async function renderRssRyhmaItems(lahteet, vari) {
+  const el = document.getElementById("rssListaItems");
+  if (!el) return;
+  el.innerHTML = '<div class="spinner" style="margin:1.5rem auto"></div>';
+
+  // Lataa kaikki lähteet rinnakkain
+  await Promise.all(lahteet.map(async lahde => {
+    if (!RSS_CACHE[lahde.nimi]) {
+      try {
+        const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=15");
+        const data = await res.json();
+        RSS_CACHE[lahde.nimi] = data.items || [];
+      } catch(e) { RSS_CACHE[lahde.nimi] = []; }
+    }
+  }));
+
+  if (!el) return;
+  el.innerHTML = "";
+
+  lahteet.forEach(lahde => {
+    const items = RSS_CACHE[lahde.nimi] || [];
+
+    // Lähteen otsikko accordion-tyylisesti
+    const section = document.createElement("div");
+    section.style.marginBottom = ".75rem";
+
+    const header = document.createElement("div");
+    header.style.cssText = "display:flex;justify-content:space-between;align-items:center;"+
+      "padding:.5rem .75rem;background:rgba(255,255,255,.03);border:1px solid #1a2a55;"+
+      "border-radius:5px;cursor:pointer;margin-bottom:.35rem";
+
+    const htitle = document.createElement("div");
+    htitle.style.cssText = "font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.15em;color:"+lahde.vari;
+    htitle.textContent = lahde.nimi;
+
+    const arrow = document.createElement("span");
+    arrow.style.cssText = "color:"+lahde.vari+";font-size:.8rem";
+    arrow.textContent = "▸";
+
+    const body = document.createElement("div");
+    body.style.display = "none";
+
+    header.appendChild(htitle);
+    header.appendChild(arrow);
+    header.addEventListener("click", () => {
+      const open = body.style.display !== "none";
+      body.style.display = open ? "none" : "block";
+      arrow.textContent  = open ? "▸" : "▾";
+    });
+
+    if (!items.length) {
+      body.innerHTML = '<div style="color:#5a7a99;font-size:.82rem;padding:.35rem 0">Ei uutisia saatavilla</div>';
+    } else {
+      body.innerHTML = items.map(item => {
+        const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fi-FI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+        const teksti = (item.title + ' ' + (item.description||'')).toLowerCase();
+        const pol    = etsiPoliitikko(teksti);
+        const badge  = pol ? luoBadge(pol) : '';
+        return '<a href="'+item.link+'" target="_blank" rel="noopener"'
+          +' style="display:block;padding:.5rem 0;border-bottom:1px solid #1a2a5533;text-decoration:none">'
+          +'<div style="font-size:.9rem;color:#c8d8e8;line-height:1.45;margin-bottom:.2rem;font-weight:500">'+badge+item.title+'</div>'
+          +'<div style="font-size:.72rem;color:#5a7a99">'+pvm+'</div>'
+          +'</a>';
+      }).join('');
+    }
+
+    section.appendChild(header);
+    section.appendChild(body);
+    el.appendChild(section);
+  });
+}
+
+function suljeRssLista() {
+  document.getElementById("rssListaOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("rssListaOverlay").addEventListener("click", e => {
+  if (e.target.id === "rssListaOverlay") suljeRssLista();
+});
+
+function naytaSignaaliNakyma() {
+  piilotaKaikki();
+  document.getElementById("signaalinNakyma").style.display = "block";
+  document.getElementById("btnSignaali").classList.add("active");
+  rakennaSIgnaaliPainikkeet();
+  lataaPoliitikkoMaininnat();
+}
+
+document.getElementById("btnSignaali").addEventListener("click", () => {
+  naytaSignaaliNakyma();
+});
+
+lataaHakemisto();
+// Esihae lobbausdata taustalla vasta 5s kuluttua
+setTimeout(() => lataaLobbausIndex(), 5000);
+</script>
+</body>
+</html>
