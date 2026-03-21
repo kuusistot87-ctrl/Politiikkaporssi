@@ -2404,7 +2404,7 @@ async function lataaSignaali() {
       // Lataa asynkronisesti — ei blokkaa muita
       (async (lahde, id) => {
         try {
-          const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=8");
+          const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=15");
           const data = await res.json();
           const el   = document.getElementById(id);
           if (!el) return;
