@@ -2345,9 +2345,27 @@ function piilotaKaikki() {
    SIGNAALI — RSS-UUTISET
    ================================================================ */
 const RSS_LAHTEET = [
-  { nimi: "Yle Politiikka",    url: "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss",  vari: "#00d4ff" },
-  { nimi: "Iltalehti",         url: "https://www.iltalehti.fi/rss/politiikka.xml",                      vari: "#ff9500" },
-  { nimi: "Suomenmaa",         url: "https://www.suomenmaa.fi/rss",                                     vari: "#3ec63e" },
+  // Uutismediat
+  { nimi: "Iltalehti Politiikka",    url: "https://www.iltalehti.fi/rss/politiikka.xml",                                                                                                                                                                                                                                                                vari: "#ff9500", ryhma: "Media" },
+  { nimi: "Ilta-Sanomat Politiikka", url: "https://www.is.fi/rss/politiikka.xml",                                                                                                                                                                                                                                                                       vari: "#ff4d6d", ryhma: "Media" },
+  { nimi: "Yle Tuoreimmat",          url: "https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_NEWS",                                                                                                                                                                                                                                            vari: "#00d4ff", ryhma: "Media" },
+  // Eduskunta
+  { nimi: "Eduskunnan tiedotteet",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=f9da32bd-3b14-433b-8205-71a52f570b09&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fdefault%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=fdd65402-3b0a-4310-a0ba-ba310c157922&xsl=1",                                                                                       vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Hallituksen esitykset",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=09a1389c-9905-432f-a68b-dad4d2992beb&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FHEt%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=aae94984-39b7-459a-9912-7bf5d970b356&xsl=1",                                                                                           vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Kirjalliset kysymykset",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=a4011b50-8132-4c08-906f-ad8089958fd5&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fkirjalliset%2Dkysymykset%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=9971a60e-1c4e-4269-9c21-2ab800e34953&xsl=1",                                                                      vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Täysistunnon pöytäkirjat",url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=8192fae7-172f-46ba-8605-75c1e750007a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FTaysistuntojen%2Dpoytakirjat%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=3527e156-7a72-443c-8698-9b5596317471&xsl=1",                                                           vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Eduskunnan vastaukset",   url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=69b97f55-ed58-4b2e-aac6-0936374b842a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FEduskunnan%2Dvastaukset%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=c05021c0-702c-4ceb-a200-2d5a93e57156&xsl=1",                                                                 vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Eduskunnan kirjelmät",    url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=ec8fa660-6762-47e3-87cd-00039b3e19c9&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FEduskunnan%2Dkirjelmat%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=84ce04a6-a119-48aa-b6ef-0f8be1f9d594&xsl=1",                                                                  vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Valiokuntien mietinnöt",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=fe15ad98-fba4-48d8-a772-e8a8ee7c5b5a&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FValiokuntien%2Dmietinn%C3%B6t%2DRSS%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=edd3f5a9-7395-4868-905d-62dbd6579f16&xsl=1",                                                         vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Valiokuntien tiedotteet", url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=7a49dce1-188a-44b6-aecf-82e274fbaeb3&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2FValiokuntien%2Dtiedotteet%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=46e1dcd7-8235-4020-94a2-8580b3d6a33d&xsl=1",                                                                     vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Vireille tulleet asiat",  url: "https://www.eduskunta.fi/_layouts/15/feed.aspx?page=1464b969-e96f-41d8-b741-a26e49ea0fbc&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fvireilletulleet%2Dvpasiat%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=e7568274-be64-435c-9901-9d4aa9e3d7a3&xsl=1",                                                                     vari: "#3ec63e", ryhma: "Eduskunta" },
+  { nimi: "Kansalaisinfon tapahtumat",url:"https://www.eduskunta.fi/_layouts/15/feed.aspx?page=1eb6349c-c04b-465c-a2d4-f76065cd4dee&pageurl=%2FFI%2Frss%2Dfeeds%2FSivut%2Fkansalaisinfon%2Dtapahtumat%2Easpx&web=%2FFI%2Frss%2Dfeeds&wp=f8068861-8686-4d82-acdb-bb73a0de885c&xsl=1",                                                                    vari: "#3ec63e", ryhma: "Eduskunta" },
+  // Valtioneuvosto
+  { nimi: "VN Tiedotteet",           url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/Kh4WBNNjLkT0/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "VN Sisältöjulkaisija",    url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/0QdyGs8zToLU/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Raha-asiainvaliokunta",   url: "https://valtioneuvosto.fi/staatliset-feedit/-/asset_publisher/mC1kW66famCW/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Presidentin esittelyt",   url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/fBqCYPX7caPN/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
+  { nimi: "Ilmasto- ja energiaryhmä",url: "https://valtioneuvosto.fi/staattiset-feedit/-/asset_publisher/qzXKaUHySRbV/rss",                                                                                                                                                                                                                              vari: "#f5c400", ryhma: "Valtioneuvosto" },
 ];
 
 const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
@@ -2356,40 +2374,57 @@ async function lataaSignaali() {
   const grid = document.getElementById("signaalinGrid");
   grid.innerHTML = "";
 
-  for (const lahde of RSS_LAHTEET) {
-    const panel = document.createElement("div");
-    panel.className = "lobbaus-panel";
-    panel.style.setProperty("--src-color", lahde.vari);
-    panel.innerHTML = `
-      <div class="lobbaus-panel-title" style="color:${lahde.vari}">${lahde.nimi}</div>
-      <div id="rss-${lahde.nimi.replace(/\s/g,'-')}" style="display:flex;flex-direction:column;gap:.5rem">
-        <div class="spinner" style="margin:.5rem auto"></div>
-      </div>`;
-    grid.appendChild(panel);
+  // Ryhmittele lähteet
+  const ryhmat = {};
+  RSS_LAHTEET.forEach(l => {
+    if (!ryhmat[l.ryhma]) ryhmat[l.ryhma] = [];
+    ryhmat[l.ryhma].push(l);
+  });
 
-    try {
-      const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url));
-      const data = await res.json();
-      const el   = document.getElementById("rss-" + lahde.nimi.replace(/\s/g,'-'));
+  const ryhmaVarit = { "Media": "#ff4d6d", "Eduskunta": "#3ec63e", "Valtioneuvosto": "#f5c400" };
 
-      if (!el) continue;
-      if (!data.items || !data.items.length) {
-        el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Ei uutisia saatavilla</span>';
-        continue;
-      }
+  for (const [ryhma, lahteet] of Object.entries(ryhmat)) {
+    // Ryhmäotsikko
+    const otsikko = document.createElement("div");
+    otsikko.style.cssText = "grid-column:1/-1;font-family:'Orbitron',monospace;font-size:.62rem;letter-spacing:.2em;color:"+ryhmaVarit[ryhma]+";margin:.5rem 0 .25rem;padding-top:.5rem;border-top:1px solid #1a2a55";
+    otsikko.textContent = "— " + ryhma.toUpperCase() + " —";
+    grid.appendChild(otsikko);
 
-      el.innerHTML = data.items.slice(0, 8).map(item => {
-        const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString("fi-FI", {day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}) : "";
-        return `<a href="${item.link}" target="_blank" rel="noopener"
-          style="display:block;padding:.45rem 0;border-bottom:1px solid #1a2a5566;text-decoration:none;transition:color .15s"
-          onmouseover="this.style.color='${lahde.vari}'" onmouseout="this.style.color=''">
-          <div style="font-size:.8rem;color:#c8d8e8;line-height:1.4;margin-bottom:.2rem">${item.title}</div>
-          <div style="font-size:.68rem;color:#5a7a99">${pvm}</div>
-        </a>`;
-      }).join("");
-    } catch(e) {
-      const el = document.getElementById("rss-" + lahde.nimi.replace(/\s/g,'-'));
-      if (el) el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Lataus epäonnistui</span>';
+    for (const lahde of lahteet) {
+      const id = "rss-" + lahde.nimi.replace(/\W/g,'-');
+      const panel = document.createElement("div");
+      panel.className = "lobbaus-panel";
+      panel.innerHTML =
+        '<div class="lobbaus-panel-title" style="color:'+lahde.vari+'">'+lahde.nimi+'</div>'+
+        '<div id="'+id+'" style="display:flex;flex-direction:column;gap:.35rem">'+
+          '<div class="spinner" style="margin:.5rem auto"></div>'+
+        '</div>';
+      grid.appendChild(panel);
+
+      // Lataa asynkronisesti — ei blokkaa muita
+      (async (lahde, id) => {
+        try {
+          const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=8");
+          const data = await res.json();
+          const el   = document.getElementById(id);
+          if (!el) return;
+          if (!data.items || !data.items.length) {
+            el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Ei uutisia saatavilla</span>';
+            return;
+          }
+          el.innerHTML = data.items.map(item => {
+            const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString('fi-FI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+            const vari = lahde.vari;
+            return '<a href="' + item.link + '" target="_blank" rel="noopener" class="rss-item" style="display:block;padding:.4rem 0;border-bottom:1px solid #1a2a5544;text-decoration:none;color:inherit">'
+              + '<div style="font-size:.78rem;color:#c8d8e8;line-height:1.4;margin-bottom:.15rem">' + item.title + '</div>'
+              + '<div style="font-size:.65rem;color:#5a7a99">' + pvm + '</div>'
+              + '</a>';
+          }).join('');
+        } catch(e) {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Lataus epäonnistui</span>';
+        }
+      })(lahde, id);
     }
   }
 }
