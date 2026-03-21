@@ -2446,6 +2446,7 @@ function luoUutisEl(item, lahde, pol, tyyli) {
         suljeRssLista(); suljeUutisetKortti(); suljeLobbausKortti();
         document.getElementById('modalOverlay').classList.remove('open');
         document.body.style.overflow = '';
+        window.scrollTo({top: 0, behavior: 'auto'});
         setPuolue(puolue);
         const dd = document.getElementById('puolueDropdown');
         if (dd) {
@@ -2460,12 +2461,15 @@ function luoUutisEl(item, lahde, pol, tyyli) {
 
     // Sukunimibadge
     const nb = document.createElement('span');
-    nb.style.cssText = 'font-size:.78rem;font-weight:700;color:'+pol.vari+';flex-shrink:0;'
-      +(pol.edustaja ? 'cursor:pointer;' : '')+'transition:transform .15s';
-    nb.textContent = pol.sukunimi;
+    nb.style.cssText = 'display:inline-block;background:'+pol.vari+'22;border:1px solid '+pol.vari+'66;'
+      +'border-radius:3px;font-size:.65rem;color:'+pol.vari+';padding:.1rem .45rem;'
+      +'font-family:Orbitron,monospace;letter-spacing:.08em;flex-shrink:0;'
+      +(pol.edustaja ? 'cursor:pointer;' : '')
+      +'transition:transform .15s,box-shadow .15s';
+    nb.textContent = '👤 ' + pol.sukunimi;
     if (pol.edustaja) {
-      nb.addEventListener('mouseover', () => { nb.style.transform='scale(1.08)'; });
-      nb.addEventListener('mouseout',  () => { nb.style.transform='scale(1)'; });
+      nb.addEventListener('mouseover', () => { nb.style.transform='scale(1.08)'; nb.style.boxShadow='0 0 8px '+pol.vari+'88'; });
+      nb.addEventListener('mouseout',  () => { nb.style.transform='scale(1)'; nb.style.boxShadow='none'; });
       nb.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); openTTLProfile(pol.edustaja); });
     }
     badgeWrap.appendChild(nb);
