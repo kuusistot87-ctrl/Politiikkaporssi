@@ -1103,7 +1103,7 @@
   </div>
 
   <!-- RSS-syötteet -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem" id="signaalinGrid">
+  <div style="display:flex;flex-direction:column;gap:.5rem" id="signaalinGrid">
     <div style="color:#5a7a99;font-size:.85rem;letter-spacing:.1em">
       <div class="spinner" style="margin:2rem auto"></div>
     </div>
@@ -2529,15 +2529,41 @@ async function lataaSignaali() {
     grid.appendChild(otsikko);
 
     for (const lahde of lahteet) {
-      const id = "rss-" + lahde.nimi.replace(/\W/g,'-');
+      const id = "rss-" + lahde.nimi.replace(/[^a-zA-Z0-9]/g, '-');
+
       const panel = document.createElement("div");
       panel.className = "lobbaus-panel";
-      panel.style.cssText += ';display:flex;flex-direction:column;height:280px';
-      panel.innerHTML =
-        '<div class="lobbaus-panel-title" style="color:'+lahde.vari+';flex-shrink:0">'+lahde.nimi+'</div>'+
-        '<div id="'+id+'" style="display:flex;flex-direction:column;gap:.35rem;overflow-y:auto;flex:1;padding-right:.25rem">'+
-          '<div class="spinner" style="margin:.5rem auto"></div>'+
-        '</div>';
+      panel.style.cursor = "pointer";
+
+      const header = document.createElement("div");
+      header.style.cssText = "display:flex;justify-content:space-between;align-items:center";
+
+      const title = document.createElement("div");
+      title.className = "lobbaus-panel-title";
+      title.style.cssText = "color:" + lahde.vari + ";margin-bottom:0";
+      title.textContent = lahde.nimi;
+
+      const arrow = document.createElement("span");
+      arrow.id = id + "-arrow";
+      arrow.style.cssText = "color:" + lahde.vari + ";font-size:.8rem";
+      arrow.textContent = "▸";
+
+      header.appendChild(title);
+      header.appendChild(arrow);
+
+      const body = document.createElement("div");
+      body.id = id + "-body";
+      body.style.cssText = "display:none;flex-direction:column;gap:.35rem;overflow-y:auto;max-height:280px;padding-right:.25rem;margin-top:.6rem";
+      body.innerHTML = '<div class="spinner" style="margin:.5rem auto"></div>';
+
+      header.addEventListener("click", function() {
+        const isOpen = body.style.display !== "none";
+        body.style.display = isOpen ? "none" : "flex";
+        arrow.textContent = isOpen ? "▸" : "▾";
+      });
+
+      panel.appendChild(header);
+      panel.appendChild(body);
       grid.appendChild(panel);
 
       // Lataa asynkronisesti — ei blokkaa muita
@@ -2545,7 +2571,7 @@ async function lataaSignaali() {
         try {
           const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=15");
           const data = await res.json();
-          const el   = document.getElementById(id);
+          const el   = document.getElementById(id+'-body');
           if (!el) return;
           if (!data.items || !data.items.length) {
             el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Ei uutisia saatavilla</span>';
