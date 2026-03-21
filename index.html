@@ -612,6 +612,7 @@
     #btnHallitus  { --nb-color:#00d4ff; --nb-glow:rgba(0,212,255,.12); --nb-shadow:rgba(0,212,255,.25); --nb-bg:rgba(0,212,255,.07); border:1px solid #0a3a55; }
     #btnLobbaus   { --nb-color:#ff9500; --nb-glow:rgba(255,149,0,.12);  --nb-shadow:rgba(255,149,0,.25);  --nb-bg:rgba(255,149,0,.07);  border:1px solid #553200; }
     #btnHistorialliset { --nb-color:#a855f7; --nb-glow:rgba(168,85,247,.12); --nb-shadow:rgba(168,85,247,.25); --nb-bg:rgba(168,85,247,.07); border:1px solid #3d1a66; }
+    #btnSignaali { --nb-color:#ff4d6d; --nb-glow:rgba(255,77,109,.12); --nb-shadow:rgba(255,77,109,.25); --nb-bg:rgba(255,77,109,.07); border:1px solid #661a2a; }
 
     /* Neonpulssi nykyiset-napissa */
     #btnNykyiset:not(.active) {
@@ -970,6 +971,11 @@
       <span class="nav-btn-label">Historia</span>
       <span class="nav-btn-sub">Entiset edustajat</span>
     </button>
+    <button class="nav-btn" id="btnSignaali">
+      <span class="nav-btn-icon">📡</span>
+      <span class="nav-btn-label">Signaali</span>
+      <span class="nav-btn-sub">Poliittiset uutiset</span>
+    </button>
   </div>
 </header>
 
@@ -1062,6 +1068,18 @@
     <div class="lobbaus-panel">
       <div class="lobbaus-panel-title">YHTEYDENPIDON TAVAT</div>
       <div id="lobbausTavat" style="display:flex;flex-direction:column;gap:.5rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNAALI-NÄKYMÄ -->
+<div id="signaalinNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+  <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff4d6d;margin-bottom:1.5rem">
+    📡 SIGNAALI — POLIITTISET UUTISET
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem" id="signaalinGrid">
+    <div style="color:#5a7a99;font-size:.85rem;letter-spacing:.1em">
+      <div class="spinner" style="margin:2rem auto"></div>
     </div>
   </div>
 </div>
@@ -2312,7 +2330,7 @@ document.getElementById("btnHallitus").addEventListener("click", () => {
 });
 
 function piilotaKaikki() {
-  const ids = ["splash","grid","pagination","tulosrivi","lobbausNakyma","hallitusNakyma"];
+  const ids = ["splash","grid","pagination","tulosrivi","lobbausNakyma","hallitusNakyma","signaalinNakyma"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = "none";
@@ -2322,6 +2340,70 @@ function piilotaKaikki() {
     if (el) el.classList.remove("active");
   });
 }
+
+/* ================================================================
+   SIGNAALI — RSS-UUTISET
+   ================================================================ */
+const RSS_LAHTEET = [
+  { nimi: "Yle Politiikka",    url: "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss",  vari: "#00d4ff" },
+  { nimi: "Iltalehti",         url: "https://www.iltalehti.fi/rss/politiikka.xml",                      vari: "#ff9500" },
+  { nimi: "Suomenmaa",         url: "https://www.suomenmaa.fi/rss",                                     vari: "#3ec63e" },
+];
+
+const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
+
+async function lataaSignaali() {
+  const grid = document.getElementById("signaalinGrid");
+  grid.innerHTML = "";
+
+  for (const lahde of RSS_LAHTEET) {
+    const panel = document.createElement("div");
+    panel.className = "lobbaus-panel";
+    panel.style.setProperty("--src-color", lahde.vari);
+    panel.innerHTML = `
+      <div class="lobbaus-panel-title" style="color:${lahde.vari}">${lahde.nimi}</div>
+      <div id="rss-${lahde.nimi.replace(/\s/g,'-')}" style="display:flex;flex-direction:column;gap:.5rem">
+        <div class="spinner" style="margin:.5rem auto"></div>
+      </div>`;
+    grid.appendChild(panel);
+
+    try {
+      const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url));
+      const data = await res.json();
+      const el   = document.getElementById("rss-" + lahde.nimi.replace(/\s/g,'-'));
+
+      if (!el) continue;
+      if (!data.items || !data.items.length) {
+        el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Ei uutisia saatavilla</span>';
+        continue;
+      }
+
+      el.innerHTML = data.items.slice(0, 8).map(item => {
+        const pvm = item.pubDate ? new Date(item.pubDate).toLocaleDateString("fi-FI", {day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"}) : "";
+        return `<a href="${item.link}" target="_blank" rel="noopener"
+          style="display:block;padding:.45rem 0;border-bottom:1px solid #1a2a5566;text-decoration:none;transition:color .15s"
+          onmouseover="this.style.color='${lahde.vari}'" onmouseout="this.style.color=''">
+          <div style="font-size:.8rem;color:#c8d8e8;line-height:1.4;margin-bottom:.2rem">${item.title}</div>
+          <div style="font-size:.68rem;color:#5a7a99">${pvm}</div>
+        </a>`;
+      }).join("");
+    } catch(e) {
+      const el = document.getElementById("rss-" + lahde.nimi.replace(/\s/g,'-'));
+      if (el) el.innerHTML = '<span style="color:#5a7a99;font-size:.78rem">Lataus epäonnistui</span>';
+    }
+  }
+}
+
+function naytaSignaaliNakyma() {
+  piilotaKaikki();
+  document.getElementById("signaalinNakyma").style.display = "block";
+  document.getElementById("btnSignaali").classList.add("active");
+  lataaSignaali();
+}
+
+document.getElementById("btnSignaali").addEventListener("click", () => {
+  naytaSignaaliNakyma();
+});
 
 lataaHakemisto();
 // Esihae lobbausdata taustalla vasta 5s kuluttua
