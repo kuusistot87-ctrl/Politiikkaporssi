@@ -2505,9 +2505,9 @@ function avaaUutisetKortti(m) {
   haeHenkilonUutiset(m, vari);
 }
 
-// Luo klikattava poliitikkobadge
-function luoBadge(pol) {
-  if (!pol) return '';
+// Luo klikattava poliitikkobadge — palauttaa DOM-elementin
+function luoBadgeEl(pol) {
+  if (!pol) return null;
   const span = document.createElement('span');
   span.style.cssText = 'display:inline-block;background:'+pol.vari+'22;border:1px solid '+pol.vari+'66;'
     +'border-radius:3px;font-size:.65rem;color:'+pol.vari+';padding:.1rem .4rem;margin-right:.4rem;'
@@ -2520,7 +2520,31 @@ function luoBadge(pol) {
     span.addEventListener('mouseout',  () => { span.style.transform='scale(1)';    span.style.boxShadow='none'; });
     span.addEventListener('click', e  => { e.preventDefault(); e.stopPropagation(); openTTLProfile(pol.edustaja); });
   }
-  return span.outerHTML;
+  return span;
+}
+
+// Palauttaa placeholder-merkkijonon — korvataan DOM:issa luoUutisKortti-funktiolla
+function luoBadge(pol) {
+  if (!pol) return '';
+  return '<span style="display:inline-block;background:'+pol.vari+'22;border:1px solid '+pol.vari+'66;'
+    +'border-radius:3px;font-size:.65rem;color:'+pol.vari+';padding:.1rem .4rem;margin-right:.4rem;'
+    +'font-family:Orbitron,monospace;letter-spacing:.08em;vertical-align:middle;'
+    +(pol.edustaja ? 'cursor:pointer;' : '')
+    +'transition:transform .15s,box-shadow .15s" data-edustaja-nimi="'+(pol.edustaja ? pol.edustaja.nimi : '')+'">👤 '+pol.sukunimi+'</span>';
+}
+
+// Aktivoi badgien hover ja click kuuntelijat containerissa
+function aktivoiBadget(container) {
+  container.querySelectorAll('[data-edustaja-nimi]').forEach(badge => {
+    const nimi = badge.dataset.edustajaNimi;
+    if (!nimi || !KAIKKI) return;
+    const e = KAIKKI.find(x => x.nimi === nimi);
+    if (!e) return;
+    const vari = badge.style.color;
+    badge.addEventListener('mouseover', () => { badge.style.transform='scale(1.08)'; badge.style.boxShadow='0 0 8px '+vari+'88'; });
+    badge.addEventListener('mouseout',  () => { badge.style.transform='scale(1)';    badge.style.boxShadow='none'; });
+    badge.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); openTTLProfile(e); });
+  });
 }
 
 
@@ -2574,6 +2598,7 @@ async function haeHenkilonUutiset(m, vari) {
       '<div style="font-size:.7rem;color:#5a7a99">'+pvm+'</div>'+
       '</a>';
   }).join('');
+  aktivoiBadget(el);
 }
 
 function suljeUutisetKortti() {
@@ -2732,6 +2757,7 @@ async function lataaSignaali() {
               + '<div style="font-size:.82rem;color:#5a7a99">' + pvm + '</div>'
               + '</a>';
           }).join('');
+          aktivoiBadget(el);
         } catch(e) {
           const el = document.getElementById(id);
           if (el) el.innerHTML = '<span style="color:#5a7a99;font-size:.88rem">Lataus epäonnistui</span>';
@@ -2820,6 +2846,7 @@ async function lataaPoliitikkoMaininnat() {
       +'</div>'
       +'</a>';
   }).join('');
+  aktivoiBadget(el);
 }
 
 /* ── RSS-ryhmäpainikkeet ── */
