@@ -2508,10 +2508,14 @@ async function haeHenkilonUutiset(m, vari) {
   const osumia = [];
 
   // Taivutusmuodot
+  // Taivutusmuodot — täytyy olla oma sana
   function nimiOsuu(teksti, suku) {
-    if (teksti.includes(suku)) return true;
-    const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä','tta','ttä'];
-    return paatteet.some(p => teksti.includes(suku + p));
+    const paatteet = ['','n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä','tta','ttä'];
+    return paatteet.some(p => {
+      const muoto = suku + p;
+      const re = new RegExp('(^|[^a-zäöåA-ZÄÖÅ])' + muoto + '($|[^a-zäöåA-ZÄÖÅ])', 'i');
+      return re.test(teksti);
+    });
   }
 
   // Käy läpi kaikki RSS-lähteet
@@ -2592,11 +2596,14 @@ const RSS_PROXY = "https://api.rss2json.com/v1/api.json?rss_url=";
 
 // Etsi uutistekstistä tunnettu poliitikko — palauttaa {sukunimi, vari} tai null
 function etsiPoliitikko(teksti) {
-  // Tarkista sukunimi taivutusmuotoineen
+  // Tarkista sukunimi taivutusmuotoineen — täytyy olla oma sana
   function nimiOsuu(suku) {
-    if (teksti.includes(suku)) return true;
-    const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','lle','ssa','ssä','ksi','na','nä','tta','ttä'];
-    return paatteet.some(p => teksti.includes(suku + p));
+    const paatteet = ['','n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä','tta','ttä'];
+    return paatteet.some(p => {
+      const muoto = suku + p;
+      const re = new RegExp('(^|[^a-zäöåA-ZÄÖÅ])' + muoto + '($|[^a-zäöåA-ZÄÖÅ])', 'i');
+      return re.test(teksti);
+    });
   }
   // Hallituksen jäsenet (+ presidentti)
   for (const m of HALLITUS) {
@@ -2655,9 +2662,12 @@ async function lataaPoliitikkoMaininnat() {
       data.items.forEach(item => {
         const teksti = (item.title + ' ' + (item.description||'')).toLowerCase();
         const pol = poliitikot.find(p => {
-          if (teksti.includes(p.suku)) return true;
-          const paatteet = ['n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä'];
-          return paatteet.some(e => teksti.includes(p.suku + e));
+          const paatteet = ['','n','lle','lla','llä','lta','ltä','sta','stä','ssa','ssä','ksi','na','nä'];
+          return paatteet.some(e => {
+            const muoto = p.suku + e;
+            const re = new RegExp('(^|[^a-zäöåA-ZÄÖÅ])' + muoto + '($|[^a-zäöåA-ZÄÖÅ])', 'i');
+            return re.test(teksti);
+          });
         });
         if (pol) {
           osumia.push({ item, lahde, pol });
