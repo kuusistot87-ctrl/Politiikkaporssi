@@ -889,17 +889,75 @@
       text-align: center;
       line-height: 1.3;
     }
-    .profnav-panel {
-      margin-top: 1rem;
-      background: rgba(8,13,31,.6);
-      border: 1px solid #1a2a55;
-      border-radius: 6px;
-      padding: 1rem 1.1rem;
-      animation: profpanel-in .2s ease both;
+    /* ── PROFIILI SUBMODAL ── */
+    #submodalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
     }
-    @keyframes profpanel-in {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+    #submodalOverlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #submodalBox {
+      position: relative;
+      background: #080d1f;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: min(580px, 94vw);
+      max-height: 85vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      box-shadow: 0 8px 40px rgba(0,0,0,.95);
+      animation: submodal-in .2s ease both;
+    }
+    @keyframes submodal-in {
+      from { opacity: 0; transform: scale(.96) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #submodalTopbar {
+      height: 3px;
+      border-radius: 8px 8px 0 0;
+    }
+    #submodalContent {
+      padding: 1.5rem 1.75rem 2rem;
+    }
+    #submodalTitle {
+      font-family: 'Orbitron', monospace;
+      font-size: .75rem;
+      letter-spacing: .2em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    #submodalClose {
+      position: absolute;
+      top: .75rem;
+      right: .85rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: .62rem;
+      letter-spacing: .15em;
+      padding: .28rem .6rem;
+      transition: all .2s;
+      z-index: 1;
+    }
+    #submodalClose:hover {
+      border-color: var(--glow-pink);
+      color: var(--glow-pink);
     }
 
     /* ── SCROLLBAR ── */
@@ -1224,6 +1282,18 @@
       background:transparent;border:1px solid #1a2a55;border-radius:4px;color:#5a7a99;
       padding:.2rem .6rem;cursor:pointer;font-size:.8rem;z-index:1">ESC ×</button>
     <div id="rssListaSisalto" style="padding:1.5rem 1.5rem 2rem"></div>
+  </div>
+</div>
+
+<!-- SUBMODAL (profiilipainikkeiden sisältö) — z-index 1500, päämodaalin päällä -->
+<div id="submodalOverlay">
+  <div id="submodalBox">
+    <div id="submodalTopbar"></div>
+    <button id="submodalClose" onclick="suljeSubmodal()">ESC ✕</button>
+    <div id="submodalContent">
+      <div id="submodalTitle"></div>
+      <div id="submodalBody"></div>
+    </div>
   </div>
 </div>
 
@@ -1688,13 +1758,6 @@ function renderModalSkeleton(m, vari) {
   const grid = document.createElement("div");
   grid.className = "profnav-grid";
 
-  // Paneeli sisällölle
-  const panel = document.createElement("div");
-  panel.className = "profnav-panel";
-  panel.style.display = "none";
-
-  let aktiivinen = null;
-
   tabs.forEach(tab => {
     const btn = document.createElement("button");
     btn.className = "profnav-btn";
@@ -1702,19 +1765,23 @@ function renderModalSkeleton(m, vari) {
     btn.innerHTML = `<span class="profnav-icon">${tab.icon}</span><span class="profnav-label">${tab.label}</span>`;
 
     btn.addEventListener("click", () => {
-      if (aktiivinen === tab.id) {
-        // Sulje jos sama
-        btn.classList.remove("active");
-        panel.style.display = "none";
-        aktiivinen = null;
-        return;
-      }
+      // Merkitse aktiiviseksi
       grid.querySelectorAll(".profnav-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      aktiivinen = tab.id;
-      panel.innerHTML = tabContents[tab.id] || "";
-      panel.style.display = "block";
-      panel.style.borderColor = tab.color + "55";
+
+      // Avaa submodal
+      const overlay  = document.getElementById("submodalOverlay");
+      const topbar   = document.getElementById("submodalTopbar");
+      const title    = document.getElementById("submodalTitle");
+      const body     = document.getElementById("submodalBody");
+
+      topbar.style.background = tab.color;
+      topbar.style.boxShadow  = `0 0 12px ${tab.color}`;
+      title.style.color = tab.color;
+      title.innerHTML = `<span style="font-size:1.2rem">${tab.icon}</span>${tab.label.toUpperCase()}`;
+      body.innerHTML  = tabContents[tab.id] || "";
+      overlay.classList.add("open");
+
       // Lataa data tarvittaessa
       const xmlOsiot = ["tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
       if (tab.id === "poissaolot") naytaPoissaolot(m, vari);
@@ -1725,10 +1792,31 @@ function renderModalSkeleton(m, vari) {
   });
 
   navContainer.appendChild(grid);
-  navContainer.appendChild(panel);
 }
 
 
+
+function suljeSubmodal() {
+  document.getElementById("submodalOverlay").classList.remove("open");
+  document.querySelectorAll(".profnav-btn").forEach(b => b.classList.remove("active"));
+}
+
+// Sulje submodal klikkaamalla taustaa
+document.getElementById("submodalOverlay").addEventListener("click", e => {
+  if (e.target.id === "submodalOverlay") suljeSubmodal();
+});
+
+// ESC sulkee modaalit oikeassa järjestyksessä: submodal → lobbaus → päämodaali → edellinen näkymä
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  const sub     = document.getElementById("submodalOverlay");
+  const lobbaus = document.getElementById("lobbausKorttiOverlay");
+  const main    = document.getElementById("modalOverlay");
+  if (sub     && sub.classList.contains("open"))    { suljeSubmodal(); return; }
+  if (lobbaus && lobbaus.classList.contains("open")) { suljeLobbausKortti(); return; }
+  if (main    && main.classList.contains("open"))    { closeTTLProfile(); return; }
+  paataEdelliseen();
+});
 
 function lnk(url, teksti, vari) {
   return `<a href="${url}" target="_blank" rel="noopener"
@@ -2060,10 +2148,6 @@ function suljeLobbausKortti() {
   overlay.classList.add("hidden-overlay");
 }
 
-// Sulje ESC:llä
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") suljeLobbausKortti();
-});
 
 // Sulje klikkaamalla taustaa
 document.getElementById("lobbausKorttiOverlay").addEventListener("click", e => {
@@ -2249,9 +2333,6 @@ function paataEdelliseen() {
   naytaSplash();
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") paataEdelliseen();
-});
 document.getElementById("modalOverlay").addEventListener("click", e => {
   if(e.target===document.getElementById("modalOverlay")) closeTTLProfile();
 });
