@@ -1,0 +1,32 @@
+name: Päivitä poissaolotilastot
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Joka aamu klo 05:00 UTC (07:00 Suomen aikaa)
+  workflow_dispatch:      # Mahdollistaa myös manuaalisen ajamisen
+
+jobs:
+  paivita:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Asenna riippuvuudet
+        run: pip install requests
+
+      - name: Hae ja muunna poissaolotilastot
+        run: python skriptit/paivita_poissaolot.py
+
+      - name: Committaa muutokset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Poissaolotilastot/poissaolot.json
+          git diff --staged --quiet || git commit -m "Automaattinen päivitys: poissaolotilastot $(date +'%d.%m.%Y')"
+          git push
