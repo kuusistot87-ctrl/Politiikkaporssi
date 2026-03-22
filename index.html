@@ -1597,6 +1597,11 @@ function renderModalSkeleton(m, vari) {
 `, true)}
 
 
+      ${accordionItem("poissaolot","POISSAOLOT TÄYSISTUNNOISTA",`
+        <div id="poissaolo-${m.nimi.replace(/\s+/g,'-')}" class="xml-osio">
+          <div class="spinner" style="margin:.5rem auto"></div>
+        </div>`)}
+
       ${accordionItem("linkit","LINKIT & YHTEYSTIEDOT",`
         <div style="display:flex;flex-direction:column;gap:.6rem">
           ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
@@ -1813,8 +1818,71 @@ async function naytaLobbausTiedot(m, vari) {
 }
 
 /* ── Kutsutaan kun accordionin lobbaus-osio avataan ── */
+// Poissaolodatan välimuisti
+let POISSAOLO_DATA = null;
+
+async function lataaPoissaolot() {
+  if (POISSAOLO_DATA) return POISSAOLO_DATA;
+  try {
+    const res = await fetch("Poissaolotilastot/poissaolot.json");
+    if (res.ok) POISSAOLO_DATA = await res.json();
+  } catch(_) {}
+  return POISSAOLO_DATA;
+}
+
+async function naytaPoissaolot(m, vari) {
+  const slug = m.nimi.replace(/\s+/g, '-');
+  const el = document.getElementById("poissaolo-" + slug);
+  if (!el || el.dataset.ladattu) return;
+  el.dataset.ladattu = "1";
+
+  const data = await lataaPoissaolot();
+  if (!data || !data.data) {
+    el.innerHTML = '<span style="color:#5a7a99;font-size:.82rem">Poissaolotiedot ei saatavilla</span>';
+    return;
+  }
+
+  const p = data.data[m.nimi];
+  if (!p) {
+    el.innerHTML = '<span style="color:#5a7a99;font-size:.82rem">Ei tietoja saatavilla</span>';
+    return;
+  }
+
+  const maxYht = data.max_yht || 141;
+  const pct = Math.round(p.yht / maxYht * 100);
+  const pctHenk = p.yht > 0 ? Math.round(p.henkilo / p.yht * 100) : 0;
+  const pctMuu  = p.yht > 0 ? Math.round(p.muu  / p.yht * 100) : 0;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:.85rem">
+      <div style="background:#0a0f1e;border:1px solid #1a2a55;border-radius:5px;padding:.65rem;text-align:center">
+        <div class="d-label">Yhteensä</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:700;color:${vari}">${p.yht}</div>
+      </div>
+      <div style="background:#0a0f1e;border:1px solid #1a2a55;border-radius:5px;padding:.65rem;text-align:center">
+        <div class="d-label">Henk. syy</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:700;color:#5a7a99">${p.henkilo}</div>
+      </div>
+      <div style="background:#0a0f1e;border:1px solid #1a2a55;border-radius:5px;padding:.65rem;text-align:center">
+        <div class="d-label">Muu</div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:700;color:${p.muu > 20 ? '#e01010' : '#5a7a99'}">${p.muu}</div>
+      </div>
+    </div>
+    <div class="d-label" style="margin-bottom:.3rem">Suhde muihin edustajiin (sijoitus ${p.sijoitus}/200)</div>
+    <div style="background:rgba(255,255,255,.04);border-radius:4px;height:8px;overflow:hidden;margin-bottom:.5rem">
+      <div style="width:${pct}%;height:100%;background:${vari};border-radius:4px;transition:width .6s"></div>
+    </div>
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <span style="font-size:.7rem;color:#5a7a99">Henkilökohtainen: <strong style="color:#8899aa">${pctHenk}%</strong></span>
+      <span style="font-size:.7rem;color:#5a7a99">· Muu: <strong style="color:${p.muu > 20 ? '#e01010' : '#8899aa'}">${pctMuu}%</strong></span>
+    </div>
+    <div style="font-size:.65rem;color:#3a5a77">Lähde: eduskunta.fi · Vaalikausi 2023–2026 · Päivitetty ${data.paivitetty}</div>`;
+  paivitaAccordionKorkeus(el);
+}
+
 function onAccordionOpen(id, m, vari) {
   if (id === "lobbaus") naytaLobbausTiedot(m, vari);
+  if (id === "poissaolot") naytaPoissaolot(m, vari);
   const xmlOsiot = ["tyoura","valiokunnat","ministeriydet","sidonnaisuudet2"];
   if (xmlOsiot.includes(id)) lataaXmlOsio(id, m, vari);
 }
