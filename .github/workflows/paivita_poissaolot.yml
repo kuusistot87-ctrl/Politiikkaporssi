@@ -2,8 +2,8 @@ name: Päivitä poissaolotilastot
 
 on:
   schedule:
-    - cron: '0 5 * * *'  # Joka aamu klo 05:00 UTC (07:00 Suomen aikaa)
-  workflow_dispatch:      # Mahdollistaa myös manuaalisen ajamisen
+    - cron: '0 5 * * *'
+  workflow_dispatch:
 
 jobs:
   paivita:
@@ -21,7 +21,63 @@ jobs:
         run: pip install requests
 
       - name: Hae ja muunna poissaolotilastot
-        run: python skriptit/paivita_poissaolot.py
+        run: |
+          mkdir -p Poissaolotilastot
+          python - << 'EOF'
+          import csv, json, io, requests
+          from datetime import datetime
+
+          CSV_URL = "https://datawrapper.dwcdn.net/f4RJD/full.csv"
+
+          try:
+              r = requests.get(CSV_URL, timeout=30)
+              r.raise_for_status()
+              csv_teksti = r.text
+          except Exception as e:
+              print(f"CSV-haku epäonnistui: {e}")
+              exit(0)
+
+          reader = csv.DictReader(io.StringIO(csv_teksti))
+          rows = []
+          for row in reader:
+              try:
+                  rows.append({
+                      'nimi':    row['Kansanedustaja'],
+                      'henkilo': int(row['Henkilökohtainen syy']),
+                      'muu':     int(row['Muu poissaolo']),
+                      'yht':     int(row['Yhteensä'])
+                  })
+              except Exception as e:
+                  print(f"Ohitettu rivi: {e}")
+
+          if not rows:
+              print("Ei dataa")
+              exit(0)
+
+          max_yht = max(r['yht'] for r in rows)
+          ranked  = sorted(rows, key=lambda x: x['yht'], reverse=True)
+          for i, r in enumerate(ranked):
+              r['sijoitus'] = i + 1
+
+          data = {r['nimi']: {
+              'henkilo':  r['henkilo'],
+              'muu':      r['muu'],
+              'yht':      r['yht'],
+              'sijoitus': r['sijoitus']
+          } for r in ranked}
+
+          tulos = {
+              'paivitetty': datetime.now().strftime('%d.%m.%Y'),
+              'max_yht':    max_yht,
+              'edustajia':  len(data),
+              'data':       data
+          }
+
+          with open("Poissaolotilastot/poissaolot.json", "w", encoding="utf-8") as f:
+              json.dump(tulos, f, ensure_ascii=False, indent=2)
+
+          print(f"Valmis! {len(data)} edustajaa, päivitetty {tulos['paivitetty']}")
+          EOF
 
       - name: Committaa muutokset
         run: |
