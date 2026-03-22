@@ -563,6 +563,7 @@
 
     /* Värit per nappi */
     #btnNykyiset  { --nb-color:#3ec63e; --nb-glow:rgba(62,198,62,.35);  --nb-shadow:rgba(62,198,62,.6);  --nb-bg:rgba(62,198,62,.1);  border:1px solid #1e4d2a; }
+    #btnVoimasuhteet { --nb-color:#e040fb; --nb-glow:rgba(224,64,251,.35); --nb-shadow:rgba(224,64,251,.6); --nb-bg:rgba(224,64,251,.1); border:1px solid #5a1a66; }
     #btnHallitus  { --nb-color:#00d4ff; --nb-glow:rgba(0,212,255,.35);  --nb-shadow:rgba(0,212,255,.6);  --nb-bg:rgba(0,212,255,.1);  border:1px solid #0a3a55; }
     #btnLobbaus   { --nb-color:#ff9500; --nb-glow:rgba(255,149,0,.35);  --nb-shadow:rgba(255,149,0,.6);  --nb-bg:rgba(255,149,0,.1);  border:1px solid #553200; }
     #btnHistorialliset { --nb-color:#a855f7; --nb-glow:rgba(168,85,247,.35); --nb-shadow:rgba(168,85,247,.6); --nb-bg:rgba(168,85,247,.1); border:1px solid #3d1a66; }
@@ -997,13 +998,18 @@
       <span class="nav-btn-label">Nykyiset</span>
       <span class="nav-btn-sub">Istuvat kansanedustajat</span>
     </button>
+    <button class="nav-btn" id="btnVoimasuhteet">
+      <span class="nav-btn-icon">⚖️</span>
+      <span class="nav-btn-label">Voimasuhteet</span>
+      <span class="nav-btn-sub">Eduskuntaryhmät 2023–</span>
+    </button>
     <button class="nav-btn" id="btnHallitus">
       <span class="nav-btn-icon">⚡</span>
       <span class="nav-btn-label">Hallitus</span>
       <span class="nav-btn-sub">Orpon hallitus 2023–</span>
     </button>
     <button class="nav-btn" id="btnLobbaus">
-      <span class="nav-btn-icon">📡</span>
+      <span class="nav-btn-icon">🤝</span>
       <span class="nav-btn-label">Lobbaus</span>
       <span class="nav-btn-sub">Avoimuusrekisteri</span>
     </button>
@@ -1083,6 +1089,14 @@
       border-radius:4px;color:#5a7a99;padding:.2rem .6rem;cursor:pointer;font-size:.8rem;z-index:1">ESC ×</button>
     <div id="uutisetKorttiSisalto" style="padding:1.5rem"></div>
   </div>
+</div>
+
+<!-- VOIMASUHTEET-NÄKYMÄ -->
+<div id="voimasuhteetNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+  <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#e040fb;margin-bottom:1.5rem">
+    ⚖️ EDUSKUNTARYHMIEN VOIMASUHTEET — 2023–2027
+  </div>
+  <div id="voimasuhteetSisalto"></div>
 </div>
 
 <!-- HALLITUS-NÄKYMÄ -->
@@ -2381,7 +2395,7 @@ document.getElementById("btnHallitus").addEventListener("click", () => {
 });
 
 function piilotaKaikki() {
-  const ids = ["splash","grid","pagination","tulosrivi","lobbausNakyma","hallitusNakyma","signaalinNakyma"];
+  const ids = ["splash","grid","pagination","tulosrivi","lobbausNakyma","hallitusNakyma","signaalinNakyma","voimasuhteetNakyma"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = "none";
@@ -2853,6 +2867,141 @@ function naytaSignaaliNakyma() {
 
 document.getElementById("btnSignaali").addEventListener("click", () => {
   naytaSignaaliNakyma();
+});
+
+/* ================================================================
+   VOIMASUHTEET-NÄKYMÄ
+   ================================================================ */
+const VOIMASUHTEET = [
+  { puolue: "KOK",  nimi: "Kansallinen Kokoomus",      jasenia: 48, vari: "#1a6fd8" },
+  { puolue: "PS",   nimi: "Perussuomalaiset",           jasenia: 45, vari: "#ff9500" },
+  { puolue: "SDP",  nimi: "Sosialidemokraatit",         jasenia: 43, vari: "#e01010" },
+  { puolue: "KESK", nimi: "Keskusta",                   jasenia: 23, vari: "#009b50" },
+  { puolue: "VIHR", nimi: "Vihreät",                   jasenia: 13, vari: "#7bc142" },
+  { puolue: "VAS",  nimi: "Vasemmistoliitto",           jasenia: 11, vari: "#cc0033" },
+  { puolue: "RKP",  nimi: "Ruotsalainen kansanpuolue", jasenia: 10, vari: "#f5c400" },
+  { puolue: "KD",   nimi: "Kristillisdemokraatit",      jasenia:  5, vari: "#003c8f" },
+  { puolue: "LIIK", nimi: "Liike Nyt",                 jasenia:  1, vari: "#8a25cc" },
+  { puolue: "TV",   nimi: "Timo Vornanen",              jasenia:  1, vari: "#888888" },
+];
+const VOIMASUHTEET_YHTEENSA = VOIMASUHTEET.reduce((s, p) => s + p.jasenia, 0);
+
+// Hallituspuolueet
+const HALLITUSPUOLUEET = new Set(["KOK","PS","KESK","KD","RKP"]);
+
+function naytaVoimasuhteetNakyma() {
+  piilotaKaikki();
+  const nakyma = document.getElementById("voimasuhteetNakyma");
+  nakyma.style.display = "block";
+  document.getElementById("btnVoimasuhteet").classList.add("active");
+  renderVoimasuhteet();
+}
+
+function renderVoimasuhteet() {
+  const el = document.getElementById("voimasuhteetSisalto");
+  if (!el || el.dataset.rendered) return;
+  el.dataset.rendered = "1";
+
+  const hallitus = VOIMASUHTEET.filter(p => HALLITUSPUOLUEET.has(p.puolue));
+  const oppositio = VOIMASUHTEET.filter(p => !HALLITUSPUOLUEET.has(p.puolue));
+  const hallitusYht = hallitus.reduce((s, p) => s + p.jasenia, 0);
+  const oppositioYht = oppositio.reduce((s, p) => s + p.jasenia, 0);
+
+  // Donitsikaavio SVG
+  const svgSize = 220;
+  const cx = svgSize / 2, cy = svgSize / 2, r = 85, riO = 55;
+  let kulma = -90;
+  let sektorit = '';
+
+  function sektori(startDeg, endDeg, vari, puolue) {
+    const s = startDeg * Math.PI / 180;
+    const e = endDeg   * Math.PI / 180;
+    const x1 = cx + r * Math.cos(s), y1 = cy + r * Math.sin(s);
+    const x2 = cx + r * Math.cos(e), y2 = cy + r * Math.sin(e);
+    const x3 = cx + riO * Math.cos(e), y3 = cy + riO * Math.sin(e);
+    const x4 = cx + riO * Math.cos(s), y4 = cy + riO * Math.sin(s);
+    const large = (endDeg - startDeg) > 180 ? 1 : 0;
+    return `<path d="M${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${x3},${y3} A${riO},${riO} 0 ${large},0 ${x4},${y4} Z"
+      fill="${vari}" opacity="0.9" stroke="#03050f" stroke-width="1.5"
+      data-puolue="${puolue}">
+      <title>${puolue}</title>
+    </path>`;
+  }
+
+  VOIMASUHTEET.forEach(p => {
+    const aste = (p.jasenia / VOIMASUHTEET_YHTEENSA) * 360;
+    sektorit += sektori(kulma, kulma + aste, p.vari, p.puolue);
+    kulma += aste;
+  });
+
+  // Hallitus/oppositio-jako visuaalisesti
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;max-width:900px">
+
+      <!-- Vasen: donitsikaavio -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
+        <div style="position:relative;width:${svgSize}px">
+          <svg viewBox="0 0 ${svgSize} ${svgSize}" width="${svgSize}" height="${svgSize}">
+            ${sektorit}
+            <text x="${cx}" y="${cy-8}" text-anchor="middle" font-family="Orbitron,monospace"
+              font-size="18" font-weight="700" fill="#e8f4ff">${VOIMASUHTEET_YHTEENSA}</text>
+            <text x="${cx}" y="${cy+12}" text-anchor="middle" font-family="Rajdhani,sans-serif"
+              font-size="10" fill="#5a7a99" letter-spacing="2">EDUSTAJAA</text>
+          </svg>
+        </div>
+
+        <!-- Hallitus vs oppositio -->
+        <div style="width:100%;background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:.85rem">
+          <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#5a7a99;margin-bottom:.6rem">HALLITUS VS OPPOSITIO</div>
+          <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;margin-bottom:.5rem">
+            <div style="width:${(hallitusYht/VOIMASUHTEET_YHTEENSA*100).toFixed(1)}%;background:linear-gradient(90deg,#1a6fd8,#f5c400);"></div>
+            <div style="flex:1;background:linear-gradient(90deg,#e01010,#009b50);"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.75rem">
+            <span style="color:#00d4ff;font-family:'Orbitron',monospace">${hallitusYht} <span style="color:#5a7a99;font-size:.65rem">hallitus</span></span>
+            <span style="color:#e01010;font-family:'Orbitron',monospace">${oppositioYht} <span style="color:#5a7a99;font-size:.65rem">oppositio</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Oikea: puoluelistat -->
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#00d4ff;margin-bottom:.25rem">⚡ HALLITUS</div>
+        ${hallitus.map(p => puoluePalkki(p)).join('')}
+
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#5a7a99;margin:.75rem 0 .25rem;padding-top:.75rem;border-top:1px solid #1a2a55">OPPOSITIO</div>
+        ${oppositio.map(p => puoluePalkki(p)).join('')}
+
+      </div>
+    </div>
+    <div style="margin-top:.75rem;font-size:.65rem;color:#3a5a77;letter-spacing:.08em">
+      Lähde: eduskunta.fi · Päivitetty 22.3.2026
+    </div>`;
+}
+
+function puoluePalkki(p) {
+  const pct = (p.jasenia / VOIMASUHTEET_YHTEENSA * 100).toFixed(1);
+  const hallitus = HALLITUSPUOLUEET.has(p.puolue);
+  return `<div style="cursor:pointer" onclick="setPuolue('${p.puolue}');document.getElementById('btnNykyiset').click()">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <span style="display:inline-block;background:${p.vari}33;border:1px solid ${p.vari}88;border-radius:3px;
+          font-size:.58rem;color:${p.vari};padding:.1rem .4rem;font-family:'Orbitron',monospace;min-width:36px;text-align:center">${p.puolue}</span>
+        <span style="font-size:.78rem;color:#c8d8e8">${p.nimi}</span>
+      </div>
+      <span style="font-family:'Orbitron',monospace;font-size:.75rem;color:${p.vari}">${p.jasenia}</span>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:3px;height:7px;overflow:hidden">
+      <div style="width:${pct}%;height:100%;background:${p.vari};border-radius:3px;opacity:.85;
+        transition:width .6s cubic-bezier(.4,0,.2,1)"></div>
+    </div>
+  </div>`;
+}
+
+document.getElementById("btnVoimasuhteet").addEventListener("click", () => {
+  piilotaKaikki();
+  naytaVoimasuhteetNakyma();
 });
 
 lataaHakemisto();
