@@ -1343,7 +1343,7 @@ function naytaTulokset() {
   document.getElementById("tulosrivi").style.display = "flex";
   document.getElementById("tulosrivi").style.alignItems = "center";
   document.getElementById("pagination").style.display = "flex";
-  document.getElementById("voimasuhteetAlipainike").style.display = "block";
+  document.getElementById("voimasuhteetAlipainike").style.display = aikasuodatin === "nykyiset" ? "block" : "none";
 }
 
 function naytaSplash() {
@@ -2975,6 +2975,7 @@ document.getElementById("rssListaOverlay").addEventListener("click", e => {
 function naytaSignaaliNakyma() {
   piilotaKaikki();
   tallennaNakyma('signaali');
+  document.getElementById("voimasuhteetAlipainike").style.display = "none";
   document.getElementById("signaalinNakyma").style.display = "block";
   document.getElementById("btnSignaali").classList.add("active");
   rakennaSIgnaaliPainikkeet();
