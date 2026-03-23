@@ -1850,8 +1850,13 @@ function renderAanestykset(el, data) {
     const apvm    = a.pvm || "";
     const v2      = aani === "Jaa" ? "#27ae60" : aani === "Ei" ? "#e74c3c" : aani === "Tyhjää" ? "#f59e0b" : "#4a5a7a";
     const ikoni   = aani === "Jaa" ? "▲" : aani === "Ei" ? "▼" : aani === "Tyhjää" ? "○" : "–";
-    html += `<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.4rem .5rem;
-        border-radius:4px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04)">
+    const linkki  = a.id ? `https://www.eduskunta.fi/FI/vaski/Aanestys/Sivut/aanestys.aspx?aanestysid=${a.id}` : "";
+    const tag     = linkki ? `a href="${linkki}" target="_blank" rel="noopener"` : "div";
+    const tagEnd  = linkki ? "a" : "div";
+    html += `<${tag} style="display:flex;align-items:flex-start;gap:.6rem;padding:.4rem .5rem;
+        border-radius:4px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);
+        text-decoration:none;transition:background .15s;${linkki ? "cursor:pointer;" : ""}"
+        ${linkki ? `onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='rgba(255,255,255,.025)'"` : ""}>
       <span style="font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;
         color:${v2};flex-shrink:0;min-width:18px;margin-top:1px">${ikoni}</span>
       <div style="flex:1;min-width:0">
@@ -1859,8 +1864,8 @@ function renderAanestykset(el, data) {
         ${apvm ? `<div style="font-size:.65rem;color:#4a5a7a;margin-top:1px">${apvm}</div>` : ""}
       </div>
       <span style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;
-        color:${v2};flex-shrink:0">${aani}</span>
-    </div>`;
+        color:${v2};flex-shrink:0">${aani}${linkki ? ' <span style="color:#4a5a7a;font-size:.55rem">↗</span>' : ""}</span>
+    </${tagEnd}>`;
   });
 
   html += `</div>
