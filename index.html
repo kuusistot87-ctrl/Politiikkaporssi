@@ -1775,135 +1775,102 @@ function renderModalSkeleton(m, vari) {
 
 
 /* ================================================================
-   ÄÄNESTYSHISTORIA — eduskunnan avoin data API
+   ÄÄNESTYSHISTORIA — luetaan GitHub Actionsin hakemasta JSON:sta
+   Skripti: hae_aanestykset.py  |  Workflow: paivita_aanestykset.yml
    ================================================================ */
-const AANESTYS_API = "https://avoindata.eduskunta.fi/api/v1/tables/";
 const AANESTYS_CACHE = {};
 
 async function lataaAanestykset(m, vari) {
-  const slug = m.nimi.replace(/\s+/g, '-');
-  const el   = document.getElementById("aanestykset-" + slug);
+  const slug = m.nimi.replace(/\s+/g, '_');
+  const elId = "aanestykset-" + m.nimi.replace(/\s+/g, '-');
+  const el   = document.getElementById(elId);
   if (!el || el.dataset.ladattu) return;
   el.dataset.ladattu = "1";
   el.innerHTML = '<div class="spinner" style="margin:1rem auto"></div>';
 
-  // Muodosta hakunimi API:lle: "Sukunimi Etunimi" → "SUKUNIMI Etunimi"
-  // API käyttää muotoa "Sukunimi Etunimi"
-  const nimiOsat  = m.nimi.trim().split(" ");
-  const apiNimi   = m.nimi; // suoraan
+  if (AANESTYS_CACHE[slug]) { renderAanestykset(el, AANESTYS_CACHE[slug]); return; }
 
   try {
-    // Hae viimeisimmät äänestykset joissa edustaja on mukana
-    // Haetaan ensin viimeisimmät äänestysId:t vuodelta 2024-2025
-    const url = `${AANESTYS_API}SaliDBAanestysEdustaja/rows?columnName=EdustajaHenkiloNumero&columnValue=&page=0&perPage=1`;
-
-    // Käytetään edustajan nimeä hakuparametrina
-    const nimihaku = encodeURIComponent(m.nimi);
-    const res = await fetch(
-      `${AANESTYS_API}SaliDBAanestysEdustaja/rows?columnName=EdustajaHenkiloNimi&columnValue=${nimihaku}&page=0&perPage=50`
-    );
-
+    const res = await fetch(`aanestykset_json/${slug}.json`);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
-    const rows = data.rowData || [];
-
-    if (!rows.length) {
-      el.innerHTML = '<span class="info-ei">Ei äänestystietoja saatavilla tällä nimellä.</span>';
-      return;
-    }
-
-    // Selvitä sarakkeet
-    const cols    = data.columnNames || [];
-    const iNimi   = cols.indexOf("EdustajaHenkiloNimi");
-    const iAani   = cols.indexOf("Aanestys");
-    const iAanId  = cols.indexOf("AanestysId");
-    const iKieli  = cols.indexOf("AanestysOtsikkoFI") !== -1
-                    ? cols.indexOf("AanestysOtsikkoFI")
-                    : cols.indexOf("AsiaNimike");
-
-    // Renderöi äänestysrivit
-    renderAanestykset(el, rows, cols, vari);
-
+    AANESTYS_CACHE[slug] = data;
+    renderAanestykset(el, data);
   } catch(e) {
-    el.innerHTML = `<span class="info-ei">Äänestysdata ei saatavilla (${e.message})</span>
-      <div style="margin-top:.75rem">
-        ${lnk("https://avoindata.eduskunta.fi/","Avoindata.eduskunta.fi ↗","#22d3ee")}
+    el.innerHTML = `
+      <div class="info-ei" style="margin-bottom:.75rem">Äänestysdata ei vielä saatavilla.</div>
+      <div style="font-size:.72rem;color:#4a5a7a;line-height:1.6">
+        Data haetaan automaattisesti GitHub Actions -ajolla joka yö.<br>
+        Käynnistä ensimmäinen haku ajamalla: <code>python hae_aanestykset.py</code>
       </div>`;
   }
 }
 
-function renderAanestykset(el, rows, cols, vari) {
-  if (!rows.length) {
-    el.innerHTML = '<span class="info-ei">Ei äänestystietoja.</span>';
+function renderAanestykset(el, data) {
+  const yht   = data.yhteenveto  || {};
+  const lista = data.aanestykset || [];
+  const pvm   = data.paivitetty  || "";
+
+  if (!lista.length) {
+    el.innerHTML = '<span class="info-ei">Ei äänestystietoja saatavilla.</span>';
     return;
   }
 
-  // Etsi sarake-indeksit
-  const get = (row, name) => {
-    const i = cols.indexOf(name);
-    return i >= 0 ? row[i] : "";
-  };
-
-  // Laske yhteenveto
-  const aanet = { "Jaa": 0, "Ei": 0, "Tyhjää": 0, "Poissa": 0 };
-  rows.forEach(r => {
-    const a = get(r, "Aanestys") || get(r, "EdustajaAanestys") || "";
-    if (aanet[a] !== undefined) aanet[a]++;
-    else aanet["Poissa"]++;
-  });
-  const yhteensa = rows.length;
-
-  // Yhteenvetopalkki
-  const jaaP   = Math.round(aanet["Jaa"]    / yhteensa * 100);
-  const eiP    = Math.round(aanet["Ei"]     / yhteensa * 100);
-  const poissaP= Math.round(aanet["Poissa"] / yhteensa * 100);
+  const n       = yht.yhteensa || lista.length;
+  const jaa     = yht.jaa     || 0;
+  const ei      = yht.ei      || 0;
+  const tyhja   = yht.tyhjaa  || 0;
+  const poissa  = yht.poissa  || 0;
+  const jaaP    = n ? Math.round(jaa    / n * 100) : 0;
+  const eiP     = n ? Math.round(ei     / n * 100) : 0;
+  const poissaP = n ? Math.round(poissa / n * 100) : 0;
 
   let html = `
     <div style="margin-bottom:1rem">
-      <div class="d-label" style="margin-bottom:.5rem">YHTEENVETO — ${yhteensa} viimeisintä äänestystä</div>
-      <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
-        <div style="flex:${jaaP};height:10px;background:#27ae60;border-radius:2px;min-width:2px" title="Jaa: ${aanet['Jaa']}"></div>
-        <div style="flex:${eiP};height:10px;background:#e74c3c;border-radius:2px;min-width:2px" title="Ei: ${aanet['Ei']}"></div>
-        <div style="flex:${poissaP};height:10px;background:#4a5a7a;border-radius:2px;min-width:2px" title="Poissa: ${aanet['Poissa']}"></div>
+      <div class="d-label" style="margin-bottom:.5rem">YHTEENVETO — ${n} äänestystä</div>
+      <div style="display:flex;gap:3px;margin-bottom:.45rem;border-radius:3px;overflow:hidden;height:10px">
+        <div style="flex:${jaaP||0};background:#27ae60;min-width:${jaa?3:0}px" title="Jaa: ${jaa}"></div>
+        <div style="flex:${eiP||0};background:#e74c3c;min-width:${ei?3:0}px" title="Ei: ${ei}"></div>
+        <div style="flex:${poissaP||0};background:#3a4a5a;min-width:${poissa?3:0}px" title="Poissa: ${poissa}"></div>
       </div>
-      <div style="display:flex;gap:1rem;font-size:.72rem">
-        <span style="color:#27ae60">▲ Jaa: <strong>${aanet['Jaa']}</strong></span>
-        <span style="color:#e74c3c">▼ Ei: <strong>${aanet['Ei']}</strong></span>
-        <span style="color:#f59e0b">○ Tyhjää: <strong>${aanet['Tyhjää']}</strong></span>
-        <span style="color:#4a5a7a">– Poissa: <strong>${aanet['Poissa']}</strong></span>
+      <div style="display:flex;gap:.85rem;flex-wrap:wrap;font-size:.72rem">
+        <span style="color:#27ae60">▲ Jaa <strong>${jaa}</strong> <span style="color:#4a5a7a">(${jaaP}%)</span></span>
+        <span style="color:#e74c3c">▼ Ei <strong>${ei}</strong> <span style="color:#4a5a7a">(${eiP}%)</span></span>
+        <span style="color:#f59e0b">○ Tyhjää <strong>${tyhja}</strong></span>
+        <span style="color:#4a5a7a">– Poissa <strong>${poissa}</strong></span>
       </div>
     </div>
     <div class="d-label" style="margin-bottom:.4rem">VIIMEISIMMÄT ÄÄNESTYKSET</div>
-    <div style="display:flex;flex-direction:column;gap:.25rem;max-height:320px;overflow-y:auto;padding-right:.25rem">`;
+    <div style="display:flex;flex-direction:column;gap:.25rem;max-height:340px;overflow-y:auto;padding-right:.25rem">`;
 
-  rows.slice(0, 30).forEach(r => {
-    const aani    = get(r, "Aanestys") || get(r, "EdustajaAanestys") || "–";
-    const aanId   = get(r, "AanestysId") || "";
-    const otsikko = get(r, "AsiaNimike") || get(r, "AanestysOtsikkoFI") || get(r, "KaesittelyVaiheNimike") || `Äänestys ${aanId}`;
-    const pvm     = get(r, "AanestysHetki") || get(r, "IstuntoJarjestysNro") || "";
-    const pvmLyhyt = pvm ? pvm.slice(0,10) : "";
-
-    const vari2 = aani === "Jaa" ? "#27ae60" : aani === "Ei" ? "#e74c3c" : aani === "Tyhjää" ? "#f59e0b" : "#4a5a7a";
-    const ikoni = aani === "Jaa" ? "▲" : aani === "Ei" ? "▼" : aani === "Tyhjää" ? "○" : "–";
-    const lyhyt = otsikko.length > 60 ? otsikko.slice(0,58)+"…" : otsikko;
-
-    html += `<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.4rem .5rem;border-radius:4px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04)">
-      <span style="font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:${vari2};flex-shrink:0;min-width:20px;margin-top:1px">${ikoni}</span>
+  lista.forEach(a => {
+    const aani    = a.aani || "–";
+    const otsikko = (a.otsikko || "–");
+    const lyhyt   = otsikko.length > 75 ? otsikko.slice(0, 73) + "…" : otsikko;
+    const apvm    = a.pvm || "";
+    const v2      = aani === "Jaa" ? "#27ae60" : aani === "Ei" ? "#e74c3c" : aani === "Tyhjää" ? "#f59e0b" : "#4a5a7a";
+    const ikoni   = aani === "Jaa" ? "▲" : aani === "Ei" ? "▼" : aani === "Tyhjää" ? "○" : "–";
+    html += `<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.4rem .5rem;
+        border-radius:4px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04)">
+      <span style="font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;
+        color:${v2};flex-shrink:0;min-width:18px;margin-top:1px">${ikoni}</span>
       <div style="flex:1;min-width:0">
         <div style="font-size:.78rem;color:#c8d8e8;line-height:1.4">${lyhyt}</div>
-        ${pvmLyhyt ? `<div style="font-size:.65rem;color:#4a5a7a;margin-top:1px">${pvmLyhyt}</div>` : ""}
+        ${apvm ? `<div style="font-size:.65rem;color:#4a5a7a;margin-top:1px">${apvm}</div>` : ""}
       </div>
-      <span style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:${vari2};flex-shrink:0">${aani}</span>
+      <span style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;
+        color:${v2};flex-shrink:0">${aani}</span>
     </div>`;
   });
 
   html += `</div>
     <div style="margin-top:.75rem;font-size:.65rem;color:#3a5a77">
-      Lähde: avoindata.eduskunta.fi · ${yhteensa} äänestystä haettu
+      Lähde: avoindata.eduskunta.fi · Päivitetty ${pvm}
     </div>`;
 
   el.innerHTML = html;
 }
+
 
 function suljeSubmodal() {
   document.getElementById("submodalOverlay").classList.remove("open");
