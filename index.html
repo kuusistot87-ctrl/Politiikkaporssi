@@ -1471,7 +1471,7 @@
   <div id="aktLataaja" style="text-align:center;padding:2rem 0">
     <div class="spinner" style="margin:0 auto 1rem"></div>
     <div style="font-size:.78rem;color:#5a7a99;letter-spacing:.1em">LASKETAAN PISTEITÄ…</div>
-    <div style="font-size:.68rem;color:#3a5a77;margin-top:.4rem;letter-spacing:.06em">Haetaan RSS-mediadata pisteytystä varten</div>
+    <div style="font-size:.68rem;color:#3a5a77;margin-top:.4rem;letter-spacing:.06em">Haetaan RSS-mediadata pisteytystä varten (max 8s)</div>
   </div>
   <div id="aktLista" style="display:flex;flex-direction:column;gap:.3rem"></div>
   <div style="margin-top:1.5rem;font-size:.65rem;color:#3a5a77;letter-spacing:.06em">
@@ -3889,7 +3889,14 @@ async function laskeAktiivisuusPisteet() {
   const maxPoiss  = (poissData && poissData.max_yht) ? poissData.max_yht : 141;
 
   // 2) Lataa RSS-maininnat taustalla (käyttää RSS_CACHE jos jo ladattu)
-  AKT_MEDIA_COUNTS = await laskeMediaMaininnatRSS();
+  // Kokonais-timeout 8s RSS-haulle — pisteytys etenee vaikka media-data ei tulisi
+  try {
+    const rssPromise = laskeMediaMaininnatRSS();
+    const timeoutPromise = new Promise(res => setTimeout(() => res({}), 8000));
+    AKT_MEDIA_COUNTS = await Promise.race([rssPromise, timeoutPromise]);
+  } catch(e) {
+    AKT_MEDIA_COUNTS = {};
+  }
 
   // 3) Laske pisteet per edustaja
   const nykyiset = KAIKKI.filter(m => m.nykyinen);
@@ -3971,20 +3978,23 @@ async function laskeAktiivisuusPisteet() {
 }
 
 async function laskeMediaMaininnatRSS() {
-  // Jos RSS_CACHE on jo täynnä, lasketaan siitä suoraan
   const laskuri = {};
-
   const tarvitseeHakea = RSS_LAHTEET.filter(l => !RSS_CACHE[l.nimi]);
 
   if (tarvitseeHakea.length > 0) {
-    // Hae puuttuvat lähteet rinnakkain (max 20 artikkelia per lähde)
-    await Promise.all(tarvitseeHakea.map(async lahde => {
-      try {
-        const res  = await fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=20");
-        const data = await res.json();
-        RSS_CACHE[lahde.nimi] = data.items || [];
-      } catch(e) { RSS_CACHE[lahde.nimi] = []; }
-    }));
+    // Hae rinnakkain, max 5s timeout per lähde — ei jää roikkumaan
+    const haeFetch = (lahde) => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      return fetch(RSS_PROXY + encodeURIComponent(lahde.url) + "&api_key=yjguquojtr2qgbakqhobpcwz04hqgpwgodusfvwh&count=20",
+        { signal: controller.signal })
+        .then(r => r.json())
+        .then(data => { RSS_CACHE[lahde.nimi] = data.items || []; })
+        .catch(() => { RSS_CACHE[lahde.nimi] = []; })
+        .finally(() => clearTimeout(timer));
+    };
+    // Promise.allSettled ei kaadu vaikka osa epäonnistuu
+    await Promise.allSettled(tarvitseeHakea.map(haeFetch));
   }
 
   // Laske maininnat kaikista cachetuista artikkeleista
