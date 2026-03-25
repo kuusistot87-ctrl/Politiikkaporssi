@@ -3895,9 +3895,14 @@ async function laskeAktiivisuusPisteet() {
       const n   = yht.yhteensa || 1;
       aanPct = Math.round(((n - (yht.poissa||0)) / n) * 100);
     } else {
+      // Estimaatti poissaolodatasta: sijoitus 200 = vähiten poissa -> korkea aanPct
       const p = poissMap[m.nimi];
-      if (p) aanPct = Math.max(0, 100 - Math.round(p.yht / maxPoiss * 60));
-      else   aanPct = 75;
+      if (p && p.sijoitus) {
+        // Sijoitus 200 -> ~95%, sijoitus 1 -> ~30%
+        aanPct = Math.round(30 + (p.sijoitus / 200) * 65);
+      } else {
+        aanPct = 60; // neutraali default jos ei dataa lainkaan
+      }
     }
     if (aanPct > maxAanPct) maxAanPct = aanPct;
 
@@ -3906,9 +3911,9 @@ async function laskeAktiivisuusPisteet() {
     const poissYht  = p ? p.yht  : 0;
     const poissSija = p ? p.sijoitus : 100;
 
-    // Aloitteet: estimaatti kokemuspohjaisesti
+    // Aloitteet: pelkästään vaalikausimäärä — ei puoluebonusta
     const vp = m.vaalikaudet || 1;
-    const aloiteEstimaatti = Math.min(40, vp * 2 + (m.puolue === 'KOK'||m.puolue==='SDP'||m.puolue==='KESK' ? 3 : 1));
+    const aloiteEstimaatti = Math.min(40, vp * 3);
 
     // Mediamainintamäärä (nyt oikea data RSS:stä)
     const mediaLkm = AKT_MEDIA_COUNTS[m.nimi] || 0;
@@ -3920,13 +3925,25 @@ async function laskeAktiivisuusPisteet() {
   if (maxAanPct  < 1) maxAanPct  = 100;
   if (maxMediaLkm < 1) maxMediaLkm = 1;
   const maxAloite = Math.max(...raakaPisteet.map(r => r.aloiteEstimaatti), 1);
+  const totalEd   = nykyiset.length || 200;
 
   AKT_DATA = raakaPisteet.map(r => {
-    const pAan  = Math.round((r.aanPct / 100) * 30);
-    const pPois = Math.round(((200 - r.poissSija) / 199) * 25);
+    // ÄÄNESTYS (0-30p): suoraan osallistumisprosentista
+    const pAan = Math.round((r.aanPct / 100) * 30);
+
+    // POISSAOLOT (0-25p): sijoitus 200 = vähiten poissa = 25p, sijoitus 1 = eniten poissa = ~0p
+    // KORJAUS: isompi sijoitusnumero tarkoittaa vähemmän poissaoloja -> enemmän pisteitä
+    const pPois = r.poissSija > 0
+      ? Math.round((r.poissSija / totalEd) * 25)
+      : 13; // ei dataa -> neutraali
+
+    // ALOITTEET (0-25p): suhteellinen vaalikausimäärän mukaan, ei puoluebonusta
     const pAloi = Math.round((r.aloiteEstimaatti / maxAloite) * 25);
+
+    // MEDIA (0-20p): suhteellinen RSS-mainintamäärä
     const pMedi = Math.round((r.mediaLkm / maxMediaLkm) * 20);
-    const yht   = Math.min(100, pAan + pPois + pAloi + pMedi);
+
+    const yht = Math.min(100, pAan + pPois + pAloi + pMedi);
     return {
       m:         r.m,
       yht,
