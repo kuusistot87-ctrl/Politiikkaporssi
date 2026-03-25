@@ -499,7 +499,7 @@
     .nav-btn:active { transform: scale(.97); filter: brightness(1.3); }
 
     .nav-btn-icon {
-      font-size: 1.65rem;
+      font-size: 2.1rem;
       line-height: 1;
       position: relative;
       z-index: 1;
@@ -512,7 +512,7 @@
     }
 
     .nav-btn-label {
-      font-size: .8rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--nb-color);
       letter-spacing: .16em;
@@ -521,7 +521,7 @@
       text-shadow: 0 0 12px var(--nb-color);
     }
     .nav-btn-sub {
-      font-size: .6rem;
+      font-size: .68rem;
       color: #3a5a77;
       letter-spacing: .08em;
       font-weight: 400;
@@ -1486,16 +1486,13 @@ function naytaTulokset() {
 
 function naytaSplash() {
   tallennaNakyma('splash');
-  document.getElementById("splash").style.display    = "flex";
-  document.getElementById("grid").style.display      = "none";
-  document.getElementById("tulosrivi").style.display = "none";
-  document.getElementById("pagination").style.display = "none";
+  // Piilota kaikki näkymät ja poista active kaikista napeista
+  piilotaKaikki();
+  document.getElementById("splash").style.display       = "flex";
   document.getElementById("voimasuhteetAlipainike").style.display = "none";
-  document.getElementById("countBadge").textContent  = "";
+  document.getElementById("countBadge").textContent     = "";
   aktiivisuusPuolue = "";
   aikasuodatin = "";
-  document.getElementById("btnNykyiset").classList.remove("active");
-  document.getElementById("btnHistorialliset").classList.remove("active");
   document.getElementById("btnPuolue").textContent = "Puolue ▾";
   document.getElementById("btnPuolue").classList.remove("active");
   document.getElementById("puolueDropdown").querySelectorAll(".dp-btn").forEach(b=>b.classList.remove("active"));
@@ -1926,7 +1923,7 @@ document.getElementById("submodalOverlay").addEventListener("click", e => {
   if (e.target.id === "submodalOverlay") suljeSubmodal();
 });
 
-// ESC sulkee modaalit oikeassa järjestyksessä: submodal → lobbaus → päämodaali → edellinen näkymä
+// ESC sulkee modaalit oikeassa järjestyksessä: submodal → lobbaus → päämodaali → splash
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
   const sub     = document.getElementById("submodalOverlay");
@@ -1935,7 +1932,8 @@ document.addEventListener("keydown", e => {
   if (sub     && sub.classList.contains("open"))    { suljeSubmodal(); return; }
   if (lobbaus && lobbaus.classList.contains("open")) { suljeLobbausKortti(); return; }
   if (main    && main.classList.contains("open"))    { closeTTLProfile(); return; }
-  paataEdelliseen();
+  // ESC sulkee nykyisen näkymän → aina splashiin
+  naytaSplash();
 });
 
 function lnk(url, teksti, vari) {
