@@ -1961,10 +1961,10 @@ function renderModalSkeleton(m, vari) {
     ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
     : m.syntymavuosi ? `${m.syntymavuosi}–` : "–";
   const kuvaImg = m.kuva
-    ? `<img src="${kuvaUrl(m.kuva, 400)}" alt="${m.nimi}" onerror="this.style.display='none'"
-         style="width:160px;height:200px;object-fit:cover;object-position:top;border-radius:6px;
-                border:2px solid ${vari};box-shadow:0 0 20px ${vari}55;display:block;">`
-    : `<div style="width:160px;height:200px;border-radius:6px;border:1px solid #1a2a55;
+    ? `<img src="${kuvaUrl(m.kuva, 600)}" alt="${m.nimi}" onerror="this.style.display='none'"
+         style="width:220px;height:275px;object-fit:cover;object-position:top;border-radius:6px;
+                border:2px solid ${vari};box-shadow:0 0 24px ${vari}55;display:block;">`
+    : `<div style="width:220px;height:275px;border-radius:6px;border:1px solid #1a2a55;
          background:#0b1128;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3">👤</div>`;
 
   const kuvaWrap = m.eduskunta
