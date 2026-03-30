@@ -36,6 +36,12 @@ def hae_json(url):
         print(f"  VIRHE: {e}")
         return None
 
+def ascii_slug(nimi):
+    """Muuntaa nimen ASCII-tiedostonimeksi: skandit korvataan, välilyönnit alaviivaksi."""
+    korvaukset = {'ä':'a','ö':'o','å':'a','Ä':'A','Ö':'O','Å':'A'}
+    s = ''.join(korvaukset.get(c, c) for c in nimi)
+    return s.replace(' ', '_')
+
 def henkilo_numero(eduskunta_url):
     """Poimii henkilönumeron eduskunta.fi-URL:sta, esim. /1234567.aspx → 1234567"""
     m = re.search(r"/(\d+)\.aspx", eduskunta_url or "")
@@ -167,7 +173,7 @@ def main():
 
     for i, ed in enumerate(nykyiset, 1):
         nimi  = ed.get("nimi", "")
-        slug  = nimi.replace(" ", "_")
+        slug  = ascii_slug(nimi)
         nro   = henkilo_numero(ed.get("eduskunta", ""))
         out   = os.path.join(OUT_DIR, f"{slug}.json")
 
