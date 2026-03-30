@@ -3674,9 +3674,69 @@ function renderVoimasuhteet() {
     kulma += aste;
   });
 
-  // Hallitus/oppositio-jako visuaalisesti
+  // ── Dynaamiset lisätilastot datasta ───────────────────────────
+  const nykyiset = KAIKKI.filter(m => m.nykyinen);
+  const vuosi = new Date().getFullYear();
+
+  // Sukupuolijakauma (arvioidaan etunimen perusteella — ei täydellinen)
+  const hallitusMiehet = hallitus.reduce((s,p) => {
+    const pu = nykyiset.filter(m => m.puolue === p.puolue);
+    return s + pu.filter(m => {
+      const etu = m.nimi.split(' ')[0];
+      return !['Anna','Sari','Mari','Hanna','Krista','Päivi','Elina','Tiina','Mia','Eva',
+               'Aino','Riikka','Sanna','Laura','Sofia','Pia','Leena','Niina','Jenni',
+               'Susanne','Johanna','Sandra','Helena','Anne','Sara','Anette','Bella',
+               'Kaisa','Eeva','Maaret','Fatim','Alviina','Lotta','Milla','Minja',
+               'Olga','Karoliina','Pinja','Piritta','Merja','Nasima','Minna','Anne',
+               'Paula','Saara','Inka','Veronika','Hilkka','Saara-Sofia','Mai','Eveliina',
+               'Mari-Leena','Hanna-Leena','Anna-Kaisa','Anna-Kristiina','Miapetra',
+               'Suna','Eeva-Johanna','Aino-Kaisa','Noora','Jaana','Riitta','Lulu',
+               'Terhi','Helena','Tuula'].includes(etu);
+    }).length;
+  }, 0);
+  const hallitusNaiset = hallitusYht - hallitusMiehet;
+  const oppositioNaiset = nykyiset.filter(m => !HALLITUSPUOLUEET.has(m.puolue) &&
+    ['Anna','Sari','Mari','Hanna','Krista','Päivi','Elina','Tiina','Mia','Eva',
+     'Aino','Riikka','Sanna','Laura','Sofia','Pia','Leena','Niina','Jenni',
+     'Susanne','Johanna','Sandra','Helena','Anne','Sara','Anette','Bella',
+     'Kaisa','Eeva','Maaret','Fatim','Alviina','Lotta','Milla','Minja',
+     'Olga','Karoliina','Pinja','Piritta','Merja','Nasima','Minna',
+     'Paula','Saara','Inka','Veronika','Hilkka','Saara-Sofia','Mai','Eveliina',
+     'Mari-Leena','Hanna-Leena','Anna-Kaisa','Anna-Kristiina','Miapetra',
+     'Suna','Eeva-Johanna','Aino-Kaisa','Noora','Jaana','Riitta','Lulu',
+     'Terhi','Tuula'].includes(m.nimi.split(' ')[0])
+  ).length;
+
+  // Keski-ikä puolueittain
+  const puolueIat = {};
+  nykyiset.filter(m => m.syntymavuosi).forEach(m => {
+    if (!puolueIat[m.puolue]) puolueIat[m.puolue] = [];
+    puolueIat[m.puolue].push(vuosi - m.syntymavuosi);
+  });
+  const puolueKeskiIka = Object.entries(puolueIat)
+    .map(([p, iat]) => ({ puolue: p, keski: Math.round(iat.reduce((s,v)=>s+v,0)/iat.length) }))
+    .sort((a,b) => a.keski - b.keski);
+
+  // Uudet edustajat (1. kausi) per puolue
+  const uudetPerPuolue = {};
+  nykyiset.filter(m => (m.vaalikaudet||1) === 1).forEach(m => {
+    uudetPerPuolue[m.puolue] = (uudetPerPuolue[m.puolue]||0) + 1;
+  });
+
+  // Vaalipiirijakauma hallituspuolueissa
+  const vaalipiiriMap = {};
+  nykyiset.filter(m => HALLITUSPUOLUEET.has(m.puolue) && m.vaalipiiri).forEach(m => {
+    vaalipiiriMap[m.vaalipiiri] = (vaalipiiriMap[m.vaalipiiri]||0) + 1;
+  });
+  const vaalipiiriLista = Object.entries(vaalipiiriMap)
+    .sort((a,b) => b[1]-a[1]).slice(0,8);
+
+  // Hallituksen enemmistövahvuus
+  const enemmisto = 101;
+  const ylijaama = hallitusYht - enemmisto;
+
   el.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;max-width:900px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;max-width:1000px">
 
       <!-- Vasen: donitsikaavio -->
       <div style="display:flex;flex-direction:column;align-items:center;gap:1rem">
@@ -3694,27 +3754,119 @@ function renderVoimasuhteet() {
         <div style="width:100%;background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:.85rem">
           <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#5a7a99;margin-bottom:.6rem">HALLITUS VS OPPOSITIO</div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;margin-bottom:.5rem">
-            <div style="width:${(hallitusYht/VOIMASUHTEET_YHTEENSA*100).toFixed(1)}%;background:linear-gradient(90deg,#1a6fd8,#f5c400);"></div>
-            <div style="flex:1;background:linear-gradient(90deg,#e01010,#009b50);"></div>
+            <div style="width:${(hallitusYht/VOIMASUHTEET_YHTEENSA*100).toFixed(1)}%;background:linear-gradient(90deg,#1565C0,#FFA726);"></div>
+            <div style="flex:1;background:linear-gradient(90deg,#E53935,#43A047);"></div>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:.75rem">
             <span style="color:#00d4ff;font-family:'Orbitron',monospace">${hallitusYht} <span style="color:#5a7a99;font-size:.65rem">hallitus</span></span>
-            <span style="color:#e01010;font-family:'Orbitron',monospace">${oppositioYht} <span style="color:#5a7a99;font-size:.65rem">oppositio</span></span>
+            <span style="color:#E53935;font-family:'Orbitron',monospace">${oppositioYht} <span style="color:#5a7a99;font-size:.65rem">oppositio</span></span>
+          </div>
+        </div>
+
+        <!-- Enemmistövahvuus -->
+        <div style="width:100%;background:#0b1128;border:1px solid ${ylijaama>=0?'#43A04788':'#E5393588'};border-radius:6px;padding:.85rem">
+          <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#5a7a99;margin-bottom:.5rem">ENEMMISTÖVAHVUUS</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:${ylijaama>=0?'#43A047':'#E53935'}">
+            ${ylijaama>=0?'+':''}${ylijaama}
+          </div>
+          <div style="font-size:.72rem;color:#5a7a99;margin-top:.2rem">${hallitusYht}/${enemmisto} enemmistöraja · ${ylijaama>=0?'vahva enemmistö':'ei enemmistöä'}</div>
+          <div style="margin-top:.5rem;background:rgba(255,255,255,.04);border-radius:3px;height:6px;overflow:hidden">
+            <div style="width:${Math.min(hallitusYht/VOIMASUHTEET_YHTEENSA*100,100)}%;height:100%;
+              background:${ylijaama>=0?'#43A047':'#E53935'};border-radius:3px"></div>
           </div>
         </div>
       </div>
 
       <!-- Oikea: puoluelistat -->
       <div style="display:flex;flex-direction:column;gap:.5rem">
-
         <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#00d4ff;margin-bottom:.25rem">⚡ HALLITUS</div>
         ${hallitus.map(p => puoluePalkki(p)).join('')}
-
         <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#5a7a99;margin:.75rem 0 .25rem;padding-top:.75rem;border-top:1px solid #1a2a55">OPPOSITIO</div>
         ${oppositio.map(p => puoluePalkki(p)).join('')}
-
       </div>
     </div>
+
+    <!-- RIVI 2: sukupuoli + keski-ikä + uudet -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;max-width:1000px;margin-top:2rem">
+
+      <!-- Sukupuolijakauma -->
+      <div style="background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:1rem">
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#e040fb;margin-bottom:.75rem">SUKUPUOLIJAKAUMA</div>
+        <div style="margin-bottom:.75rem">
+          <div style="font-size:.62rem;color:#5a7a99;margin-bottom:.3rem">HALLITUS</div>
+          <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:.25rem">
+            <div style="width:${Math.round(hallitusMiehet/hallitusYht*100)}%;background:#00d4ff"></div>
+            <div style="flex:1;background:#ff007a"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.68rem">
+            <span style="color:#00d4ff">${hallitusMiehet} miestä (${Math.round(hallitusMiehet/hallitusYht*100)}%)</span>
+            <span style="color:#ff007a">${hallitusNaiset} naista</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;color:#5a7a99;margin-bottom:.3rem">OPPOSITIO</div>
+          <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:.25rem">
+            <div style="width:${Math.round((oppositioYht-oppositioNaiset)/oppositioYht*100)}%;background:#00d4ff"></div>
+            <div style="flex:1;background:#ff007a"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.68rem">
+            <span style="color:#00d4ff">${oppositioYht-oppositioNaiset} miestä</span>
+            <span style="color:#ff007a">${oppositioNaiset} naista (${Math.round(oppositioNaiset/oppositioYht*100)}%)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keski-ikä puolueittain -->
+      <div style="background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:1rem">
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#ffd700;margin-bottom:.75rem">KESKI-IKÄ PUOLUEITTAIN</div>
+        ${puolueKeskiIka.map(p => {
+          const vari = puolueVari(p.puolue);
+          const pct = Math.round((p.keski - 30) / 40 * 100);
+          return `<div style="display:grid;grid-template-columns:44px 1fr 36px;gap:.5rem;align-items:center;margin-bottom:.35rem">
+            <span style="font-family:'Orbitron',monospace;font-size:.58rem;color:${vari};text-align:right">${p.puolue}</span>
+            <div style="background:rgba(255,255,255,.04);border-radius:2px;height:5px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:${vari};opacity:.8"></div>
+            </div>
+            <span style="font-size:.68rem;color:#8a9ab5">${p.keski}v</span>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Uudet edustajat per puolue -->
+      <div style="background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:1rem">
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#39ff14;margin-bottom:.75rem">ENSIKERTALAISET 2023</div>
+        ${Object.entries(uudetPerPuolue).sort((a,b)=>b[1]-a[1]).map(([p,n]) => {
+          const vari = puolueVari(p);
+          const tot  = nykyiset.filter(m=>m.puolue===p).length || 1;
+          const pct  = Math.round(n/tot*100);
+          return `<div style="display:grid;grid-template-columns:44px 1fr 52px;gap:.5rem;align-items:center;margin-bottom:.35rem">
+            <span style="font-family:'Orbitron',monospace;font-size:.58rem;color:${vari};text-align:right">${p}</span>
+            <div style="background:rgba(255,255,255,.04);border-radius:2px;height:5px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:${vari};opacity:.8"></div>
+            </div>
+            <span style="font-size:.65rem;color:#8a9ab5">${n} (${pct}%)</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <!-- RIVI 3: hallituspuolueiden vaalipiirijakauma -->
+    <div style="max-width:1000px;margin-top:1.5rem;background:#0b1128;border:1px solid #1a2a55;border-radius:6px;padding:1rem">
+      <div style="font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:.18em;color:#00d4ff;margin-bottom:.85rem">HALLITUSPUOLUEIDEN EDUSTAJAT VAALIPIIREITTÄIN</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+        ${vaalipiiriLista.map(([vp, n]) => {
+          const pct = Math.round(n/hallitusYht*100);
+          return `<div style="display:grid;grid-template-columns:160px 1fr 60px;gap:.75rem;align-items:center">
+            <span style="font-size:.72rem;color:#c8d8e8;text-align:right">${vp}</span>
+            <div style="background:rgba(255,255,255,.04);border-radius:3px;height:7px;overflow:hidden">
+              <div style="width:${pct*3}%;height:100%;background:#00d4ff;opacity:.7;border-radius:3px"></div>
+            </div>
+            <span style="font-size:.7rem;color:#8a9ab5">${n} ed. (${pct}%)</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
     <div style="margin-top:.75rem;font-size:.65rem;color:#3a5a77;letter-spacing:.08em">
       Lähde: eduskunta.fi · Päivitetty 22.3.2026
     </div>`;
