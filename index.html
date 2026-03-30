@@ -953,7 +953,7 @@
     /* ── PROFIILI-HEADER ── */
     .profil-header {
       display: grid;
-      grid-template-columns: 160px 1fr;
+      grid-template-columns: 220px 1fr;
       gap: 1.5rem;
       align-items: start;
       margin-bottom: 1.5rem;
@@ -1825,12 +1825,11 @@ function luoKortti(m) {
   const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
                : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
   const kuvaHtml = m.kuva
-    ? `<img src="${kuvaUrl(m.kuva, 120)}" alt="${m.nimi}" loading="lazy"
-         onerror="this.style.display='none'"
-         style="position:absolute;top:.7rem;right:.7rem;width:62px;height:76px;
-                object-fit:cover;object-position:top;border-radius:4px;
-                border:1px solid var(--party-color, #1a2a55);
-                opacity:.9;">`
+    ? `<img src="${kuvaUrl(m.kuva, 160)}" alt="${m.nimi}" loading="lazy"
+         onerror="this.parentElement.style.display='none'"
+         style="width:80px;height:100px;object-fit:cover;object-position:top;
+                border-radius:4px;flex-shrink:0;
+                border:1px solid var(--party-color, #1a2a55);display:block;">`
     : "";
   const vertValittu = VERT_ED.some(v => v && v.nimi === m.nimi);
   const vertKnap = m.nykyinen
@@ -1841,11 +1840,13 @@ function luoKortti(m) {
     : "";
   card.innerHTML = `
     <div class="card-topbar"></div>
-    <div class="card-body" style="position:relative">
-      ${kuvaHtml}
-      <div class="card-party-tag">${m.puolue||"–"}</div>
-      <div class="card-name" style="padding-right:${m.kuva?"72px":"0"}">${kaannaNimi(m.nimi)}</div>
-      <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
+    <div class="card-body" style="display:flex;gap:.85rem;align-items:flex-start">
+      ${kuvaHtml ? `<div style="flex-shrink:0">${kuvaHtml}</div>` : ''}
+      <div style="min-width:0;flex:1">
+        <div class="card-party-tag">${m.puolue||"–"}</div>
+        <div class="card-name">${kaannaNimi(m.nimi)}</div>
+        <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
+      </div>
     </div>
     <div class="card-actions">
       <span class="card-action-avaa">AVAA →</span>
@@ -2780,6 +2781,7 @@ function paataEdelliseen() {
     () => { if (document.getElementById('lobbausKorttiOverlay').classList.contains('open')) { suljeLobbausKortti(); return true; } },
     () => { if (document.getElementById('uutisetKorttiOverlay').classList.contains('open')) { suljeUutisetKortti(); return true; } },
     () => { if (document.getElementById('rssListaOverlay').classList.contains('open')) { suljeRssLista(); return true; } },
+    () => { if (document.getElementById('vertPalkki').classList.contains('auki')) { nollaaVertailu(); return true; } },
   ];
   for (const fn of overlayit) { if (fn()) return; }
 
