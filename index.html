@@ -216,7 +216,7 @@
       cursor: pointer;
       z-index: 2;
       transition: all .18s;
-      opacity: 0;
+      opacity: 0.35;
     }
     .card:hover .card-vert-btn { opacity: 1; }
     .card-vert-btn.valittu {
@@ -1492,60 +1492,38 @@
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff007a;margin-bottom:.3rem">
     ⚔️ VERTAILE — KAHDEN EDUSTAJAN ANALYYSI
   </div>
-  <div style="font-size:1.6rem;font-weight:700;font-family:'Orbitron',monospace;color:#e8f4ff;margin-bottom:1.5rem;letter-spacing:.04em">
+  <div style="font-size:1.6rem;font-weight:700;font-family:'Orbitron',monospace;color:#e8f4ff;margin-bottom:.5rem;letter-spacing:.04em">
     HEAD-TO-HEAD
   </div>
 
-  <!-- Valintapainikkeet -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
-    <!-- Edustaja 1 -->
-    <div>
-      <div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.18em;color:#00d4ff;margin-bottom:.5rem">EDUSTAJA 1</div>
-      <div style="position:relative">
-        <input id="vertHaku1" type="text" placeholder="Hae nimellä..." autocomplete="off"
-          oninput="vertHakuTulos(1)"
-          style="width:100%;background:#0b1128;border:1px solid #1a2a55;border-radius:6px;
-                 color:#e8f4ff;font-family:'Rajdhani',sans-serif;font-size:.9rem;
-                 padding:.6rem 1rem;outline:none;letter-spacing:.05em"
-          onfocus="this.style.borderColor='#00d4ff'" onblur="setTimeout(()=>suljeVertHaku(1),200)">
-        <div id="vertDropdown1" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:100;
-          background:#0b1128;border:1px solid #1a2a55;border-radius:0 0 6px 6px;
-          max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.6)"></div>
-      </div>
-      <!-- Valittu kortti -->
-      <div id="vertKortti1" style="display:none;margin-top:.75rem"></div>
-    </div>
-
-    <!-- Edustaja 2 -->
-    <div>
-      <div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.18em;color:#ff007a;margin-bottom:.5rem">EDUSTAJA 2</div>
-      <div style="position:relative">
-        <input id="vertHaku2" type="text" placeholder="Hae nimellä..." autocomplete="off"
-          oninput="vertHakuTulos(2)"
-          style="width:100%;background:#0b1128;border:1px solid #1a2a55;border-radius:6px;
-                 color:#e8f4ff;font-family:'Rajdhani',sans-serif;font-size:.9rem;
-                 padding:.6rem 1rem;outline:none;letter-spacing:.05em"
-          onfocus="this.style.borderColor='#ff007a'" onblur="setTimeout(()=>suljeVertHaku(2),200)">
-        <div id="vertDropdown2" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:100;
-          background:#0b1128;border:1px solid #1a2a55;border-radius:0 0 6px 6px;
-          max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.6)"></div>
-      </div>
-      <div id="vertKortti2" style="display:none;margin-top:.75rem"></div>
-    </div>
+  <!-- Valitut edustajat näkyvät tässä -->
+  <div id="vertKortitRivi" style="display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;margin-bottom:1.5rem">
+    <div id="vertKortti1"></div>
+    <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#1a2a55">VS</div>
+    <div id="vertKortti2"></div>
   </div>
 
   <!-- Vertailutulos -->
-  <div id="vertTulos" style="display:none"></div>
+  <div id="vertTulos"></div>
 
   <!-- Ohjeteksti jos ei valittu -->
   <div id="vertOhje" style="text-align:center;padding:3rem 1rem;color:#3a5a77">
-    <div style="font-size:2rem;margin-bottom:.75rem">⚔️</div>
-    <div style="font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:.2em">
-      VALITSE KAKSI EDUSTAJAA ALOITTAAKSESI
+    <div style="font-size:2.5rem;margin-bottom:1rem">⚔️</div>
+    <div style="font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:.2em;margin-bottom:.75rem">
+      VALITSE KAKSI EDUSTAJAA VERTAILLAKSESI
     </div>
-    <div style="font-size:.8rem;margin-top:.5rem;color:#2a4a67">
-      Hae nimellä tai klikkaa edustajan kortissa "⚔️ Vertaile"
+    <div style="font-size:.82rem;color:#2a4a67;line-height:1.7">
+      Siirry <strong style="color:#3a6a8a">Nykyiset kansanedustajat</strong> -näkymään<br>
+      ja klikkaa korttien <strong style="color:#ff007a">⚔️</strong>-kuvaketta
     </div>
+    <button onclick="naytaEdustajatJaVertailu()"
+      style="margin-top:1.25rem;font-family:'Orbitron',monospace;font-size:.62rem;letter-spacing:.12em;
+             background:transparent;border:1px solid #ff007a88;color:#ff007a;border-radius:6px;
+             padding:.5rem 1.25rem;cursor:pointer;transition:all .2s"
+      onmouseover="this.style.background='rgba(255,0,122,.1)'"
+      onmouseout="this.style.background='transparent'">
+      → SIIRRY VALITSEMAAN
+    </button>
   </div>
 </div>
 
@@ -4496,7 +4474,6 @@ function nollaaVertailu() {
 }
 
 function avaaVertailuNakyma() {
-  if (!VERT_ED[0] || !VERT_ED[1]) return;
   piilotaKaikki();
   tallennaNakyma('vertaile');
   document.getElementById('vertaileNakyma').style.display = 'block';
@@ -4547,6 +4524,13 @@ function valitseVertEdustaja(n, nimi) {
   renderVertaileNakyma();
 }
 
+function naytaEdustajatJaVertailu() {
+  // Siirry edustajalistaan ja jätä vertailupalkki auki
+  piilotaKaikki();
+  document.getElementById('btnNykyiset').classList.add('active');
+  setAika('nykyiset');
+}
+
 function renderVertaileNakyma() {
   const [m1, m2] = VERT_ED;
 
@@ -4555,14 +4539,15 @@ function renderVertaileNakyma() {
     const m    = VERT_ED[n - 1];
     const el   = document.getElementById('vertKortti' + n);
     const vari = n === 1 ? VERT_CYAN : VERT_PINK;
-    if (!m) { el.style.display = 'none'; return; }
-    el.style.display = 'block';
+    if (!el) return;
+    if (!m) { el.innerHTML = ''; return; }
     const pv = puolueVari(m.puolue);
     el.innerHTML = `
       <div style="display:flex;align-items:center;gap:.75rem;background:#0b1128;
                   border:1px solid ${vari}55;border-radius:8px;padding:.75rem;position:relative">
         ${m.kuva ? `<img src="${kuvaUrl(m.kuva,80)}" style="width:40px;height:50px;object-fit:cover;
-                    object-position:top;border-radius:4px;border:1px solid ${vari}66;flex-shrink:0">` : ''}
+                    object-position:top;border-radius:4px;border:1px solid ${vari}66;flex-shrink:0"
+                    onerror="this.style.display='none'">` : ''}
         <div style="min-width:0">
           <div style="font-family:'Orbitron',monospace;font-size:.72rem;color:#e8f4ff;
                       font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
@@ -4570,7 +4555,7 @@ function renderVertaileNakyma() {
           <div style="font-size:.65rem;color:${pv};letter-spacing:.1em;margin-top:.2rem">${m.puolue||''}</div>
           <div style="font-size:.62rem;color:#4a5a7a;margin-top:.1rem">${m.vaalipiiri||''}</div>
         </div>
-        <button onclick="VERT_ED[${n-1}]=null;renderVertaileNakyma()"
+        <button onclick="VERT_ED[${n-1}]=null;paivitaVertPalkki();renderVertaileNakyma()"
           style="position:absolute;top:.4rem;right:.4rem;background:none;border:none;
                  color:#3a5a77;cursor:pointer;font-size:.75rem;padding:.2rem">✕</button>
       </div>`;
