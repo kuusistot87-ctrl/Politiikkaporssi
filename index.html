@@ -1825,12 +1825,12 @@ function luoKortti(m) {
   const vuodet = m.kuolinvuosi ? `${m.syntymavuosi||"?"}–${m.kuolinvuosi}`
                : m.syntymavuosi ? `s. ${m.syntymavuosi}` : "";
   const kuvaHtml = m.kuva
-    ? `<img src="${kuvaUrl(m.kuva, 88)}" alt="${m.nimi}" loading="lazy"
+    ? `<img src="${kuvaUrl(m.kuva, 120)}" alt="${m.nimi}" loading="lazy"
          onerror="this.style.display='none'"
-         style="position:absolute;top:.7rem;right:.7rem;width:44px;height:54px;
-                object-fit:cover;border-radius:3px;
+         style="position:absolute;top:.7rem;right:.7rem;width:62px;height:76px;
+                object-fit:cover;object-position:top;border-radius:4px;
                 border:1px solid var(--party-color, #1a2a55);
-                opacity:.85;">`
+                opacity:.9;">`
     : "";
   const vertValittu = VERT_ED.some(v => v && v.nimi === m.nimi);
   const vertKnap = m.nykyinen
@@ -1844,7 +1844,7 @@ function luoKortti(m) {
     <div class="card-body" style="position:relative">
       ${kuvaHtml}
       <div class="card-party-tag">${m.puolue||"–"}</div>
-      <div class="card-name" style="padding-right:${m.kuva?"54px":"0"}">${kaannaNimi(m.nimi)}</div>
+      <div class="card-name" style="padding-right:${m.kuva?"72px":"0"}">${kaannaNimi(m.nimi)}</div>
       <div class="card-meta">${[paikkatieto,vuodet].filter(Boolean).join(" · ")}</div>
     </div>
     <div class="card-actions">
