@@ -1993,8 +1993,13 @@ function renderModalSkeleton(m, vari) {
    ================================================================ */
 const AANESTYS_CACHE = {};
 
+function asciiSlug(nimi) {
+  const korvaukset = {'ä':'a','ö':'o','å':'a','Ä':'A','Ö':'O','Å':'A'};
+  return nimi.split('').map(c => korvaukset[c] || c).join('').replace(/\s+/g, '_');
+}
+
 async function lataaAanestykset(m, vari) {
-  const slug = m.nimi.replace(/\s+/g, '_');
+  const slug = asciiSlug(m.nimi);
   const elId = "aanestykset-" + m.nimi.replace(/\s+/g, '-');
   const el   = document.getElementById(elId);
   if (!el || el.dataset.ladattu) return;
@@ -2019,28 +2024,77 @@ async function lataaAanestykset(m, vari) {
   }
 }
 
+function normalisioiAani(aani) {
+  // Normalisoi ruotsinkieliset äänivaihtoehdot suomeksi
+  const kartta = {
+    'Ja': 'Jaa', 'Nej': 'Ei', 'Frånvarande': 'Poissa',
+    'Blank': 'Tyhjää', 'Frånvaro': 'Poissa', 'Absent': 'Poissa'
+  };
+  return kartta[aani] || aani;
+}
+
+function onRuotsinkielinen(otsikko) {
+  // RP xxx/yyyy rd  tai  RSk, RSv, jne. = ruotsinkielinen versio
+  return /^R[A-ZÅÄÖ][ \/]/.test(otsikko || "");
+}
+
+// Tallentaa kielisuodattimen tilan per edustaja: { [elId]: 'fi'|'sv'|'kaikki' }
+const AANESTYS_KIELISUODATIN = {};
+
 function renderAanestykset(el, data) {
   const yht   = data.yhteenveto  || {};
   const lista = data.aanestykset || [];
   const pvm   = data.paivitetty  || "";
+  const elId  = el.id || "aanestykset";
 
   if (!lista.length) {
     el.innerHTML = '<span class="info-ei">Ei äänestystietoja saatavilla.</span>';
     return;
   }
 
-  const n       = yht.yhteensa || lista.length;
-  const jaa     = yht.jaa     || 0;
-  const ei      = yht.ei      || 0;
-  const tyhja   = yht.tyhjaa  || 0;
-  const poissa  = yht.poissa  || 0;
+  // Jaa suomenkielisiin ja ruotsinkielisiin
+  const fiLista = lista.filter(a => !onRuotsinkielinen(a.otsikko));
+  const svLista = lista.filter(a =>  onRuotsinkielinen(a.otsikko));
+  const onKaksikielinen = svLista.length > 0;
+
+  // Yhteenvetoluvut lasketaan aina FI-äänestykistä (uniikit)
+  const lasketaan = fiLista.length ? fiLista : lista;
+  const n      = lasketaan.length;
+  const jaa    = lasketaan.filter(a => normalisioiAani(a.aani) === 'Jaa').length;
+  const ei     = lasketaan.filter(a => normalisioiAani(a.aani) === 'Ei').length;
+  const tyhja  = lasketaan.filter(a => normalisioiAani(a.aani) === 'Tyhjää').length;
+  const poissa = lasketaan.filter(a => normalisioiAani(a.aani) === 'Poissa').length;
   const jaaP    = n ? Math.round(jaa    / n * 100) : 0;
   const eiP     = n ? Math.round(ei     / n * 100) : 0;
   const poissaP = n ? Math.round(poissa / n * 100) : 0;
 
+  // Kielisuodatin — oletuksena FI
+  if (!AANESTYS_KIELISUODATIN[elId]) AANESTYS_KIELISUODATIN[elId] = 'fi';
+  const aktiivinen = AANESTYS_KIELISUODATIN[elId];
+
+  // Kielisuodatinpainikkeet — näytetään vain jos molemmat kielet löytyvät
+  const kieliPainikkeet = onKaksikielinen ? `
+    <div style="display:flex;gap:.3rem;margin-bottom:.6rem">
+      ${['fi','sv','kaikki'].map(k => {
+        const labeli = k === 'fi' ? '🇫🇮 Suomi' : k === 'sv' ? '🇸🇪 Svenska' : '🌐 Kaikki';
+        const aktiivi = k === aktiivinen;
+        return `<button onclick="vaihdaAanestysKieli('${elId}',${JSON.stringify(data)},'${k}',this.closest('[id]'))"
+          style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.08em;
+            padding:.25rem .55rem;border-radius:3px;cursor:pointer;transition:all .15s;
+            border:1px solid ${aktiivi ? '#00d4ff' : '#1a2a55'};
+            background:${aktiivi ? 'rgba(0,212,255,.12)' : 'transparent'};
+            color:${aktiivi ? '#00d4ff' : '#5a7a99'}">${labeli}</button>`;
+      }).join('')}
+    </div>` : '';
+
+  // Valitse näytettävä lista
+  const naytettava = aktiivinen === 'fi' ? fiLista
+                   : aktiivinen === 'sv' ? svLista
+                   : lista;
+
   let html = `
     <div style="margin-bottom:1rem">
-      <div class="d-label" style="margin-bottom:.5rem">YHTEENVETO — ${n} äänestystä</div>
+      <div class="d-label" style="margin-bottom:.5rem">YHTEENVETO — ${n} äänestystä${onKaksikielinen ? ' <span style="font-size:.6rem;color:#3a5a77;font-family:Rajdhani,sans-serif;letter-spacing:.05em">(suomenkieliset)</span>' : ''}</div>
       <div style="display:flex;gap:3px;margin-bottom:.45rem;border-radius:3px;overflow:hidden;height:10px">
         <div style="flex:${jaaP||0};background:#27ae60;min-width:${jaa?3:0}px" title="Jaa: ${jaa}"></div>
         <div style="flex:${eiP||0};background:#e74c3c;min-width:${ei?3:0}px" title="Ei: ${ei}"></div>
@@ -2053,11 +2107,14 @@ function renderAanestykset(el, data) {
         <span style="color:#4a5a7a">– Poissa <strong>${poissa}</strong></span>
       </div>
     </div>
-    <div class="d-label" style="margin-bottom:.4rem">VIIMEISIMMÄT ÄÄNESTYKSET</div>
-    <div style="display:flex;flex-direction:column;gap:.25rem;max-height:340px;overflow-y:auto;padding-right:.25rem">`;
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;flex-wrap:wrap;gap:.4rem">
+      <div class="d-label" style="margin:0">VIIMEISIMMÄT ÄÄNESTYKSET <span style="color:#3a5a77;font-size:.65rem">(${naytettava.length})</span></div>
+      ${kieliPainikkeet}
+    </div>
+    <div id="${elId}-lista" style="display:flex;flex-direction:column;gap:.25rem;max-height:340px;overflow-y:auto;padding-right:.25rem">`;
 
-  lista.forEach(a => {
-    const aani    = a.aani || "–";
+  naytettava.forEach(a => {
+    const aani    = normalisioiAani(a.aani || "–");
     const otsikko = (a.otsikko || "–");
     const lyhyt   = otsikko.length > 75 ? otsikko.slice(0, 73) + "…" : otsikko;
     const apvm    = a.pvm || "";
@@ -2087,6 +2144,13 @@ function renderAanestykset(el, data) {
     </div>`;
 
   el.innerHTML = html;
+}
+
+function vaihdaAanestysKieli(elId, data, kieli, container) {
+  AANESTYS_KIELISUODATIN[elId] = kieli;
+  // Hae oikea elementti
+  const el = document.getElementById(elId);
+  if (el) renderAanestykset(el, data);
 }
 
 
@@ -3905,7 +3969,7 @@ async function laskeAktiivisuusPisteet() {
   let maxAanPct = 0, maxMediaLkm = 0;
   const raakaPisteet = nykyiset.map(m => {
     // Äänestysosallistuminen
-    const aCache = AANESTYS_CACHE[m.nimi.replace(/\s+/g,'_')];
+    const aCache = AANESTYS_CACHE[asciiSlug(m.nimi)];
     let aanPct = 0;
     if (aCache && aCache.yhteenveto) {
       const yht = aCache.yhteenveto;
