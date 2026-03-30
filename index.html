@@ -4754,17 +4754,21 @@ function renderVertaileNakyma() {
     const m  = VERT_ED[n-1];
     const el = document.getElementById('vertKortti' + n);
     if (!m) { el.innerHTML = ''; continue; }
-    const vari = n === 1 ? VERT_CYAN : VERT_PINK;
+    const pv = puolueVari(m.puolue);
     el.innerHTML = `
-      <div style="display:flex;align-items:center;gap:.75rem;background:#0b1128;
-                  border:1px solid ${vari}44;border-radius:8px;padding:.75rem 1rem">
-        <img src="${kuvaUrl(m.kuva,80)}" onerror="this.style.display='none'"
-          style="width:48px;height:60px;object-fit:cover;object-position:top;
-                 border-radius:4px;border:2px solid ${vari}66;flex-shrink:0">
-        <div>
-          <div style="font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;
-                      color:${vari};margin-bottom:.2rem">${kaannaNimi(m.nimi)}</div>
-          <div style="font-size:.72rem;color:#5a7a99">${m.puolue||''}${m.vaalipiiri?' · '+m.vaalipiiri:''}</div>
+      <div style="display:flex;align-items:center;gap:.75rem;
+                  background:${pv}12;
+                  border:1px solid ${pv}88;
+                  border-radius:8px;padding:.75rem 1rem;
+                  box-shadow:0 0 16px ${pv}22">
+        <img src="${kuvaUrl(m.kuva,120)}" onerror="this.style.display='none'"
+          style="width:56px;height:70px;object-fit:cover;object-position:top;
+                 border-radius:4px;border:2px solid ${pv};
+                 box-shadow:0 0 10px ${pv}66;flex-shrink:0">
+        <div style="min-width:0">
+          <div style="font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;
+                      color:${pv};margin-bottom:.25rem;letter-spacing:.03em">${kaannaNimi(m.nimi)}</div>
+          <div style="font-size:.72rem;color:#8a9ab5">${m.puolue||''}${m.vaalipiiri?' · '+m.vaalipiiri:''}</div>
         </div>
         <button onclick="VERT_ED[${n-1}]=null;paivitaVertPalkki();renderVertaileNakyma()"
           style="margin-left:auto;background:none;border:none;color:#3a5a77;cursor:pointer;
