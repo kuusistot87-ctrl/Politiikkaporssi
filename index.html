@@ -46,6 +46,7 @@
 
     /* Modal auki — poista raskas taustakuvio */
     body.modal-open::before { display: none; }
+    body.modal-open { overflow: hidden; }
 
     /* ── Taustakuvio ── */
     body::before {
@@ -381,6 +382,8 @@
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
+      min-height: 0;
+      height: 0; /* pakottaa flex-lapsi scrollaamaan eikä kasvamaan */
     }
     @media (max-width: 600px) {
       #drawer { width: 100vw; }
@@ -3324,6 +3327,7 @@ function avaaDraver(nakyma) {
   overlay.classList.add('open');
   drawer.classList.add('open');
   document.body.classList.add('modal-open');
+  document.body.style.overflow = ''; // drawer scrollaa itse, ei body
   // Scrollaa drawerin sisältö alkuun
   const dc = document.getElementById('drawerContent');
   if (dc) dc.scrollTop = 0;
