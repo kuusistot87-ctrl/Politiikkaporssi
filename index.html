@@ -252,6 +252,66 @@
       background: rgba(255,0,122,.12);
     }
 
+
+    /* ── DRAWER HAKUPALKKI ── */
+    #drawerHakuPalkki {
+      display: none;
+      flex-direction: column;
+      gap: .6rem;
+      padding: .85rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,13,31,.8);
+      flex-shrink: 0;
+    }
+    #drawerHakuPalkki.vis { display: flex; }
+    #drawerHakuInput {
+      width: 100%;
+      background: rgba(11,17,40,.9);
+      border: 1px solid #1a2a55;
+      border-radius: 6px;
+      color: #e8f4ff;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .95rem;
+      letter-spacing: .06em;
+      padding: .55rem 1rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #drawerHakuInput:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 16px rgba(168,85,247,.2);
+    }
+    #drawerHakuInput::placeholder { color: #2a4a66; }
+    #drawerPuoluePainikkeet {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+    }
+    .drawer-puolue-btn {
+      background: transparent;
+      border: 1px solid #1a2a55;
+      border-radius: 3px;
+      color: #5a7a99;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      padding: .2rem .55rem;
+      cursor: pointer;
+      transition: all .15s;
+      text-transform: uppercase;
+    }
+    .drawer-puolue-btn:hover  { border-color: #a855f7; color: #a855f7; }
+    .drawer-puolue-btn.active {
+      background: rgba(168,85,247,.15);
+      border-color: #a855f7;
+      color: #c084fc;
+    }
+    #drawerHakuTulos {
+      font-size: .72rem;
+      color: #5a7a99;
+      letter-spacing: .08em;
+    }
+
     /* ── DRAWER ── */
     #drawerOverlay {
       position: fixed;
@@ -1386,6 +1446,11 @@
   <div id="drawerHeader">
     <span id="drawerTitle">EDUSTAJAT</span>
     <button id="drawerClose" onclick="suljeDraver()">ESC ✕</button>
+  </div>
+  <div id="drawerHakuPalkki">
+    <input id="drawerHakuInput" type="text" placeholder="Hae historiallista edustajaa…" autocomplete="off" spellcheck="false"/>
+    <div id="drawerPuoluePainikkeet"></div>
+    <div id="drawerHakuTulos"></div>
   </div>
   <div id="drawerContent">
 <!-- SPLASH (näkyy ennen hakua) -->
@@ -3218,6 +3283,8 @@ document.getElementById("btnHallitus").addEventListener("click", () => {
 /* ================================================================
    DRAWER — Oikealta liukuva sisältöpaneeli
    ================================================================ */
+let drawerPuolue = '';
+
 const DRAWER_VARIT = {
   nykyiset:      '#3ec63e',
   historialliset:'#5a7a99',
@@ -3260,13 +3327,88 @@ function avaaDraver(nakyma) {
   // Scrollaa drawerin sisältö alkuun
   const dc = document.getElementById('drawerContent');
   if (dc) dc.scrollTop = 0;
+  // Näytä hakupalkki historialliset-näkymässä
+  naytaDrawerHaku(nakyma);
 }
 
 function suljeDraver() {
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
   document.body.classList.remove('modal-open');
+  // Piilota hakupalkki ja nollaa hakusuodattimet kun drawer suljetaan
+  document.getElementById('drawerHakuPalkki').classList.remove('vis');
+  const inp = document.getElementById('drawerHakuInput');
+  if (inp) inp.value = '';
+  if (drawerPuolue) {
+    drawerPuolue = '';
+    aktiivisuusPuolue = '';
+    document.querySelectorAll('.drawer-puolue-btn').forEach(b => b.classList.remove('active'));
+  }
 }
+
+/* ── Drawer-hakupalkki (Historialliset) ── */
+function naytaDrawerHaku(nakyma) {
+  const palkki = document.getElementById('drawerHakuPalkki');
+  if (nakyma !== 'historialliset') {
+    palkki.classList.remove('vis');
+    return;
+  }
+  palkki.classList.add('vis');
+  // Rakenna puolue-painikkeet historiallisista
+  const pp = document.getElementById('drawerPuoluePainikkeet');
+  if (!pp.dataset.rakennettu && KAIKKI) {
+    const hist = KAIKKI.filter(m => !m.nykyinen);
+    const puolueet = [...new Set(hist.map(m => m.puolue).filter(p => p && p !== '–'))].sort();
+    pp.innerHTML = puolueet.map(p =>
+      `<button class="drawer-puolue-btn" data-puolue="${p}" onclick="toggleDrawerPuolue('${p}')">${p}</button>`
+    ).join('');
+    pp.dataset.rakennettu = '1';
+  }
+  paivitaDrawerTulos();
+}
+
+
+function toggleDrawerPuolue(p) {
+  drawerPuolue = (drawerPuolue === p) ? '' : p;
+  document.querySelectorAll('.drawer-puolue-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.puolue === drawerPuolue);
+  });
+  // Kytke globaaliin suodattimeen
+  aktiivisuusPuolue = drawerPuolue;
+  suodataJaRenderöi();
+  paivitaDrawerTulos();
+}
+
+function paivitaDrawerTulos() {
+  if (!KAIKKI) return;
+  const q    = document.getElementById('drawerHakuInput').value.toLowerCase().trim();
+  const hist = KAIKKI.filter(m => {
+    if (m.nykyinen) return false;
+    if (drawerPuolue && m.puolue !== drawerPuolue) return false;
+    if (!q) return true;
+    return (
+      (m.nimi       ||'').toLowerCase().includes(q) ||
+      (m.puolue     ||'').toLowerCase().includes(q) ||
+      (m.vaalipiiri ||'').toLowerCase().includes(q) ||
+      (m.kotikunta  ||'').toLowerCase().includes(q)
+    );
+  });
+  const el = document.getElementById('drawerHakuTulos');
+  if (el) el.textContent = hist.length + ' edustajaa';
+}
+
+// Haku-inputin kuuntelijat
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('drawerHakuInput');
+  if (inp) {
+    inp.addEventListener('input', () => {
+      // Synkronoi globaalin hakukentän kanssa
+      document.getElementById('searchInput').value = inp.value;
+      suodataJaRenderöi();
+      paivitaDrawerTulos();
+    });
+  }
+});
 
 // ESC sulkee drawerin
 document.addEventListener('keydown', e => {
