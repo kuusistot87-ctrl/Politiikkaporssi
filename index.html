@@ -252,6 +252,80 @@
       background: rgba(255,0,122,.12);
     }
 
+    /* ── DRAWER ── */
+    #drawerOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,5,.7);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+    #drawerOverlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(860px, 92vw);
+      height: 100vh;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .35s cubic-bezier(.22,1,.36,1);
+      box-shadow: -12px 0 60px rgba(0,0,0,.7);
+    }
+    #drawer.open { transform: translateX(0); }
+    #drawerTopbar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--drawer-color, var(--accent)), transparent);
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    #drawerHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .85rem 1.25rem .85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #drawerTitle {
+      font-family: "Orbitron", monospace;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      color: var(--drawer-color, var(--accent));
+    }
+    #drawerClose {
+      background: none;
+      border: 1px solid #1a2a55;
+      border-radius: 4px;
+      color: #5a7a99;
+      font-family: "Rajdhani", sans-serif;
+      font-size: .78rem;
+      letter-spacing: .1em;
+      padding: .3rem .75rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    #drawerClose:hover { border-color: #ff007a; color: #ff007a; }
+    #drawerContent {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    @media (max-width: 600px) {
+      #drawer { width: 100vw; }
+    }
+
     /* ── MODAL OVERLAY ── */
     #modalOverlay {
       position: fixed;
@@ -1303,6 +1377,17 @@
   </div>
 </header>
 
+<!-- DRAWER OVERLAY -->
+<div id="drawerOverlay" onclick="suljeDraver()"></div>
+
+<!-- DRAWER -->
+<div id="drawer">
+  <div id="drawerTopbar"></div>
+  <div id="drawerHeader">
+    <span id="drawerTitle">EDUSTAJAT</span>
+    <button id="drawerClose" onclick="suljeDraver()">ESC ✕</button>
+  </div>
+  <div id="drawerContent">
 <!-- SPLASH (näkyy ennen hakua) -->
 <div id="splash">
   <div class="splash-inner">
@@ -1397,7 +1482,7 @@
 </div>
 
 <!-- VOIMASUHTEET-NÄKYMÄ -->
-<div id="voimasuhteetNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="voimasuhteetNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#e040fb;margin-bottom:1.5rem">
     ⚖️ EDUSKUNTARYHMIEN VOIMASUHTEET — 2023–2027
   </div>
@@ -1405,7 +1490,7 @@
 </div>
 
 <!-- IKÄRAKENNE-NÄKYMÄ -->
-<div id="ikarakenneNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="ikarakenneNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#00d4ff;margin-bottom:1.5rem">
     👥 KANSANEDUSTAJIEN IKÄRAKENNE — 2023–2027
   </div>
@@ -1413,7 +1498,7 @@
 </div>
 
 <!-- VALTIOPÄIVÄKOKEMUS-NÄKYMÄ -->
-<div id="kokemusNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="kokemusNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#39ff14;margin-bottom:1.5rem">
     🎖️ KANSANEDUSTAJIEN VALTIOPÄIVÄKOKEMUS — 2023–2027
   </div>
@@ -1421,14 +1506,14 @@
 </div>
 
 <!-- HALLITUS-NÄKYMÄ -->
-<div id="hallitusNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="hallitusNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;
               color:#5a7a99;margin-bottom:1.25rem">ORPON HALLITUS 2023–</div>
   <div id="hallitusGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem"></div>
 </div>
 
 <!-- LOBBAUS-NÄKYMÄ -->
-<div id="lobbausNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="lobbausNakyma" style="display:none;padding:1.5rem 2rem 3rem">
 
   <!-- Kausisuodatin -->
   <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap">
@@ -1462,7 +1547,7 @@
 </div>
 
 <!-- SIGNAALI-NÄKYMÄ -->
-<div id="signaalinNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="signaalinNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff4d6d;margin-bottom:1.5rem">
     📡 SIGNAALI — POLIITTISET UUTISET
   </div>
@@ -1499,7 +1584,7 @@
 </div>
 
 <!-- AKTIIVISUUS-NÄKYMÄ -->
-<div id="aktiivisuusNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="aktiivisuusNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ffd700;margin-bottom:.3rem">
     🏆 AKTIIVISUUSTAULU — KANSANEDUSTAJAT 2023–2027
   </div>
@@ -1557,7 +1642,7 @@
 </div>
 
 <!-- VERTAILE-NÄKYMÄ -->
-<div id="vertaileNakyma" style="display:none;position:relative;z-index:1;padding:1.5rem 2rem 3rem">
+<div id="vertaileNakyma" style="display:none;padding:1.5rem 2rem 3rem">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff007a;margin-bottom:.3rem">
     ⚔️ VERTAILE — KAHDEN EDUSTAJAN ANALYYSI
   </div>
@@ -1589,6 +1674,10 @@
     </button>
   </div>
 </div>
+
+  </div>
+</div>
+
 
 <!-- MODAL -->
 <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalName">
@@ -1750,9 +1839,11 @@ function naytaTulokset() {
   document.getElementById("tulosrivi").style.alignItems = "center";
   document.getElementById("pagination").style.display = "flex";
   document.getElementById("voimasuhteetAlipainike").style.display = aikasuodatin === "nykyiset" ? "flex" : "none";
+  avaaDraver(aikasuodatin === "hist" ? "historialliset" : "nykyiset");
 }
 
 function naytaSplash() {
+  suljeDraver();
   tallennaNakyma('splash');
   // Piilota kaikki näkymät ja poista active kaikista napeista
   piilotaKaikki();
@@ -2839,6 +2930,7 @@ async function naytaLobbausNakyma() {
   tallennaNakyma('lobbaus');
   nakyma.style.display = "block";
   document.getElementById("btnLobbaus").classList.add("active");
+  avaaDraver('lobbaus');
 
   const yht = await lataaLobbausYhteenveto();
   if (!yht) {
@@ -3061,6 +3153,7 @@ async function naytaHallitusNakyma() {
   document.getElementById("voimasuhteetAlipainike").style.display = "none";
   nakyma.style.display = "block";
   document.getElementById("btnHallitus").classList.add("active");
+  avaaDraver('hallitus');
 
   // Hae lobbaustiedot
   const idx = await lataaLobbausIndex();
@@ -3120,6 +3213,64 @@ async function naytaHallitusNakyma() {
 document.getElementById("btnHallitus").addEventListener("click", () => {
   piilotaKaikki();
   naytaHallitusNakyma();
+});
+
+/* ================================================================
+   DRAWER — Oikealta liukuva sisältöpaneeli
+   ================================================================ */
+const DRAWER_VARIT = {
+  nykyiset:      '#3ec63e',
+  historialliset:'#5a7a99',
+  hallitus:      '#00d4ff',
+  lobbaus:       '#ff9500',
+  signaali:      '#ff4d6d',
+  voimasuhteet:  '#a78bfa',
+  ikarakenne:    '#38bdf8',
+  kokemus:       '#fbbf24',
+  aktiivisuus:   '#f472b6',
+  vertaile:      '#ff007a',
+};
+const DRAWER_NIMET = {
+  nykyiset:      '🏛️  NYKYISET KANSANEDUSTAJAT',
+  historialliset:'📂  HISTORIALLISET EDUSTAJAT',
+  hallitus:      '⚡  ORPON HALLITUS 2023–',
+  lobbaus:       '🤝  LOBBAUSREKISTERI',
+  signaali:      '📡  POLIITTINEN SIGNAALI',
+  voimasuhteet:  '⚖️  VOIMASUHTEET',
+  ikarakenne:    '📊  IKÄRAKENNE',
+  kokemus:       '🎖️  KOKEMUS',
+  aktiivisuus:   '🏆  AKTIIVISUUS',
+  vertaile:      '⚔️  HEAD-TO-HEAD',
+};
+
+function avaaDraver(nakyma) {
+  const vari = DRAWER_VARIT[nakyma] || '#00d4ff';
+  const nimi = DRAWER_NIMET[nakyma] || nakyma.toUpperCase();
+  const drawer  = document.getElementById('drawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const topbar  = document.getElementById('drawerTopbar');
+  const title   = document.getElementById('drawerTitle');
+  drawer.style.setProperty('--drawer-color', vari);
+  topbar.style.background = 'linear-gradient(90deg, ' + vari + ', transparent)';
+  title.style.color = vari;
+  title.textContent = nimi;
+  overlay.classList.add('open');
+  drawer.classList.add('open');
+  document.body.classList.add('modal-open');
+  // Scrollaa drawerin sisältö alkuun
+  const dc = document.getElementById('drawerContent');
+  if (dc) dc.scrollTop = 0;
+}
+
+function suljeDraver() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+
+// ESC sulkee drawerin
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') suljeDraver();
 });
 
 function piilotaKaikki() {
@@ -3606,6 +3757,7 @@ function naytaSignaaliNakyma() {
   document.getElementById("btnSignaali").classList.add("active");
   rakennaSIgnaaliPainikkeet();
   lataaPoliitikkoMaininnat();
+  avaaDraver('signaali');
 }
 
 document.getElementById("btnSignaali").addEventListener("click", () => {
@@ -3638,6 +3790,7 @@ function naytaVoimasuhteetNakyma() {
   const nakyma = document.getElementById("voimasuhteetNakyma");
   nakyma.style.display = "block";
   renderVoimasuhteet();
+  avaaDraver('voimasuhteet');
 }
 
 function renderVoimasuhteet() {
@@ -3918,6 +4071,7 @@ function naytaIkarakenneNakyma() {
   const nakyma = document.getElementById("ikarakenneNakyma");
   nakyma.style.display = "block";
   renderIkarakenne();
+  avaaDraver('ikarakenne');
 }
 
 function renderIkarakenne() {
@@ -4071,6 +4225,7 @@ function naytaKokemusNakyma() {
   tallennaNakyma('kokemus');
   document.getElementById("kokemusNakyma").style.display = "block";
   renderKokemus();
+  avaaDraver('kokemus');
 }
 
 function renderKokemus() {
@@ -4308,6 +4463,7 @@ async function naytaAktiivisuusNakyma() {
   const nakyma = document.getElementById('aktiivisuusNakyma');
   nakyma.style.display = 'block';
   document.getElementById('btnAktiivisuus').classList.add('active');
+  avaaDraver('aktiivisuus');
 
   if (AKT_DATA) { renderAktiivisuus(); return; }
 
@@ -4999,9 +5155,11 @@ function avaaVertailuNakyma() {
   document.getElementById('vertaileNakyma').style.display = 'block';
   document.getElementById('btnVertaile').classList.add('active');
   renderVertaileNakyma();
+  avaaDraver('vertaile');
 }
 
 function naytaEdustajatJaVertailu() {
+  suljeDraver();
   piilotaKaikki();
   document.getElementById('grid').style.display = 'grid';
   document.getElementById('pagination').style.display = 'flex';
@@ -5012,7 +5170,7 @@ function naytaEdustajatJaVertailu() {
   document.getElementById('btnNykyiset').classList.add('active');
   tallennaNakyma('nykyiset');
   suodataJaRenderöi();
-  scrollSisaltoon();
+  avaaDraver('nykyiset');
 }
 
 function renderVertaileNakyma() {
