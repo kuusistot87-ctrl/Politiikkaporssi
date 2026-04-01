@@ -2253,7 +2253,6 @@ function renderModalSkeleton(m, vari) {
     { id: "perustiedot", icon: "🪪", label: "Perustiedot",    color: vari,      shadow: vari+"66",    bg: vari+"15" },
     { id: "poissaolot",  icon: "📋", label: "Poissaolot",     color: "#00d4ff", shadow: "rgba(0,212,255,.3)", bg: "rgba(0,212,255,.08)" },
     { id: "linkit",      icon: "🔗", label: "Linkit",          color: "#aaaaaa", shadow: "rgba(180,180,180,.3)", bg: "rgba(180,180,180,.06)" },
-    { id: "sidonnaisuudet", icon: "💼", label: "Sidonnaisuudet", color: "#ff9500", shadow: "rgba(255,149,0,.3)", bg: "rgba(255,149,0,.08)" },
     { id: "tyoura",      icon: "🏢", label: "Urahistoria",     color: "#3ec63e", shadow: "rgba(62,198,62,.3)",  bg: "rgba(62,198,62,.08)" },
     { id: "valiokunnat", icon: "⚖️", label: "Valiokunnat",     color: "#00f5ff", shadow: "rgba(0,245,255,.3)", bg: "rgba(0,245,255,.08)" },
     { id: "ministeriydet",icon:"⚡", label: "Hallitusjäs.",    color: "#ff4d6d", shadow: "rgba(255,77,109,.3)", bg: "rgba(255,77,109,.08)" },
@@ -2281,13 +2280,7 @@ function renderModalSkeleton(m, vari) {
       ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
     </div>`,
 
-    sidonnaisuudet: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(eduskuntaUrl(m.eduskunta),"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
-    </div>`,
-    tyoura:          `<div id="xml-tyoura-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
-    valiokunnat:     `<div id="xml-valiokunnat-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
-    ministeriydet:   `<div id="xml-ministeriydet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
-    sidonnaisuudet2: `<div id="xml-sidonnaisuudet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+        sidonnaisuudet2: `<div id="xml-sidonnaisuudet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     aanestykset: `<div id="aanestykset-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     vaalikone:   `<div id="vaalikone-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     aktiivisuus: renderAktiivisuusTab(m),
