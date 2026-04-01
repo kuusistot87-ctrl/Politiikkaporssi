@@ -2191,7 +2191,7 @@ function renderModalSkeleton(m, vari) {
          background:#0b1128;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3">👤</div>`;
 
   const kuvaWrap = m.eduskunta
-    ? `<a href="${m.eduskunta}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
+    ? `<a href="${eduskuntaUrl(m.eduskunta)}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
     : `<div style="flex-shrink:0">${kuvaImg}</div>`;
 
   content.innerHTML = `
@@ -2235,8 +2235,6 @@ function renderModalSkeleton(m, vari) {
     { id: "perustiedot", icon: "🪪", label: "Perustiedot",    color: vari,      shadow: vari+"66",    bg: vari+"15" },
     { id: "poissaolot",  icon: "📋", label: "Poissaolot",     color: "#00d4ff", shadow: "rgba(0,212,255,.3)", bg: "rgba(0,212,255,.08)" },
     { id: "linkit",      icon: "🔗", label: "Linkit",          color: "#aaaaaa", shadow: "rgba(180,180,180,.3)", bg: "rgba(180,180,180,.06)" },
-    { id: "toiminta",    icon: "📣", label: "Aloitteet",       color: "#a855f7", shadow: "rgba(168,85,247,.3)", bg: "rgba(168,85,247,.08)" },
-    { id: "sidonnaisuudet", icon: "💼", label: "Sidonnaisuudet", color: "#ff9500", shadow: "rgba(255,149,0,.3)", bg: "rgba(255,149,0,.08)" },
     { id: "tyoura",      icon: "🏢", label: "Urahistoria",     color: "#3ec63e", shadow: "rgba(62,198,62,.3)",  bg: "rgba(62,198,62,.08)" },
     { id: "valiokunnat", icon: "⚖️", label: "Valiokunnat",     color: "#00f5ff", shadow: "rgba(0,245,255,.3)", bg: "rgba(0,245,255,.08)" },
     { id: "ministeriydet",icon:"⚡", label: "Hallitusjäs.",    color: "#ff4d6d", shadow: "rgba(255,77,109,.3)", bg: "rgba(255,77,109,.08)" },
@@ -2258,18 +2256,10 @@ function renderModalSkeleton(m, vari) {
     </div>`,
     poissaolot: `<div id="poissaolo-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     linkit: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
+      ${m.eduskunta ? lnk(eduskuntaUrl(m.eduskunta),"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
       ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
       ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER / X ↗","#1d9bf0") : ""}
       ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
-    </div>`,
-    toiminta: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20(Asiakirjatyyppinimi:Lakialoite%20OR%20Asiakirjatyyppinimi:Toimenpidealoite)%22}","ALOITTEET ↗",vari)}
-      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20Asiakirjatyyppinimi:%5C%22Kirjallinen%20kysymys%5C%22%22}","KIRJALLISET KYSYMYKSET ↗",vari)}
-      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22EDKPuhujaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi.split(" ").reverse().join(" "))+"%5C%22%22}","PUHEENVUOROT ↗",vari)}
-    </div>`,
-    sidonnaisuudet: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
     </div>`,
     tyoura:          `<div id="xml-tyoura-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     valiokunnat:     `<div id="xml-valiokunnat-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
@@ -2534,6 +2524,13 @@ document.addEventListener("keydown", function(e) {
   // Muuten splash
   naytaSplash();
 });
+
+function eduskuntaUrl(url) {
+  if (!url) return url;
+  const m = url.match(/eduskunta\.fi.*?(\d{3,5})\.aspx/);
+  if (m) return 'https://www.eduskunta.fi/kansanedustajat-ja-toimielimet/kansanedustajat/' + m[1];
+  return url;
+}
 
 function lnk(url, teksti, vari) {
   return `<a href="${url}" target="_blank" rel="noopener"
