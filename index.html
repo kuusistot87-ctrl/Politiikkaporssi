@@ -46,7 +46,7 @@
 
     /* Modal auki — poista raskas taustakuvio */
     body.modal-open::before { display: none; }
-    body.modal-open { overflow: hidden; }
+    /* body.modal-open ei estä scrollia — drawer scrollaa itse */
 
     /* ── Taustakuvio ── */
     body::before {
@@ -332,12 +332,14 @@
       top: 0;
       right: 0;
       width: min(860px, 92vw);
-      height: 100vh;
+      height: 100%;
+      max-height: 100vh;
       background: var(--bg-panel);
       border-left: 1px solid var(--border);
       z-index: 201;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       transform: translateX(100%);
       transition: transform .35s cubic-bezier(.22,1,.36,1);
       box-shadow: -12px 0 60px rgba(0,0,0,.7);
@@ -377,13 +379,12 @@
     }
     #drawerClose:hover { border-color: #ff007a; color: #ff007a; }
     #drawerContent {
-      flex: 1;
-      overflow-y: auto;
+      flex: 1 1 0;
+      overflow-y: scroll;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       min-height: 0;
-      height: 0; /* pakottaa flex-lapsi scrollaamaan eikä kasvamaan */
     }
     @media (max-width: 600px) {
       #drawer { width: 100vw; }
