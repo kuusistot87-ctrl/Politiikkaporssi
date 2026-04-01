@@ -1721,7 +1721,7 @@
 </div>
 
 <!-- VERTAILE-NÄKYMÄ -->
-<div id="ohjelmaNakyma" style="display:none;padding:1.5rem 2rem 3rem">
+<div id="ohjelmaNakyma" style="display:none;position:fixed;top:0;right:0;width:min(860px,92vw);height:100dvh;background:#080d1f;z-index:5002;flex-direction:column;">
   <!-- sisältö täytetään JS:llä -->
 </div>
 
@@ -3393,6 +3393,8 @@ function suljeDraver() {
   document.getElementById('drawerOverlay').classList.remove('open');
   const _akt = document.getElementById('aktiivisuusNakyma');
   if (_akt) _akt.style.display = 'none';
+  const _ohj = document.getElementById('ohjelmaNakyma');
+  if (_ohj) _ohj.style.display = 'none';
   document.body.classList.remove('modal-open');
   // Piilota hakupalkki ja nollaa hakusuodattimet kun drawer suljetaan
   document.getElementById('drawerHakuPalkki').classList.remove('vis');
@@ -5257,7 +5259,7 @@ function naytaOhjelmatNakyma() {
   piilotaKaikki();
   tallennaNakyma('ohjelmat');
   const nakyma = document.getElementById('ohjelmaNakyma');
-  nakyma.style.display = 'block';
+  nakyma.style.display = 'flex';
   document.getElementById('btnOhjelmat').classList.add('active');
   renderOhjelmatNakyma();
   avaaDraver('ohjelmat');
@@ -5273,7 +5275,13 @@ function renderOhjelmatNakyma() {
   };
 
   nakyma.innerHTML = `
-    <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#f59e0b;margin-bottom:.3rem">
+    <div style="height:4px;background:linear-gradient(90deg,#f59e0b,transparent);flex-shrink:0"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid #1a2a55;flex-shrink:0">
+      <span style="font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:.2em;color:#f59e0b">📜 VAALIOHJELMAT 2023</span>
+      <button onclick="suljeDraver()" style="background:none;border:1px solid #1a2a55;border-radius:4px;color:#5a7a99;font-family:'Rajdhani',sans-serif;font-size:.78rem;letter-spacing:.1em;padding:.3rem .75rem;cursor:pointer">ESC ✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:1.5rem 2rem 3rem">
+    <div style="font-size:.75rem;color:#3a5a77;letter-spacing:.06em;margin-bottom:.3rem">
       📜 VAALIOHJELMAT 2023
     </div>
     <div style="font-size:.78rem;color:#3a5a77;letter-spacing:.06em;margin-bottom:1.5rem">
@@ -5301,6 +5309,7 @@ function renderOhjelmatNakyma() {
 
     <div style="margin-top:1.5rem;font-size:.62rem;color:#2a4a67;letter-spacing:.06em">
       Lähde: Pohtiva — Poliittisten ohjelmien tietovaranto, FSD Tampereen yliopisto · fsd.tuni.fi/pohtiva
+    </div>
     </div>`;
 }
 
