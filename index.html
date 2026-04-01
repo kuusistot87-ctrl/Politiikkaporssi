@@ -5441,13 +5441,18 @@ function renderOhjelmaViewer(data, vari) {
   const sisalto = document.getElementById('ohjelmaViewerSisalto');
   if (!sisalto) return;
 
-  const lohkot = (data.lohkot || []).map(l => {
-    if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
-    if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
-    if (l.tag === 'h3' || l.tag === 'h4') return `<h4 style="font-size:.85rem;color:#c8d8e8;margin:.9rem 0 .35rem;font-weight:600">${l.teksti}</h4>`;
-    if (l.tag === 'li') return `<div style="font-size:.82rem;color:#8899aa;line-height:1.65;padding:.2rem 0 .2rem 1rem;border-left:2px solid ${vari}44">• ${l.teksti}</div>`;
-    return `<p style="font-size:.84rem;color:#8899aa;line-height:1.7;margin:.4rem 0">${l.teksti}</p>`;
-  }).join('');
+  // Suodata pois Pohtivan metatietolohkot
+  const metaPattern = /^(Puolue|Otsikko|Vuosi|Ohjelmatyyppi|Kieli|Tulostettu Pohtiva|URL:)[:\s]/i;
+  const lohkot = (data.lohkot || [])
+    .filter(l => !metaPattern.test(l.teksti))
+    .filter(l => !l.teksti.match(/^(Puolue: |Otsikko: |Vuosi: [0-9]|Ohjelmatyyppi: )/))
+    .map(l => {
+      if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
+      if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
+      if (l.tag === 'h3' || l.tag === 'h4') return `<h4 style="font-size:.85rem;color:#c8d8e8;margin:.9rem 0 .35rem;font-weight:600">${l.teksti}</h4>`;
+      if (l.tag === 'li') return `<div style="font-size:.82rem;color:#8899aa;line-height:1.65;padding:.2rem 0 .2rem 1rem;border-left:2px solid ${vari}44">• ${l.teksti}</div>`;
+      return `<p style="font-size:.84rem;color:#8899aa;line-height:1.7;margin:.4rem 0">${l.teksti}</p>`;
+    }).join('');
 
   sisalto.innerHTML =
     `<div style="font-size:.62rem;color:#3a5a77;margin-bottom:1.5rem;letter-spacing:.06em">` +
