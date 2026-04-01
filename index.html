@@ -395,17 +395,13 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,.82);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 6000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
     }
     #modalOverlay.open {
-      opacity: 1;
-      pointer-events: all;
+      display: flex;
     }
 
     /* ── MODAL BOX ── */
@@ -1205,11 +1201,11 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,.78);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 6500;
-      opacity: 0;
+      opacity: 1;
       pointer-events: none;
       transition: opacity .2s;
     }
@@ -2114,6 +2110,7 @@ function openTTLProfile(m) {
   // Näytä overlay ensin tyhjänä — nopea
   overlay.style.setProperty("--modal-party-color", vari);
   document.documentElement.style.setProperty("--modal-party-color", vari);
+  overlay.style.display = 'flex';
   overlay.classList.add("open");
   document.body.classList.add("ttl-open");
   // Renderöi sisältö seuraavassa frame:ssa — ei blokoi animaatiota
@@ -2251,6 +2248,7 @@ function renderModalSkeleton(m, vari) {
       title.style.color = tab.color;
       title.innerHTML = `<span style="font-size:1.2rem">${tab.icon}</span>${tab.label.toUpperCase()}`;
       body.innerHTML  = tabContents[tab.id] || "";
+      overlay.style.display = 'flex';
       overlay.classList.add("open");
 
       // Lataa data tarvittaessa
@@ -2439,7 +2437,9 @@ function vaihdaAanestysKieli(elId, kieli) {
 
 
 function suljeSubmodal() {
-  document.getElementById("submodalOverlay").classList.remove("open");
+  const ov = document.getElementById("submodalOverlay");
+  ov.classList.remove("open");
+  ov.style.display = 'none';
   document.querySelectorAll(".profnav-btn").forEach(b => b.classList.remove("active"));
 }
 
@@ -2943,7 +2943,9 @@ async function renderLobbausKortti(m, el) {
 }
 
 function closeTTLProfile() {
-  document.getElementById("modalOverlay").classList.remove("open");
+  const ov = document.getElementById("modalOverlay");
+  ov.classList.remove("open");
+  ov.style.display = 'none';
   document.body.classList.remove("ttl-open");
   document.body.classList.remove("modal-open");
   // Nollaa ladattu-flagit jotta uudelleenavauksessa data latautuu
