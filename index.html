@@ -2753,15 +2753,16 @@ async function lataaXmlOsio(osio, m, vari) {
   const el   = document.getElementById(elId);
   if (!el || el.dataset.ladattu) return;
 
-  // Hae personId eduskunta-linkistä
-  const pidM = (m.eduskunta||"").match(/\/(\d+)\.aspx/);
+  // Hae personId eduskunta-linkistä (tukee sekä vanha /1504.aspx että uusi /kansanedustajat/1504)
+  const pidM = (m.eduskunta||"").match(/\/(\d{3,5})(?:\.aspx)?$/);
   if (!pidM) { el.innerHTML = '<span style="color:#5a7a99;font-size:.8rem">Ei dataa saatavilla</span>'; return; }
   const pid = pidM[1];
 
   // Käytä välimuistia
   if (!XML_CACHE[pid]) {
     try {
-      const res = await fetch(`edustajat_json/${pid}_xml.json`);
+      const ghBase = 'https://kuusistot87-ctrl.github.io/politiikkaporssi';
+      const res = await fetch(`${ghBase}/edustajat_json/${pid}_xml.json`);
       if (!res.ok) throw new Error("404");
       XML_CACHE[pid] = await res.json();
     } catch(_) {
