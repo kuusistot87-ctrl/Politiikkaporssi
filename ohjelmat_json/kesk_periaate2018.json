@@ -1,0 +1,670 @@
+{
+  "id": "kesk_periaate2018",
+  "puolue": "KESK",
+  "tyyppi": "periaateohjelma",
+  "vuosi": 2018,
+  "otsikko": "Suomen Keskusta",
+  "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1189",
+  "lohkot": [
+    {
+      "tag": "h1",
+      "teksti": "Suomen Keskusta"
+    },
+    {
+      "tag": "h2",
+      "teksti": "Tasapainossa, eteenpäin - Keskustan 101 periaatetta"
+    },
+    {
+      "tag": "ul",
+      "teksti": "Puolue: Suomen Keskusta Otsikko: Tasapainossa, eteenpäin - Keskustan 101 periaatetta Vuosi: 2018 Ohjelmatyyppi: yleisohjelma"
+    },
+    {
+      "tag": "li",
+      "teksti": "Puolue: Suomen Keskusta"
+    },
+    {
+      "tag": "li",
+      "teksti": "Otsikko: Tasapainossa, eteenpäin - Keskustan 101 periaatetta"
+    },
+    {
+      "tag": "li",
+      "teksti": "Vuosi: 2018"
+    },
+    {
+      "tag": "li",
+      "teksti": "Ohjelmatyyppi: yleisohjelma"
+    },
+    {
+      "tag": "h1",
+      "teksti": "TASAPAINOSSA, ETEENPÄIN"
+    },
+    {
+      "tag": "h2",
+      "teksti": "Keskustan 101 periaatetta"
+    },
+    {
+      "tag": "p",
+      "teksti": "Keskustan periaateohjelma. Hyväksytty Sotkamon puoluekokouksessa 10.6.2018."
+    },
+    {
+      "tag": "h2",
+      "teksti": "LUKIJALLE"
+    },
+    {
+      "tag": "p",
+      "teksti": "Keskusta on omaleimainen, suomalaisista aatejuurista versonut kansanliike."
+    },
+    {
+      "tag": "p",
+      "teksti": "Keskustalaisuus ei ole haalea keskiarvo äärilaidoista. Se on omintakeinen voima, johon on liitettävissä sellaisia vahvuuksia ja painotuksia, mitä muilla ei ole. Näitä ovat esimerkiksi ihmisen ja luonnon kestävä kumppanuus, vahva kansanvallan korostus, hajautetun yhteiskunnan voimavarojen tunnistaminen, henkiset ja inhimilliset arvot materialismia vastaan sekä ihmisen sisäisen kukoistuksen vahvistaminen sivistyksen määritelmänä."
+    },
+    {
+      "tag": "p",
+      "teksti": "Yli 110-vuotisen historiansa aikana Keskusta on useaan kertaan määritellyt olemassaolonsa tarkoituksen periaateohjelmaksi. Sen tärkein tehtävä on arvioida yhteiskunnallisia muutosvirtauksia ja aatetta ajan kuvassa sekä luoda suuntaviivat puolueelle näiden arvioiden pohjalta. Periaate sanana tarkoittaa jotakin perimmäistä, luovuttamatonta ja linjakasta. Sellaista, mistä ei horjuta. Jos oikein purkaa sanan auki, voisi ajatella sen tarkoittavan perimmäistä aatetta."
+    },
+    {
+      "tag": "p",
+      "teksti": "Aate on yhteinen käyttövoimamme. Aatteesta pitää keskustella, myös väitelläkin.  Asioista saa olla myös eri mieltä. Puolue voi toki luulla toimivansa vain lakimuutoksina ja valtuuston nuijan kopautuksina. Silloin se unohtaa kuitenkin syvimmän olemuksensa, keskustelun ja yhteen tulemisen merkityksen. Keskusta on yhteisö, kansansivistysliike, jolla on enemmän toisiaan yhdistäviä kuin erottavia henkisiä arvoja."
+    },
+    {
+      "tag": "p",
+      "teksti": "Poliittisen kansanliikkeen elinvoima on yhtä suuri kuin niiden ihmisten määrä, jotka luottavat sen linjaan ja tekevät töitä sekä sen menestyksen että uusiutumisen eteen."
+    },
+    {
+      "tag": "p",
+      "teksti": "Puolue on aate, linja ja sanoma. Se on myös mielikuva, tunnelma ja häivähtävä tunne: nämä ihmiset koen omakseni, heihin minä voin kuulua, tätä linjaa haluan kannattaa."
+    },
+    {
+      "tag": "p",
+      "teksti": "Oleellisinta ja onnistuneinta historiaa Keskusta on kirjoittanut silloin, kun sen puheet ja teot ovat olleet sopusoinnussa. On turha kirjoittaa ylös jaloja periaatteita, ellei aio toimia niiden mukaisesti. Samalla on hyvä muistaa, että yksin voi olla rauhassa oikeassa, mutta yhteistyössä sopien voi saada jotakin aikaiseksikin."
+    },
+    {
+      "tag": "h2",
+      "teksti": "KOHTUUDELLA JA TASAPAINOSSA"
+    },
+    {
+      "tag": "p",
+      "teksti": "Keskellä olemiselle on tilaus. Suomalaiset tarvitsevat vaihtoehdon oikeiston ja vasemmiston väliin. Puolueen nimi ei ole sattumaa. Ei ole hävettävää ymmärtää eri näkemyksiä ajassa, jossa liian moni vetää äärimmäistä rajaa ihmisten, asioiden ja maiden välille."
+    },
+    {
+      "tag": "p",
+      "teksti": "Miksi ohjelmamme sai nimen Tasapainossa, eteenpäin? Edellinen vuoden 2006 periaateohjelma korosti kohtuullisuuden arvoa. Sen merkitys hupenevien luonnonvarojen ja varallisuuden keskittymisen aikana on yhä tärkeä. 2020-luvulla aikamme suuri haaste on kohtuullisuuden kanssa käsi kädessä kulkeva tasapaino."
+    },
+    {
+      "tag": "p",
+      "teksti": "Näissä 101 periaatteessa - niitä on yhtä monta kuin itsenäisellä isänmaalla ikää vuonna 2018 - avaamme, miten monin tavoin tuo tasapaino aikaamme määrittää; niin ihmisten, maiden ja kulttuurien välistä kuin ihmisen ja ympäristön sekä vapaa-ajan ja työn välistä. Pohjimmiltaan on kysymys taloudellisesta, ekologisesta ja sosiaalisesta tasapainosta."
+    },
+    {
+      "tag": "h2",
+      "teksti": "IHMISEN HYVÄ ELÄMÄ"
+    },
+    {
+      "tag": "p",
+      "teksti": "Kun Keskustan tarinaa miettii, tajuaa että aatteen erityispiirteitä tulee uudessa ajassa vain vahvistaa."
+    },
+    {
+      "tag": "p",
+      "teksti": "Me suomalaiset jaamme yksittäisinä sanoina ja otsikkoina ilmaistuina kutakuinkin samankaltaisia arvoja. Olennaista onkin kyetä kertomaan, minkä sisällön keskustalaisina annamme arvoillemme:"
+    },
+    {
+      "tag": "ul",
+      "teksti": "vastuullisuudelle ja vapaudelle yhteisöllisyydelle ja välittämiselle tasa-arvolle ja oikeudenmukaisuudelle sivistykselle ylisukupolvisuudelle ja kohtuullisuudelle kestävälle luontosuhteelle paikallisuudelle"
+    },
+    {
+      "tag": "li",
+      "teksti": "vastuullisuudelle ja vapaudelle"
+    },
+    {
+      "tag": "li",
+      "teksti": "yhteisöllisyydelle ja välittämiselle"
+    },
+    {
+      "tag": "li",
+      "teksti": "tasa-arvolle ja oikeudenmukaisuudelle"
+    },
+    {
+      "tag": "li",
+      "teksti": "sivistykselle"
+    },
+    {
+      "tag": "li",
+      "teksti": "ylisukupolvisuudelle ja kohtuullisuudelle"
+    },
+    {
+      "tag": "li",
+      "teksti": "kestävälle luontosuhteelle"
+    },
+    {
+      "tag": "li",
+      "teksti": "paikallisuudelle"
+    },
+    {
+      "tag": "p",
+      "teksti": "Yhtä tärkeää on ilmaista, millaisia periaatteita ja tekoja näistä arvoista johdamme."
+    },
+    {
+      "tag": "p",
+      "teksti": "Ohjelmassa olemme myös tehneet monia tietoisia käsitteellisiä valintoja. Emme puhu hyvinvointivaltiosta, vaan hyvinvointiyhteiskunnasta. Emme puhu yksilöstä, vaan ihmisestä. Olemme tavoitelleet periaateohjelmaa, joka antaa tukevan perustan vastata tulevaisuuden murroksiin ja suurimpiin siirtolohkareisiin. Esimerkiksi muuttuva työelämä, ilmastonmuutos ja hupenevat luonnonvarat, ikääntyvä Suomen väestö, globaali siirtolaisuus ja kaikkialla tuntuva teknologian myllerrys pakottavat ratkaisuihin, joihin eivät pintaraapaisut riitä."
+    },
+    {
+      "tag": "p",
+      "teksti": "Edessä on väistämättömän monta reformia, joiden onnistumista mitataan laajasti juuri tasapainon vahvistumisella. Ja uudistaa pitää. On kunniakkaampaa nyt vallassa olevalta sukupolvelta ratkaista näkemämme haasteet kuin todeta muutaman vuosikymmenen päästä, että tunnistimme kyllä ongelmat mutta puuttui rohkeus tarttua toimeen."
+    },
+    {
+      "tag": "p",
+      "teksti": "Emme ohjelmassamme kertaakaan väitä, että ennen oli paremmin. Emme pelkää tulevaisuutta tai manaa murheiden vyöryä. Kuvamme huomisesta on monesta epävarmuudesta huolimatta valoisa ja täynnä toivoa. Tavoittelemme Suomea, jossa jokainen voi nukkua yönsä rauhassa ja jossa toivo on aina pelkoa suurempi. Haluamme myös vahvistaa Suomen roolia aktiivisena toimijana globaaleissa kysymyksissä."
+    },
+    {
+      "tag": "p",
+      "teksti": "101 periaatetta on julistus omavoimaisen me-hengen puolesta yksilökeskeisessä ajassa. Tärkeintä ei ole puolue, järjestelmä tai talous. Ne ovat kaikki parhaimmillaan keinoja ja välineitä. Ohjelmamme ydin on arvokas ihminen itsessään ja yhteisöissään, tulevaisuuden ihmisen hyvä elämä ja sen edellytykset."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että voisin luottaa"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Yhteiskunnan tärkein peruspilari on keskinäinen luottamus. Tarvitsemme toistemme ymmärtämisen ja yhteistyökyvyn vahvistamista. Luotamme ihmisyyteen. Luotamme jokaisen kykyyn kehittää itseään ja toimia kansalaisena yhteiseksi hyväksi. Systeemit ja markkinat eivät luo hyvää ihmistä, vaan sivistyneet ihmiset luovat paremman yhteiskunnan. Oikeudenmukaisuus on oikeusvaltion ja hyvinvointiyhteiskunnan ydin. On keskusteltava avoimesti oikeasta ja väärästä, jotta ymmärrämme, miten meidän on kohdeltava toisiamme. Tarvitsemme jatkuvaa sivistystyötä, jotta epäluulot ja pelot eivät johda vihaan. Puolustamme laajaa kansanvaltaa ja parlamentarismia. Enemmistö päättää, mutta vähemmistöön jääneitä ei nujerreta. Arvostamme niitä, jotka kantavat vastuuta päättäjinä. Heidän pitää nähdä tosiasiat ja samalla luoda toivoa tulevaisuuteen. Luottamusyhteiskunnassa päätöksenteko on avointa ja läpinäkyvää. Demokratia on myös kaikille yhteisiä kansalaistaitoja, keskustelua ja kuuntelemista. Monien totuuksien ja epävarmuuksien aikana korostuu kyky arvioida tietoa rakentavasti mutta samalla kriittisesti. Suomalaisuuteen kuuluu sovinnon tien hakeminen politiikassa ja työmarkkinoilla. Tätä vaalimme, erilaisia tavoitteita yhteen sovittaen ja kohtuutta noudattaen. Sananvapaudesta ei tingitä. Sanoja vastaa sanoistaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Yhteiskunnan tärkein peruspilari on keskinäinen luottamus. Tarvitsemme toistemme ymmärtämisen ja yhteistyökyvyn vahvistamista."
+    },
+    {
+      "tag": "li",
+      "teksti": "Luotamme ihmisyyteen. Luotamme jokaisen kykyyn kehittää itseään ja toimia kansalaisena yhteiseksi hyväksi. Systeemit ja markkinat eivät luo hyvää ihmistä, vaan sivistyneet ihmiset luovat paremman yhteiskunnan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Oikeudenmukaisuus on oikeusvaltion ja hyvinvointiyhteiskunnan ydin."
+    },
+    {
+      "tag": "li",
+      "teksti": "On keskusteltava avoimesti oikeasta ja väärästä, jotta ymmärrämme, miten meidän on kohdeltava toisiamme. Tarvitsemme jatkuvaa sivistystyötä, jotta epäluulot ja pelot eivät johda vihaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Puolustamme laajaa kansanvaltaa ja parlamentarismia. Enemmistö päättää, mutta vähemmistöön jääneitä ei nujerreta. Arvostamme niitä, jotka kantavat vastuuta päättäjinä. Heidän pitää nähdä tosiasiat ja samalla luoda toivoa tulevaisuuteen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Luottamusyhteiskunnassa päätöksenteko on avointa ja läpinäkyvää. Demokratia on myös kaikille yhteisiä kansalaistaitoja, keskustelua ja kuuntelemista. Monien totuuksien ja epävarmuuksien aikana korostuu kyky arvioida tietoa rakentavasti mutta samalla kriittisesti."
+    },
+    {
+      "tag": "li",
+      "teksti": "Suomalaisuuteen kuuluu sovinnon tien hakeminen politiikassa ja työmarkkinoilla. Tätä vaalimme, erilaisia tavoitteita yhteen sovittaen ja kohtuutta noudattaen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Sananvapaudesta ei tingitä. Sanoja vastaa sanoistaan."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että kantaisin vastuun"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Tuemme kaikkien mahdollisuutta toteuttaa ihmisyyttään vastuullisen vapauden hengessä. Hyvässä yhteiskunnassa vapaus on vastavuoroista. Vapaus ja vastuu ovat arjessa, jokapäiväisissä valinnoissamme. Jokaisella on velvollisuus kantaa voimavarojensa mukaan vastuuta itsestään ja lähimmäisistään. Lähiyhteisöissä luomme välittämistä ja huolenpitoa. Yhteiskunnan tehtävänä on luoda edellytykset hyvälle elämälle ja olla turvana hädän hetkellä. Eheässä ja oikeudenmukaisessa yhteiskunnassa jokainen tuntee olevansa tärkeä. Tahdomme Suomen, jonka rakentamisessa kaikki voivat olla mukana. Sukupolvien ketju on vastuun rikas ketju. Sukupolvet huolehtivat toisistaan: vanhemmat lapsistaan - sitten nuoremmat polvet vanhemmistaan. Tätä välittämisen vastuuta haluamme jatkaa. Vastuu huomisesta on tässä ja nyt. Se on työtä tulevien sukupolvien hyvän elämän turvaamiseksi. Haluamme lastenlapsillemme mahdollisuuden elää vakaassa maailmassa ja puhtaassa ympäristössä. Edellytämme kaikilta Suomessa asuvilta yhteiskuntamme lakien ja pelisääntöjen noudattamista. Vapaaehtoistyö on aina pohjimmiltaan lähimmäisestä välittämistä. Varmistamme kansalaistoiminnalle puitteet, joissa hyvät ideat ja teot pääsevät kukoistamaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tuemme kaikkien mahdollisuutta toteuttaa ihmisyyttään vastuullisen vapauden hengessä. Hyvässä yhteiskunnassa vapaus on vastavuoroista. Vapaus ja vastuu ovat arjessa, jokapäiväisissä valinnoissamme."
+    },
+    {
+      "tag": "li",
+      "teksti": "Jokaisella on velvollisuus kantaa voimavarojensa mukaan vastuuta itsestään ja lähimmäisistään. Lähiyhteisöissä luomme välittämistä ja huolenpitoa. Yhteiskunnan tehtävänä on luoda edellytykset hyvälle elämälle ja olla turvana hädän hetkellä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Eheässä ja oikeudenmukaisessa yhteiskunnassa jokainen tuntee olevansa tärkeä. Tahdomme Suomen, jonka rakentamisessa kaikki voivat olla mukana."
+    },
+    {
+      "tag": "li",
+      "teksti": "Sukupolvien ketju on vastuun rikas ketju. Sukupolvet huolehtivat toisistaan: vanhemmat lapsistaan - sitten nuoremmat polvet vanhemmistaan. Tätä välittämisen vastuuta haluamme jatkaa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Vastuu huomisesta on tässä ja nyt. Se on työtä tulevien sukupolvien hyvän elämän turvaamiseksi. Haluamme lastenlapsillemme mahdollisuuden elää vakaassa maailmassa ja puhtaassa ympäristössä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Edellytämme kaikilta Suomessa asuvilta yhteiskuntamme lakien ja pelisääntöjen noudattamista."
+    },
+    {
+      "tag": "li",
+      "teksti": "Vapaaehtoistyö on aina pohjimmiltaan lähimmäisestä välittämistä. Varmistamme kansalaistoiminnalle puitteet, joissa hyvät ideat ja teot pääsevät kukoistamaan."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että olisin rakastettu ja saisin rakastaa"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Kaikki ihmiset ovat yhdenvertaisia ja samanarvoisia. Periaatteemme jokaisen ihmisen arvokkuudesta on horjumaton. Sydämensivistys ja lähimmäisenrakkaus ovat toisen ihmisen kunnioittamista ja huomioimista. Suomen pitää olla maa, jossa ihmiset puhuvat toisilleen kauniisti. Syrjinnälle, rasismille, vihapuheelle ja kiusaamiselle emme anna mitään sijaa. Tuemme jokaisen omaa toivetta perheen koosta.Kunnioitamme perheiden moninaisuutta. Vanhemmuus, läheisistä huolehtiminen ja työ mahtuvat onnelliseen elämään. Tuemme perheen ja työn tasapainoa asenteilla ja rakenteilla. Tuemme vastuullista vanhemmuutta, aikuisuutta ja vahvaa läsnäoloa lasten elämässä. Vanhemmilla pitää olla mahdollisuus olla lastensa lähellä ja perhearjessa tasavertaisesti. Lapsella on omat vahvat oikeutensa. Niistä suurin on oikeus turvalliseen lapsuuteen ja leikkiin. Lapsista on pidettävä huolta, rohkaistava ja kuultava heidän näkemyksiään. Eksynyt nuori tarvitsee tukemme ja elämälleen merkityksen. Harrastus, kannustus ja luottamus voivat muuttaa suunnan. Kahdella tasa-arvoisella ihmisellä on vapaus rakastaa toisiaan. Niin kuin ihmisarvoinen elämä, niin myös arvokas kuolema kuuluu kaikille. Bruttokansantuote ei kerro onnen määrää. Kansakunnan menestystä ja päätösten vaikutuksia mitataan myös henkisellä ja sosiaalisella hyvinvoinnilla sekä ympäristön tilalla."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kaikki ihmiset ovat yhdenvertaisia ja samanarvoisia. Periaatteemme jokaisen ihmisen arvokkuudesta on horjumaton."
+    },
+    {
+      "tag": "li",
+      "teksti": "Sydämensivistys ja lähimmäisenrakkaus ovat toisen ihmisen kunnioittamista ja huomioimista. Suomen pitää olla maa, jossa ihmiset puhuvat toisilleen kauniisti."
+    },
+    {
+      "tag": "li",
+      "teksti": "Syrjinnälle, rasismille, vihapuheelle ja kiusaamiselle emme anna mitään sijaa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tuemme jokaisen omaa toivetta perheen koosta.Kunnioitamme perheiden moninaisuutta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Vanhemmuus, läheisistä huolehtiminen ja työ mahtuvat onnelliseen elämään. Tuemme perheen ja työn tasapainoa asenteilla ja rakenteilla."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tuemme vastuullista vanhemmuutta, aikuisuutta ja vahvaa läsnäoloa lasten elämässä. Vanhemmilla pitää olla mahdollisuus olla lastensa lähellä ja perhearjessa tasavertaisesti."
+    },
+    {
+      "tag": "li",
+      "teksti": "Lapsella on omat vahvat oikeutensa. Niistä suurin on oikeus turvalliseen lapsuuteen ja leikkiin. Lapsista on pidettävä huolta, rohkaistava ja kuultava heidän näkemyksiään."
+    },
+    {
+      "tag": "li",
+      "teksti": "Eksynyt nuori tarvitsee tukemme ja elämälleen merkityksen. Harrastus, kannustus ja luottamus voivat muuttaa suunnan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kahdella tasa-arvoisella ihmisellä on vapaus rakastaa toisiaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Niin kuin ihmisarvoinen elämä, niin myös arvokas kuolema kuuluu kaikille."
+    },
+    {
+      "tag": "li",
+      "teksti": "Bruttokansantuote ei kerro onnen määrää. Kansakunnan menestystä ja päätösten vaikutuksia mitataan myös henkisellä ja sosiaalisella hyvinvoinnilla sekä ympäristön tilalla."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että ymmärtäisin luonnon rajat"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Ihmiskunta ratkaisee maailman tulevaisuuden. Kestävä kehitys on sukupolvia yhdistävä välttämättömyys. Teemme kestävistä valinnoista helppoja ja kannattavia. Hiili palaa ja jäätiköt sulavat. Ilmastonmuutos on kohtalon kysymys, uhka ihmiskunnalle ja elinympäristölle. Velvollisuutemme on siksi yhteiskuntana ja kansainvälisin sopimuksin torjua ilmastonmuutosta. Virtaavassa vedessä, humisevissa metsissä ja routaisessa maassa on Suomen voima. Kekseliäisyyteen ja vastuuseen yhdistettynä ne ovat menestyksemme tae. Taitomme ratkaista asioita käytännönläheisesti palvelee myös yhteisen ympäristömme tulevaisuutta, yli maamme rajojen. Hyvä yhteiskunta elää uusiutuvista luonnonvaroista. Tämä on biotaloutta. Säästämme, kierrätämme ja laitamme teknologian töihin ympäristön hyväksi. Viisas ihminen arvostaa luontoa ja on sen kumppani. Viljelijä varjelee. Kestävä maatalous jättää maan tuleville sukupolville vuosi vuodelta paremmassa kunnossa. Suosimme kotimaista ruokaa. Arvostamme sen tuottajaa ja kuluttajaa. Kannustamme ympäristölle ystävällisten elintarvikkeiden tuotantoon ja käyttöön. Jokaisella pitää olla mahdollisuus nauttia vihreydestä ympärillään ja päästä metsään mustikkaan. Haluamme, että kaupungeissakin puistot ja metsät ovat lähellä. Myös rakennetun ympäristön pitää tukea ihmisen hyvinvointia ja terveyttä. Puhtaan ilman, veden ja ruuan riittävyydestä on kannettava yhteinen vastuu. Maapallon vesi on yhteistä, elinehto kaikelle. Eläimillä on oikeus hyvään elämään. Tarvitsemme syväluotaavaa keskustelua eettisistä rajoista aikana, jolloin teknologian ja lääketieteen mahdollisuudet ovat lähes rajattomat. Tämä kehitys luo myös toivoa siihen, että nyt pelottavilta tuntuviin asioihin löydetään ratkaisut."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ihmiskunta ratkaisee maailman tulevaisuuden. Kestävä kehitys on sukupolvia yhdistävä välttämättömyys. Teemme kestävistä valinnoista helppoja ja kannattavia."
+    },
+    {
+      "tag": "li",
+      "teksti": "Hiili palaa ja jäätiköt sulavat. Ilmastonmuutos on kohtalon kysymys, uhka ihmiskunnalle ja elinympäristölle. Velvollisuutemme on siksi yhteiskuntana ja kansainvälisin sopimuksin torjua ilmastonmuutosta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Virtaavassa vedessä, humisevissa metsissä ja routaisessa maassa on Suomen voima. Kekseliäisyyteen ja vastuuseen yhdistettynä ne ovat menestyksemme tae. Taitomme ratkaista asioita käytännönläheisesti palvelee myös yhteisen ympäristömme tulevaisuutta, yli maamme rajojen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Hyvä yhteiskunta elää uusiutuvista luonnonvaroista. Tämä on biotaloutta. Säästämme, kierrätämme ja laitamme teknologian töihin ympäristön hyväksi. Viisas ihminen arvostaa luontoa ja on sen kumppani."
+    },
+    {
+      "tag": "li",
+      "teksti": "Viljelijä varjelee. Kestävä maatalous jättää maan tuleville sukupolville vuosi vuodelta paremmassa kunnossa. Suosimme kotimaista ruokaa. Arvostamme sen tuottajaa ja kuluttajaa. Kannustamme ympäristölle ystävällisten elintarvikkeiden tuotantoon ja käyttöön."
+    },
+    {
+      "tag": "li",
+      "teksti": "Jokaisella pitää olla mahdollisuus nauttia vihreydestä ympärillään ja päästä metsään mustikkaan. Haluamme, että kaupungeissakin puistot ja metsät ovat lähellä. Myös rakennetun ympäristön pitää tukea ihmisen hyvinvointia ja terveyttä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Puhtaan ilman, veden ja ruuan riittävyydestä on kannettava yhteinen vastuu. Maapallon vesi on yhteistä, elinehto kaikelle."
+    },
+    {
+      "tag": "li",
+      "teksti": "Eläimillä on oikeus hyvään elämään."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tarvitsemme syväluotaavaa keskustelua eettisistä rajoista aikana, jolloin teknologian ja lääketieteen mahdollisuudet ovat lähes rajattomat. Tämä kehitys luo myös toivoa siihen, että nyt pelottavilta tuntuviin asioihin löydetään ratkaisut."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että voisin kuulua johonkin"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Olemme isänmaallisia. Meille se tarkoittaa tervettä ylpeyttä maastamme, juuristamme, kielistämme ja kulttuureistamme. Suomalaisuus on uudistuvaa. Ajamme Suomen ja suomalaisten etua yhteistyössä muiden kansojen kanssa, rauhaa ja sopua rakentaen. Kylät, kaupunginosat ja kotiseudut ovat meille tärkeitä. Minuus koostuu myös siitä, että ihminen voi kuulua moneen paikkaan ja olla ylpeä kaikista juuristaan. Monipaikkaisuus on elinvoiman ja luovuuden lähde koko Suomelle. Maaseutu ja kaupunki ovat yhtä kuin Suomi. Vahvistamme alueiden välistä yhteistyötä ja kumppanuutta. On aika paiskata kättä. Kannatamme hajautettua kotiseutujen yhteiskuntaa. Koti pitää saada perustaa yhtä lailla niin etelään kuin pohjoiseen, länteen kuin itään. Haluamme taata hyvän elämän edellytykset ja lähipalvelut koko Suomessa. Pääkaupunki Helsinki on ylpeyden aiheemme. Luomme edellytyksiä sen ja koko pääkaupunkiseutumme pärjäämiselle Euroopan ja maailman suurten metropolien sarjassa. Pidämme huolta vähemmistöjemme tasavertaisesta kohtelusta ja oikeuksien toteutumisesta. Tunnustamme ja turvaamme ruotsin aseman maamme toisena kansalliskielenä. Edistämme alkuperäiskansan, saamelaisten, kielellisten ja kulttuuristen oikeuksien toteutumista. Rakennamme siltaa täällä syntyneiden ja tänne tulleiden välille. Suomalaisuuteen kuuluu monikulttuurisuus. Maahamme muuttaneet tarvitsevat välittäviä yhteisöjä sekä mahdollisuuksia opiskella, tehdä työtä ja osallistua yhteiskuntamme rakentamiseen. Elämme pidempään kuin ikinä ennen. Tämä muuttaa yhteiskunnan rakenteita. Eläkeläisyys ei ole synonyymi vanhuudelle. Neljän sukupolven Suomi on mittaamaton voimavara kokemusten ja tiedon siirtämisessä. Yksin on yhtä arvokasta kuin kaksin. Yksineläminen on joko oma valinta tai elämän eteen tuoma tilanne. Itsellisen ihmisen tasapainoiseen elämään kuuluu myös kokemus osallisuudesta ja kohtuullinen toimeentulo. Ihmiset tarvitsevat toisiaan, mutta myös lepoa ja hiljaisuutta. Tavoittelemme yhteiskuntaa, jossa allakoissamme on aukkoja - aikaa myös itselle ja tilaa rauhoittumiseen. Tunnustamme yhteiskuntamme kristilliset juuret ja arvostamme niitä. Jokaisella pitää olla vapaus tunnustaa ja harjoittaa omaa uskontoaan tai elämänkatsomustaan Suomen lakeja ja hyviä tapoja noudattaen. Virtuaaliset yhteisöt ovat osa vuoropuhelun, vaikuttamisen ja uusien elämysten maailmaa. Hyvän keskellä verkkotodellisuudessa on myös harmaita ja synkkiä vyöhykkeitä. Lain noudattamisen ja ihmisen vastuun teoistaan tulee ulottua myös verkkoon."
+    },
+    {
+      "tag": "li",
+      "teksti": "Olemme isänmaallisia. Meille se tarkoittaa tervettä ylpeyttä maastamme, juuristamme, kielistämme ja kulttuureistamme. Suomalaisuus on uudistuvaa. Ajamme Suomen ja suomalaisten etua yhteistyössä muiden kansojen kanssa, rauhaa ja sopua rakentaen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kylät, kaupunginosat ja kotiseudut ovat meille tärkeitä. Minuus koostuu myös siitä, että ihminen voi kuulua moneen paikkaan ja olla ylpeä kaikista juuristaan. Monipaikkaisuus on elinvoiman ja luovuuden lähde koko Suomelle."
+    },
+    {
+      "tag": "li",
+      "teksti": "Maaseutu ja kaupunki ovat yhtä kuin Suomi. Vahvistamme alueiden välistä yhteistyötä ja kumppanuutta. On aika paiskata kättä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kannatamme hajautettua kotiseutujen yhteiskuntaa. Koti pitää saada perustaa yhtä lailla niin etelään kuin pohjoiseen, länteen kuin itään. Haluamme taata hyvän elämän edellytykset ja lähipalvelut koko Suomessa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Pääkaupunki Helsinki on ylpeyden aiheemme. Luomme edellytyksiä sen ja koko pääkaupunkiseutumme pärjäämiselle Euroopan ja maailman suurten metropolien sarjassa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Pidämme huolta vähemmistöjemme tasavertaisesta kohtelusta ja oikeuksien toteutumisesta. Tunnustamme ja turvaamme ruotsin aseman maamme toisena kansalliskielenä. Edistämme alkuperäiskansan, saamelaisten, kielellisten ja kulttuuristen oikeuksien toteutumista."
+    },
+    {
+      "tag": "li",
+      "teksti": "Rakennamme siltaa täällä syntyneiden ja tänne tulleiden välille. Suomalaisuuteen kuuluu monikulttuurisuus. Maahamme muuttaneet tarvitsevat välittäviä yhteisöjä sekä mahdollisuuksia opiskella, tehdä työtä ja osallistua yhteiskuntamme rakentamiseen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Elämme pidempään kuin ikinä ennen. Tämä muuttaa yhteiskunnan rakenteita. Eläkeläisyys ei ole synonyymi vanhuudelle. Neljän sukupolven Suomi on mittaamaton voimavara kokemusten ja tiedon siirtämisessä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Yksin on yhtä arvokasta kuin kaksin. Yksineläminen on joko oma valinta tai elämän eteen tuoma tilanne. Itsellisen ihmisen tasapainoiseen elämään kuuluu myös kokemus osallisuudesta ja kohtuullinen toimeentulo."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ihmiset tarvitsevat toisiaan, mutta myös lepoa ja hiljaisuutta. Tavoittelemme yhteiskuntaa, jossa allakoissamme on aukkoja - aikaa myös itselle ja tilaa rauhoittumiseen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tunnustamme yhteiskuntamme kristilliset juuret ja arvostamme niitä. Jokaisella pitää olla vapaus tunnustaa ja harjoittaa omaa uskontoaan tai elämänkatsomustaan Suomen lakeja ja hyviä tapoja noudattaen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Virtuaaliset yhteisöt ovat osa vuoropuhelun, vaikuttamisen ja uusien elämysten maailmaa. Hyvän keskellä verkkotodellisuudessa on myös harmaita ja synkkiä vyöhykkeitä. Lain noudattamisen ja ihmisen vastuun teoistaan tulee ulottua myös verkkoon."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että uteliaana loisin uutta"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Sivistys on avain hyvään elämään. Jokaisella meistä on rajaton kyky kasvaa ihmisenä ja kansalaisena, murtaa sisäiset kahleemme. Vapaus on myös sitä, että ihminen voi toteuttaa itseään ja oppia uutta läpi elämänkaaren. Turvaamme kaikille mahdollisuuden koulutukseen riippumatta lompakon paksuudesta tai kodin postinumerosta. Aikaansa ja tulevaisuuteen vastaava koulutus on ihmisen tärkein pääoma, varhaiskasvatuksesta korkeakouluihin. Hyvä koulutus vastaa työelämän tarpeisiin ja vahvistaa koko yhteiskuntaa. Taiteen kautta koemme uutta ja avartavaa. Yhteiskunnan tehtävänä on varmistaa taiteen vapaus ja sen tekemisen edellytykset. Jokaisella pitää olla mahdollisuus nauttia kulttuurista, itselleen sopivalla tavalla. Tiede on itseisarvo. Se auttaa ymmärtämään mitä elämässä ja ympärillämme tapahtuu. Tiede on myös avain ongelmanratkaisuun ja yhteiskunnan kestävään kehittämiseen. Muutamme maailmaa teknologisilla harppauksilla ja luomme niillä uutta. Moni asia helpottuu. Muistamme silti, mikä on väline ja mikä elämää itseään. Ihmiset päättävät yhä päämäärät. \"Hyvä idea, mietitään yhdessä lisää\". Tällaista asennetta Suomi tarvitsee. Tutkikaa, kokeilkaa ja pitäkää se mikä hyvä on - se on toinen edistyksen lähtökohta. Voidaan tehdä toisinkin. Tahdomme lisää ennakkoluulottomuutta ja luovuutta kouluihin, työpaikoille ja harrastuksiin. Uskallamme uudistaa ja luopua tarvittaessa vanhasta. Kuulemme ja osallistamme, rohkaisemme jokaista löytämään omat vahvuutensa. Joskus uusi pelottaa. Ja meissä kaikissa asuu muutosvastarinta. Tienraivaajan osa ei ole kenellekään helppo. Muuttuva ja uusi pitää osata kärsivällisesti perustella. Uuteen alkuun pitää olla aina mahdollisuus. Ihmisen on voitava epäonnistua ilman, että kokemus haavoittaa pysyvästi."
+    },
+    {
+      "tag": "li",
+      "teksti": "Sivistys on avain hyvään elämään. Jokaisella meistä on rajaton kyky kasvaa ihmisenä ja kansalaisena, murtaa sisäiset kahleemme. Vapaus on myös sitä, että ihminen voi toteuttaa itseään ja oppia uutta läpi elämänkaaren."
+    },
+    {
+      "tag": "li",
+      "teksti": "Turvaamme kaikille mahdollisuuden koulutukseen riippumatta lompakon paksuudesta tai kodin postinumerosta. Aikaansa ja tulevaisuuteen vastaava koulutus on ihmisen tärkein pääoma, varhaiskasvatuksesta korkeakouluihin. Hyvä koulutus vastaa työelämän tarpeisiin ja vahvistaa koko yhteiskuntaa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Taiteen kautta koemme uutta ja avartavaa. Yhteiskunnan tehtävänä on varmistaa taiteen vapaus ja sen tekemisen edellytykset. Jokaisella pitää olla mahdollisuus nauttia kulttuurista, itselleen sopivalla tavalla."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tiede on itseisarvo. Se auttaa ymmärtämään mitä elämässä ja ympärillämme tapahtuu. Tiede on myös avain ongelmanratkaisuun ja yhteiskunnan kestävään kehittämiseen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Muutamme maailmaa teknologisilla harppauksilla ja luomme niillä uutta. Moni asia helpottuu. Muistamme silti, mikä on väline ja mikä elämää itseään. Ihmiset päättävät yhä päämäärät."
+    },
+    {
+      "tag": "li",
+      "teksti": "\"Hyvä idea, mietitään yhdessä lisää\". Tällaista asennetta Suomi tarvitsee. Tutkikaa, kokeilkaa ja pitäkää se mikä hyvä on - se on toinen edistyksen lähtökohta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Voidaan tehdä toisinkin. Tahdomme lisää ennakkoluulottomuutta ja luovuutta kouluihin, työpaikoille ja harrastuksiin. Uskallamme uudistaa ja luopua tarvittaessa vanhasta. Kuulemme ja osallistamme, rohkaisemme jokaista löytämään omat vahvuutensa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Joskus uusi pelottaa. Ja meissä kaikissa asuu muutosvastarinta. Tienraivaajan osa ei ole kenellekään helppo. Muuttuva ja uusi pitää osata kärsivällisesti perustella."
+    },
+    {
+      "tag": "li",
+      "teksti": "Uuteen alkuun pitää olla aina mahdollisuus. Ihmisen on voitava epäonnistua ilman, että kokemus haavoittaa pysyvästi."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että saisin mahdollisuuden"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Kaikilla on oikeus tavoitella jotain suurempaa ja toteuttaa haaveitaan. Parhaimmillaan yhteiskunta on silloin, kun se tarjoaa rakennuspuita ihmisten valinnoille, omavoimaisuudelle ja kasvulle omintakeiseksi persoonaksi. Suomi tarvitsee niin kirjaviisautta kuin kädentaitojakin. Mahdollisuus oppia omaan tapaan ja tahtiin pitää olla kaikilla. Työ on oikeus, työ on velvollisuus. Työllä on arvo itsessään, mutta työ ei määrittele ihmisen arvoa. Työelämän ovet on oltava auki kaikille. Myös sairauksista toipuvilla, osatyökykyisillä ja vammaisilla ihmisillä on oikeus työhön. Yhteiskunnan tehtävänä on auttaa työllistymään etenkin vaikeuksien kohdatessa. Liikunta ja hyvät harrastukset lisäävät positiivisia voimavarojamme ja hyvinvointiamme. Jokaisella pitää olla mahdollisuus osallistua itselle mielekkääseen vapaa-ajantoimintaan. Sukupuolten välinen tasa-arvo on yhteiskuntamme syvä arvo. Haluamme vahvistaa sitä todeksi sanoin ja teoin joka päivä. Sukupuolia lokeroivat asenteet on murrettava. Bitit siirtyvät ja bussi kulkee. Tämä on edellytys työlle, yrittämiselle ja harrastuksille. Mahdollistamme ihmisten, tavaroiden ja tiedon sujuvan liikkumisen koko Suomessa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kaikilla on oikeus tavoitella jotain suurempaa ja toteuttaa haaveitaan. Parhaimmillaan yhteiskunta on silloin, kun se tarjoaa rakennuspuita ihmisten valinnoille, omavoimaisuudelle ja kasvulle omintakeiseksi persoonaksi."
+    },
+    {
+      "tag": "li",
+      "teksti": "Suomi tarvitsee niin kirjaviisautta kuin kädentaitojakin. Mahdollisuus oppia omaan tapaan ja tahtiin pitää olla kaikilla."
+    },
+    {
+      "tag": "li",
+      "teksti": "Työ on oikeus, työ on velvollisuus. Työllä on arvo itsessään, mutta työ ei määrittele ihmisen arvoa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Työelämän ovet on oltava auki kaikille. Myös sairauksista toipuvilla, osatyökykyisillä ja vammaisilla ihmisillä on oikeus työhön. Yhteiskunnan tehtävänä on auttaa työllistymään etenkin vaikeuksien kohdatessa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Liikunta ja hyvät harrastukset lisäävät positiivisia voimavarojamme ja hyvinvointiamme. Jokaisella pitää olla mahdollisuus osallistua itselle mielekkääseen vapaa-ajantoimintaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Sukupuolten välinen tasa-arvo on yhteiskuntamme syvä arvo. Haluamme vahvistaa sitä todeksi sanoin ja teoin joka päivä. Sukupuolia lokeroivat asenteet on murrettava."
+    },
+    {
+      "tag": "li",
+      "teksti": "Bitit siirtyvät ja bussi kulkee. Tämä on edellytys työlle, yrittämiselle ja harrastuksille. Mahdollistamme ihmisten, tavaroiden ja tiedon sujuvan liikkumisen koko Suomessa."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että saisin olla myös heikko"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Meillä on ohittamaton vastuu lähimmäisistä. Vahvojen yhteiskunta on pohjimmiltaan vain vastuulleen sokeiden yhteiskunta. Kuka tahansa meistä voi yhtäkkiä menettää kaiken. Se velvoittaa meitä yhteiskuntana varmistamaan, että ketään ei jätetä tyhjän päälle. Toisen asioihin puuttuminen voi joskus olla suurin välittämisen teko. Kelpaamme keskeneräisinä. Haluamme Suomen, jossa ihmisarvoa ei määritetä kympin suorituksilla. Tärkeämpää on kilvoitella itsensä kanssa kuin saavuttaa muiden mittarit. Meille tärkein ei ole se, joka huutaa lujimmin. Vaatii erityistä herkkyyttä kuulla häntä, joka enää vain vaikenee. Hauraiden ja haavoitettujen osallisuudesta ja hyvinvoinnista huolehtiminen on yhteinen asia. Ihminen on oman elämänsä toimija. Kenestäkään ei saa tulla vain toimenpiteiden ja etuuksien kohde. Haluamme kuulla ihmisiä heitä koskevissa asioissa ja kunnioittaa heidän itsemääräämisoikeuttaan. Onneamme varjostavat lisääntyvä yksinäisyys, mielenterveyden ongelmat ja kansamme elintasosairaudet. Liian monelta puuttuu työn takaava koulutus. Siksi sosiaaliturva ja palvelut tarvitsevat ihmislähtöisen vallankumouksen. Avun pitää olla aina saatavilla. Haluamme raivata esteet, jotta ammatikseen toisia auttavat voivat keskittyä työssään ihmisen kohtaamiseen. Välittäminen on ammattitaidoista tärkein. Globaalissa taloudessa kaikki eivät voita. Häviäjistä meillä on yhteinen vastuu - niin kotimaassa kuin kauempanakin. Maailmantalous tarvitsee oikeudenmukaisuutta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Meillä on ohittamaton vastuu lähimmäisistä. Vahvojen yhteiskunta on pohjimmiltaan vain vastuulleen sokeiden yhteiskunta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kuka tahansa meistä voi yhtäkkiä menettää kaiken. Se velvoittaa meitä yhteiskuntana varmistamaan, että ketään ei jätetä tyhjän päälle. Toisen asioihin puuttuminen voi joskus olla suurin välittämisen teko."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kelpaamme keskeneräisinä. Haluamme Suomen, jossa ihmisarvoa ei määritetä kympin suorituksilla. Tärkeämpää on kilvoitella itsensä kanssa kuin saavuttaa muiden mittarit."
+    },
+    {
+      "tag": "li",
+      "teksti": "Meille tärkein ei ole se, joka huutaa lujimmin. Vaatii erityistä herkkyyttä kuulla häntä, joka enää vain vaikenee. Hauraiden ja haavoitettujen osallisuudesta ja hyvinvoinnista huolehtiminen on yhteinen asia."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ihminen on oman elämänsä toimija. Kenestäkään ei saa tulla vain toimenpiteiden ja etuuksien kohde. Haluamme kuulla ihmisiä heitä koskevissa asioissa ja kunnioittaa heidän itsemääräämisoikeuttaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Onneamme varjostavat lisääntyvä yksinäisyys, mielenterveyden ongelmat ja kansamme elintasosairaudet. Liian monelta puuttuu työn takaava koulutus. Siksi sosiaaliturva ja palvelut tarvitsevat ihmislähtöisen vallankumouksen. Avun pitää olla aina saatavilla."
+    },
+    {
+      "tag": "li",
+      "teksti": "Haluamme raivata esteet, jotta ammatikseen toisia auttavat voivat keskittyä työssään ihmisen kohtaamiseen. Välittäminen on ammattitaidoista tärkein."
+    },
+    {
+      "tag": "li",
+      "teksti": "Globaalissa taloudessa kaikki eivät voita. Häviäjistä meillä on yhteinen vastuu - niin kotimaassa kuin kauempanakin. Maailmantalous tarvitsee oikeudenmukaisuutta."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että tulisin toimeen"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Hyvinvointi on päämäärä, talous on väline. Osallistava kasvu mahdollistaa työtä ja yrittäjyyttä. Se lisää hyvinvointia sekä ottaa kaikki mukaan kasvuun. Tarvitsemme ympäristöllisesti ja sosiaalisesti kestävää talouskasvua. Se on parhaimmillaan uusiutumista: keksintöjä, uusia tuotteita ja palveluja. Vähemmästä voi taloudessakin luoda enemmän. Markkinoihin ja toimivaan kilpailuun perustuva talous tarvitsee lakien kautta luodut reilun pelin säännöt ja yhteiskunnalliset puitteet. Valtiota tarvitaan myös riskiä kantavana kärsivällisenä sijoittajana sekä tavoitteellisena omistajana. Valtionyhtiöitä on hoidettava tehokkaasti niiden yhteiskunnallisen tehtävän mukaisesti. Yrittäjyys on työtä ja uuden luomista. Sillä ihminen ilmaisee itseään ja palvelee samalla muita. Yrityksen olemassaolon perustana on aina vahvat arvot, asiakkaiden tarpeiden täyttäminen ja tekemisen palo. Yrittäjä kantaa riskin, työllistää ja luo hyvinvointia ympäröivään yhteiskuntaan. Ihmisellä on oikeus omistaa, menestyä ja tavoitella parempaa. Omistaminen kasvattaa ymmärrystä ja vastuuta taloudesta. Vastustamme kateuden ja kaunan yhteiskuntaa. Vaadimme kohtuuden toteutumista niin palkitsemisessa kuin muussakin taloudellisessa toiminnassa. Raha ei ole onnen tae, mutta taloudellinen turva vapauttaa ihmisen itsensä kehittämiseen ja toimintaan myös toisten hyväksi. Haluamme taata kaikille kannustavan toimeentulon perustuloajattelun pohjalta. Ammatteja syntyy ja katoaa. Työ pilkkoutuu, palkka tulee usein paloina eikä työnteko ole aina sidottu paikkaan ja kellokorttiin. Tavoitteemme on työelämä, jossa työntekijä ja -antaja voivat hyvin, luottavat toisiinsa ja sopivat yhteiseksi hyväksi. Haluamme luoda reilut ja joustavat puitteet, myös itsensä työllistäville. Koti on aina yhtä tärkeä, olipa se punainen tupa tai kerrostalokaksio. Jokaisella on oltava mahdollisuus asua kohtuuhintaisesti toiveidensa ja elämäntilanteensa mukaisesti. Asuntolainasta ja vuokrasta selviäminen ei saa olla kenellekään elämäntehtävä. Aluepolitiikan uusi nousu perustuu maakuntiin. Ne ymmärtävät voimavaransa, keskittyvät vahvuuksiinsa sekä yhdistävät yksityisen, julkisen ja järjestöjen osaamisen asukkaidensa hyödyksi. Kunnat ovat ihmisten yhteisöjä, jotka takaavat alueiden elinvoiman ja kansanvallan toteutumisen. Tekoäly, digitalisaatio, robotit sekä alusta- ja jakamistalous; ne ovat osa elämäämme. Tämä kehitys tarvitsee yhteisiä pelisääntöjä niin kansallisesti kuin kansainvälisestikin. Uuden teknologian ja uusien toimintatapojen pitää palvella ihmistä ja hänen kehitystarpeitaan, myös heitä joilla ei ole kykyä tai mahdollisuuksia tämän teknologian hyödyntämiseen. Raha ja pääoma liikkuvat yli rajojen, joskus veroparatiisiin asti. Edellytämme siksi talouden toimijoilta yhteiskuntavastuuta, avoimuutta ja läpinäkyvyyttä, tarvittaessa kansainvälisin sopimuksin ja säännöin. Kannatamme elinkeino- mutta emme keinotteluvapautta. Pikavoittojen sijaan suosimme kestävän tuoton tavoittelua. Kauppa yhdistää kansoja ja lujittaa rauhaa. Se on oman vientimme kasvattamista. Se on myös maailman parantamista, pala kerrallaan. Haluamme vahvistaa köyhimpien maiden omaa yritystoimintaa, talouden hedelmien oikeudenmukaista jakautumista ja kykyä päästä omille jaloilleen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Hyvinvointi on päämäärä, talous on väline. Osallistava kasvu mahdollistaa työtä ja yrittäjyyttä. Se lisää hyvinvointia sekä ottaa kaikki mukaan kasvuun."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tarvitsemme ympäristöllisesti ja sosiaalisesti kestävää talouskasvua. Se on parhaimmillaan uusiutumista: keksintöjä, uusia tuotteita ja palveluja. Vähemmästä voi taloudessakin luoda enemmän."
+    },
+    {
+      "tag": "li",
+      "teksti": "Markkinoihin ja toimivaan kilpailuun perustuva talous tarvitsee lakien kautta luodut reilun pelin säännöt ja yhteiskunnalliset puitteet."
+    },
+    {
+      "tag": "li",
+      "teksti": "Valtiota tarvitaan myös riskiä kantavana kärsivällisenä sijoittajana sekä tavoitteellisena omistajana. Valtionyhtiöitä on hoidettava tehokkaasti niiden yhteiskunnallisen tehtävän mukaisesti."
+    },
+    {
+      "tag": "li",
+      "teksti": "Yrittäjyys on työtä ja uuden luomista. Sillä ihminen ilmaisee itseään ja palvelee samalla muita. Yrityksen olemassaolon perustana on aina vahvat arvot, asiakkaiden tarpeiden täyttäminen ja tekemisen palo. Yrittäjä kantaa riskin, työllistää ja luo hyvinvointia ympäröivään yhteiskuntaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ihmisellä on oikeus omistaa, menestyä ja tavoitella parempaa. Omistaminen kasvattaa ymmärrystä ja vastuuta taloudesta. Vastustamme kateuden ja kaunan yhteiskuntaa. Vaadimme kohtuuden toteutumista niin palkitsemisessa kuin muussakin taloudellisessa toiminnassa."
+    },
+    {
+      "tag": "li",
+      "teksti": "Raha ei ole onnen tae, mutta taloudellinen turva vapauttaa ihmisen itsensä kehittämiseen ja toimintaan myös toisten hyväksi. Haluamme taata kaikille kannustavan toimeentulon perustuloajattelun pohjalta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ammatteja syntyy ja katoaa. Työ pilkkoutuu, palkka tulee usein paloina eikä työnteko ole aina sidottu paikkaan ja kellokorttiin. Tavoitteemme on työelämä, jossa työntekijä ja -antaja voivat hyvin, luottavat toisiinsa ja sopivat yhteiseksi hyväksi. Haluamme luoda reilut ja joustavat puitteet, myös itsensä työllistäville."
+    },
+    {
+      "tag": "li",
+      "teksti": "Koti on aina yhtä tärkeä, olipa se punainen tupa tai kerrostalokaksio. Jokaisella on oltava mahdollisuus asua kohtuuhintaisesti toiveidensa ja elämäntilanteensa mukaisesti. Asuntolainasta ja vuokrasta selviäminen ei saa olla kenellekään elämäntehtävä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Aluepolitiikan uusi nousu perustuu maakuntiin. Ne ymmärtävät voimavaransa, keskittyvät vahvuuksiinsa sekä yhdistävät yksityisen, julkisen ja järjestöjen osaamisen asukkaidensa hyödyksi. Kunnat ovat ihmisten yhteisöjä, jotka takaavat alueiden elinvoiman ja kansanvallan toteutumisen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tekoäly, digitalisaatio, robotit sekä alusta- ja jakamistalous; ne ovat osa elämäämme. Tämä kehitys tarvitsee yhteisiä pelisääntöjä niin kansallisesti kuin kansainvälisestikin."
+    },
+    {
+      "tag": "li",
+      "teksti": "Uuden teknologian ja uusien toimintatapojen pitää palvella ihmistä ja hänen kehitystarpeitaan, myös heitä joilla ei ole kykyä tai mahdollisuuksia tämän teknologian hyödyntämiseen."
+    },
+    {
+      "tag": "li",
+      "teksti": "Raha ja pääoma liikkuvat yli rajojen, joskus veroparatiisiin asti. Edellytämme siksi talouden toimijoilta yhteiskuntavastuuta, avoimuutta ja läpinäkyvyyttä, tarvittaessa kansainvälisin sopimuksin ja säännöin."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kannatamme elinkeino- mutta emme keinotteluvapautta. Pikavoittojen sijaan suosimme kestävän tuoton tavoittelua."
+    },
+    {
+      "tag": "li",
+      "teksti": "Kauppa yhdistää kansoja ja lujittaa rauhaa. Se on oman vientimme kasvattamista. Se on myös maailman parantamista, pala kerrallaan. Haluamme vahvistaa köyhimpien maiden omaa yritystoimintaa, talouden hedelmien oikeudenmukaista jakautumista ja kykyä päästä omille jaloilleen."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Että kokisin olevani turvassa"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Ihmisen kokemus turvatusta olosta syntyy oman elämän hallinnasta. Haluamme estää syrjään joutumista, rikollisuutta ja ihmisen elinympäristön vaaroja. Turvallinen koti on jokaisen oikeus. Väkivalta lähellä on yhtä tuomittavaa kuin kaukana. Rauha on yhteisten toimiemme päämäärä, joka ainoa päivä. Sen vastakohtia ovat epäsopu, pelko, yhteiskunnan murentuminen, kriisit ja sota. Suomen itsenäisyyden ja kansalaisten turvallisuuden varmistaminen on ulko- ja turvallisuuspolitiikkamme tärkein tehtävä. Käpertyminen ja aitojen pystytys ei ole Suomen ratkaisu. Kansainvälisellä vuoropuhelulla ja yhteistyöllä vahvistamme luottamusta ja turvallisuutta. Hyvät suhteet kaikkiin naapurimaihin sekä vakauden rakentaminen Itämerellä ja arktisella alueella ovat turvallisuutemme ytimessä. Suomen luontevin yhteisö on Pohjoismaat, sitkeiden pohjoisten kansojen joukko. Ylläpidämme aktiivista yhteistyösuhdetta Venäjään niin valtioiden, talouden kuin kansalaistenkin vuorovaikutuksen kautta. Itsenäinen Suomi on osa itsenäisten valtioiden Eurooppaa, sen vahvuuksia ja haurauttakin. Haluamme uudistaa Euroopan unionia. Sen pitää olla suuri suurissa ja pieni pienissä asioissa. Unionin syntytarkoitus, projekti rauhan puolesta, on sen tärkein tehtävä myös tänään ja huomenna. Suomen on pidettävä päätösvalta sotilaallisen turvallisuuden ratkaisuissa omissa käsissään. Itsenäinen kansakunta ei rajaa liikkumatilaansa mihinkään suuntaan. Maanpuolustustahto säilyy korkealla, kun ihmiset kokevat Suomen puolustamisen arvoiseksi. Jokainen suomalainen on maanpuolustaja. Tarvitsemme oman uskottavan puolustuskyvyn ja yleisen asevelvollisuuden lisäksi kaikkia koskevan kansalaispalvelusvelvollisuuden. Ruoka, vesi, energia, hoiva ja yhteiskunnan turva pitää taata kaikille kriiseissäkin. Huoltovarmuus ja riittävä omavaraisuus ovat tärkeä osa kansamme henkivakuutusta. Suomessa on varauduttava entistä vahvemmin myös tietoverkkohyökkäyksiin ja muihin uudenlaisiin uhkiin. Itseä koskevat tiedot ovat arvokasta suojeltavaa omaisuutta, jota pitää voida itse valvoa. Haluamme tehdä turvallisesta toiminnasta verkossa kansalaistaidon. Tarvitsemme uskontojen ja kulttuurien lukutaitoa, kykyä ymmärtää myös meille vierasta ja outoa. Eri katsomusten ja toimijoiden välinen vuoropuhelu poistaa pelkoja ja estää ääriliikkeiden kasvua. Se myös rakentaa perustaa turvalliselle ja oikeudenmukaiselle maailmalle. Myös ihmiset maamme rajojen ulkopuolella ovat lähimmäisiämme. Ympäristöpakolaisuutta voidaan ehkäistä kansainvälisellä yhteistyöllä ja yhteisvastuulla. Pakenemaan joutuneita ihmisiä on kohdeltava inhimillisesti ja heidän ihmisoikeutensa on turvattava. Köyhyyden, rajat ylittävän rikollisuuden ja muiden maapallomme ongelmien ratkaisu edellyttää yhteisiä pelisääntöjä ja kaikkien maiden sitoutumista. Haluamme vahvistaa YK:N ja EU:n kaltaisia yhteisöjä, joissa ihmisoikeudet, oikeusvaltio ja kestävän kehityksen periaatteet ovat toiminnan perusta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ihmisen kokemus turvatusta olosta syntyy oman elämän hallinnasta. Haluamme estää syrjään joutumista, rikollisuutta ja ihmisen elinympäristön vaaroja."
+    },
+    {
+      "tag": "li",
+      "teksti": "Turvallinen koti on jokaisen oikeus. Väkivalta lähellä on yhtä tuomittavaa kuin kaukana."
+    },
+    {
+      "tag": "li",
+      "teksti": "Rauha on yhteisten toimiemme päämäärä, joka ainoa päivä. Sen vastakohtia ovat epäsopu, pelko, yhteiskunnan murentuminen, kriisit ja sota."
+    },
+    {
+      "tag": "li",
+      "teksti": "Suomen itsenäisyyden ja kansalaisten turvallisuuden varmistaminen on ulko- ja turvallisuuspolitiikkamme tärkein tehtävä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Käpertyminen ja aitojen pystytys ei ole Suomen ratkaisu. Kansainvälisellä vuoropuhelulla ja yhteistyöllä vahvistamme luottamusta ja turvallisuutta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Hyvät suhteet kaikkiin naapurimaihin sekä vakauden rakentaminen Itämerellä ja arktisella alueella ovat turvallisuutemme ytimessä. Suomen luontevin yhteisö on Pohjoismaat, sitkeiden pohjoisten kansojen joukko. Ylläpidämme aktiivista yhteistyösuhdetta Venäjään niin valtioiden, talouden kuin kansalaistenkin vuorovaikutuksen kautta."
+    },
+    {
+      "tag": "li",
+      "teksti": "Itsenäinen Suomi on osa itsenäisten valtioiden Eurooppaa, sen vahvuuksia ja haurauttakin. Haluamme uudistaa Euroopan unionia. Sen pitää olla suuri suurissa ja pieni pienissä asioissa. Unionin syntytarkoitus, projekti rauhan puolesta, on sen tärkein tehtävä myös tänään ja huomenna."
+    },
+    {
+      "tag": "li",
+      "teksti": "Suomen on pidettävä päätösvalta sotilaallisen turvallisuuden ratkaisuissa omissa käsissään. Itsenäinen kansakunta ei rajaa liikkumatilaansa mihinkään suuntaan."
+    },
+    {
+      "tag": "li",
+      "teksti": "Maanpuolustustahto säilyy korkealla, kun ihmiset kokevat Suomen puolustamisen arvoiseksi. Jokainen suomalainen on maanpuolustaja. Tarvitsemme oman uskottavan puolustuskyvyn ja yleisen asevelvollisuuden lisäksi kaikkia koskevan kansalaispalvelusvelvollisuuden."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ruoka, vesi, energia, hoiva ja yhteiskunnan turva pitää taata kaikille kriiseissäkin. Huoltovarmuus ja riittävä omavaraisuus ovat tärkeä osa kansamme henkivakuutusta. Suomessa on varauduttava entistä vahvemmin myös tietoverkkohyökkäyksiin ja muihin uudenlaisiin uhkiin."
+    },
+    {
+      "tag": "li",
+      "teksti": "Itseä koskevat tiedot ovat arvokasta suojeltavaa omaisuutta, jota pitää voida itse valvoa. Haluamme tehdä turvallisesta toiminnasta verkossa kansalaistaidon."
+    },
+    {
+      "tag": "li",
+      "teksti": "Tarvitsemme uskontojen ja kulttuurien lukutaitoa, kykyä ymmärtää myös meille vierasta ja outoa. Eri katsomusten ja toimijoiden välinen vuoropuhelu poistaa pelkoja ja estää ääriliikkeiden kasvua. Se myös rakentaa perustaa turvalliselle ja oikeudenmukaiselle maailmalle."
+    },
+    {
+      "tag": "li",
+      "teksti": "Myös ihmiset maamme rajojen ulkopuolella ovat lähimmäisiämme. Ympäristöpakolaisuutta voidaan ehkäistä kansainvälisellä yhteistyöllä ja yhteisvastuulla. Pakenemaan joutuneita ihmisiä on kohdeltava inhimillisesti ja heidän ihmisoikeutensa on turvattava."
+    },
+    {
+      "tag": "li",
+      "teksti": "Köyhyyden, rajat ylittävän rikollisuuden ja muiden maapallomme ongelmien ratkaisu edellyttää yhteisiä pelisääntöjä ja kaikkien maiden sitoutumista. Haluamme vahvistaa YK:N ja EU:n kaltaisia yhteisöjä, joissa ihmisoikeudet, oikeusvaltio ja kestävän kehityksen periaatteet ovat toiminnan perusta."
+    },
+    {
+      "tag": "h2",
+      "teksti": "Lopuksi"
+    },
+    {
+      "tag": "ol",
+      "teksti": "Ei voi saavuttaa upeita asioita, ellei tiedä mikä on olennaista ja hyvää. Jos haluamme asioiden muuttuvan, pitää olla valmis myös itse muuttamaan niitä."
+    },
+    {
+      "tag": "li",
+      "teksti": "Ei voi saavuttaa upeita asioita, ellei tiedä mikä on olennaista ja hyvää. Jos haluamme asioiden muuttuvan, pitää olla valmis myös itse muuttamaan niitä."
+    },
+    {
+      "tag": "h3",
+      "teksti": "LÖYLYISTÄ"
+    },
+    {
+      "tag": "p",
+      "teksti": "Puolueen pitää olla kuin sauna, jonka lauteille kokoonnumme kaikki samanarvoisina. Elämän muokkaamina olemme erilaisia, mutta siinä löylyn sihistessä kiukaalle samalla viivalla. Keho kipristyy kuumuudesta. Toinen nauttii hiljaisuudesta, joku kertoo tarinan. Kaikilla on sellainen olo, että tässä on hyvä olla, perimmäisten asioiden äärellä. Kelpaan sellaisena kuin olen."
+    },
+    {
+      "tag": "p",
+      "teksti": "Löylyissä ansioksi riittää ihmisenä oleminen. Sama juju pitää olla keskustalaisessa kansanliikkeessä. Oven pitää olla sopivasti raollaan, jotta sisään pääsee raitista ilmaa ja uutta väkeä."
+    },
+    {
+      "tag": "p",
+      "teksti": "Ja saunan ikkuna - siitä ikkunasta näkyy kuulas maisema ja välkkyvä vesi."
+    }
+  ]
+}

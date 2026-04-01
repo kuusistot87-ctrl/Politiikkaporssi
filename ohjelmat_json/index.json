@@ -1,0 +1,122 @@
+[
+  {
+    "id": "kok_vaali2023",
+    "puolue": "KOK",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Kansallinen Kokoomus",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/1473"
+  },
+  {
+    "id": "kok_periaate2018",
+    "puolue": "KOK",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2018,
+    "otsikko": "Kansallinen Kokoomus",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/981"
+  },
+  {
+    "id": "ps_periaate2018",
+    "puolue": "PS",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2018,
+    "otsikko": "Perussuomalaiset",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/PS/1302"
+  },
+  {
+    "id": "sdp_vaali2023",
+    "puolue": "SDP",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Suomen Sosialidemokraattinen Puolue",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1474"
+  },
+  {
+    "id": "sdp_periaate2020",
+    "puolue": "SDP",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2020,
+    "otsikko": "Suomen Sosialidemokraattinen Puolue",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1388"
+  },
+  {
+    "id": "kesk_vaali2023",
+    "puolue": "KESK",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Suomen Keskusta",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1470"
+  },
+  {
+    "id": "kesk_periaate2018",
+    "puolue": "KESK",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2018,
+    "otsikko": "Suomen Keskusta",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1189"
+  },
+  {
+    "id": "vihr_vaali2023",
+    "puolue": "VIHR",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Vihreä liitto",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1485"
+  },
+  {
+    "id": "vihr_periaate2020",
+    "puolue": "VIHR",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2020,
+    "otsikko": "Vihreä liitto",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1387"
+  },
+  {
+    "id": "vas_vaali2023",
+    "puolue": "VAS",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Vasemmistoliitto",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1472"
+  },
+  {
+    "id": "vas_periaate2022",
+    "puolue": "VAS",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2022,
+    "otsikko": "Vasemmistoliitto",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1458"
+  },
+  {
+    "id": "rkp_vaali2023",
+    "puolue": "RKP",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Ruotsalainen kansanpuolue",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/1481"
+  },
+  {
+    "id": "rkp_periaate2016",
+    "puolue": "RKP",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2016,
+    "otsikko": "Ruotsalainen kansanpuolue",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/926"
+  },
+  {
+    "id": "kd_vaali2023",
+    "puolue": "KD",
+    "tyyppi": "vaaliohjelma",
+    "vuosi": 2023,
+    "otsikko": "Kristillisdemokraatit",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1471"
+  },
+  {
+    "id": "kd_periaate2017",
+    "puolue": "KD",
+    "tyyppi": "periaateohjelma",
+    "vuosi": 2017,
+    "otsikko": "Kristillisdemokraatit",
+    "lahde": "https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1185"
+  }
+]

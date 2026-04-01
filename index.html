@@ -5337,12 +5337,12 @@ function renderOhjelmaKortit() {
         ${p.ohjelmat.map(o => {
           const t = tyyppiMerkki[o.tyyppi] || tyyppiMerkki['yleisohjelma'];
           return `
-          <a href="${o.url}" target="_blank" rel="noopener"
+          <div onclick="avaaOhjelma('${o.id}','${o.otsikko}','${p.vari}')"
             style="display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;
                    background:${t.bg};border:1px solid ${t.border};border-radius:5px;
-                   text-decoration:none;transition:all .15s;cursor:pointer"
-            onmouseover="this.style.borderColor='${p.vari}'" 
-            onmouseout="this.style.borderColor='${t.border}'">
+                   cursor:pointer;transition:all .15s"
+            onmouseover="this.style.borderColor='${p.vari}';this.style.background='${p.vari}18'"
+            onmouseout="this.style.borderColor='${t.border}';this.style.background='${t.bg}'">
             <div style="flex:1;min-width:0">
               <div style="font-size:.82rem;color:#e8f4ff;line-height:1.4;margin-bottom:.2rem">${o.otsikko}</div>
               <div style="display:flex;gap:.5rem;align-items:center">
@@ -5351,7 +5351,15 @@ function renderOhjelmaKortit() {
                              border:1px solid ${t.border};border-radius:2px;padding:.1rem .4rem">${t.label}</span>
               </div>
             </div>
-            <span style="color:#5a7a99;font-size:.8rem;flex-shrink:0">↗</span>
+            <span style="color:#5a7a99;font-size:.8rem;flex-shrink:0">📖</span>
+          </div>
+          <a href="${o.url}" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:.3rem;font-size:.65rem;
+                   color:#3a5a77;text-decoration:none;margin-top:-.3rem;margin-bottom:.2rem;
+                   letter-spacing:.06em;padding:.1rem .4rem"
+            onmouseover="this.style.color='#f59e0b'"
+            onmouseout="this.style.color='#3a5a77'">
+            ↗ Avaa Pohtivassa
           </a>`;
         }).join('')}
       </div>
@@ -5377,6 +5385,84 @@ document.getElementById('btnOhjelmat').addEventListener('click', naytaOhjelmatNa
 
 lataaHakemisto();
 setTimeout(() => lataaLobbausIndex(), 5000);
+
+/* ================================================================
+   OHJELMAVIEWER — Ohjelman lukeminen suoraan sivulla
+   ================================================================ */
+const OHJELMA_CACHE = {};
+
+async function avaaOhjelma(id, otsikko, vari) {
+  // Avaa viewer-overlay
+  let viewer = document.getElementById('ohjelmaViewer');
+  if (!viewer) {
+    viewer = document.createElement('div');
+    viewer.id = 'ohjelmaViewer';
+    viewer.style.cssText = 'position:fixed;top:0;right:0;width:min(860px,92vw);height:100dvh;' +
+      'background:#080d1f;z-index:6001;display:flex;flex-direction:column;' +
+      'border-left:1px solid #1a2a55;box-shadow:-12px 0 60px rgba(0,0,0,.7)';
+    document.body.appendChild(viewer);
+  }
+
+  viewer.style.display = 'flex';
+  viewer.innerHTML =
+    '<div style="height:4px;background:linear-gradient(90deg,'+vari+',transparent);flex-shrink:0"></div>' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid #1a2a55;flex-shrink:0">' +
+      '<span style="font-family:Orbitron,monospace;font-size:.68rem;letter-spacing:.15em;color:'+vari+';max-width:80%">' + otsikko + '</span>' +
+      '<button onclick="suljeOhjelmaViewer()" style="background:none;border:1px solid #1a2a55;border-radius:4px;color:#5a7a99;font-family:Rajdhani,sans-serif;font-size:.78rem;letter-spacing:.1em;padding:.3rem .75rem;cursor:pointer;flex-shrink:0">ESC ✕</button>' +
+    '</div>' +
+    '<div id="ohjelmaViewerSisalto" style="flex:1;overflow-y:auto;padding:1.5rem 2rem 3rem">' +
+      '<div class="spinner" style="margin:3rem auto"></div>' +
+    '</div>';
+
+  // Hae JSON
+  if (OHJELMA_CACHE[id]) {
+    renderOhjelmaViewer(OHJELMA_CACHE[id], vari);
+    return;
+  }
+
+  try {
+    const r = await fetch('ohjelmat_json/' + id + '.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    OHJELMA_CACHE[id] = data;
+    renderOhjelmaViewer(data, vari);
+  } catch(e) {
+    document.getElementById('ohjelmaViewerSisalto').innerHTML =
+      '<div style="color:#e01010;padding:2rem;font-size:.85rem">Ohjelmaa ei löydy.<br><br>' +
+      'Aja ensin: <code>python skriptit/hae_ohjelmat.py</code><br>' +
+      'ja lisää <code>ohjelmat_json/</code> Gitiin.</div>';
+  }
+}
+
+function renderOhjelmaViewer(data, vari) {
+  const sisalto = document.getElementById('ohjelmaViewerSisalto');
+  if (!sisalto) return;
+
+  const lohkot = (data.lohkot || []).map(l => {
+    if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
+    if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
+    if (l.tag === 'h3' || l.tag === 'h4') return `<h4 style="font-size:.85rem;color:#c8d8e8;margin:.9rem 0 .35rem;font-weight:600">${l.teksti}</h4>`;
+    if (l.tag === 'li') return `<div style="font-size:.82rem;color:#8899aa;line-height:1.65;padding:.2rem 0 .2rem 1rem;border-left:2px solid ${vari}44">• ${l.teksti}</div>`;
+    return `<p style="font-size:.84rem;color:#8899aa;line-height:1.7;margin:.4rem 0">${l.teksti}</p>`;
+  }).join('');
+
+  sisalto.innerHTML =
+    `<div style="font-size:.62rem;color:#3a5a77;margin-bottom:1.5rem;letter-spacing:.06em">` +
+      `Lähde: <a href="${data.lahde}" target="_blank" style="color:#f59e0b;text-decoration:none">Pohtiva / FSD Tampereen yliopisto ↗</a>` +
+    `</div>` +
+    lohkot +
+    `<div style="margin-top:2rem;padding-top:1rem;border-top:1px solid #1a2a55;font-size:.62rem;color:#2a4a67">` +
+      `Lähde: Pohtiva — Poliittisten ohjelmien tietovaranto, FSD Tampereen yliopisto` +
+    `</div>`;
+}
+
+function suljeOhjelmaViewer() {
+  const v = document.getElementById('ohjelmaViewer');
+  if (v) v.style.display = 'none';
+}
+
+// ESC sulkee myös ohjelmaviewer
+// (lisätään ESC-hierarkiaan)
 
 // Siirrä kaikki modaalit suoraan body:n alle — ei stacking context -ongelmia
 (function() {
