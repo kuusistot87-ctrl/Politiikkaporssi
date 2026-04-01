@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>POLITIIKKAPÖRSSI</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -2134,37 +2133,21 @@ function openTTLProfile(m) {
 
 function renderAktiivisuusTab(m) {
   if (!AKT_DATA) {
-    return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0;text-align:center">
-      <div style="font-size:1.5rem;margin-bottom:.5rem">🏆</div>
-      Aktiivisuuspisteet ladataan kun avaat Aktiivisuus-näkymän ensin.
-      <br><br>
-      <button onclick="naytaAktiivisuusNakyma()" 
-        style="background:rgba(255,215,0,.1);border:1px solid #ffd70066;border-radius:4px;
-               color:#ffd700;font-family:Rajdhani,sans-serif;font-size:.8rem;
-               letter-spacing:.1em;padding:.35rem .9rem;cursor:pointer">
-        🏆 AVAA AKTIIVISUUSTAULU
-      </button>
+    return `<div style="color:#5a7a99;font-size:.82rem;padding:1.5rem 0;text-align:center">
+      <div class="spinner" style="margin:.5rem auto 1rem"></div>
+      <div style="font-size:.75rem;letter-spacing:.08em">Ladataan aktiivisuuspisteitä...</div>
     </div>`;
   }
-
   const d = AKT_DATA.find(x => x.m.nimi === m.nimi);
-  if (!d) {
-    return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0">
-      Aktiivisuusdataa ei saatavilla tälle edustajalle.
-    </div>`;
-  }
-
-  const vari = puolueVari(m.puolue);
-  const maxPts = 100;
-  const kategoriat = [
-    { label: 'Äänestys',    pisteet: d.aanestys,  max: 30, vari: '#27ae60' },
-    { label: 'Poissaolot',  pisteet: d.poissaolo, max: 25, vari: '#00d4ff' },
-    { label: 'Aloitteet',   pisteet: d.aloite,    max: 25, vari: '#a855f7' },
-    { label: 'Media',       pisteet: d.media,     max: 20, vari: '#ff4d6d' },
-  ];
+  if (!d) return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0">Aktiivisuusdataa ei saatavilla.</div>`;
 
   const sijaEmoji = d.sija === 1 ? '🥇' : d.sija === 2 ? '🥈' : d.sija === 3 ? '🥉' : '#' + d.sija;
-
+  const kategoriat = [
+    { label: 'Äänestys',   pisteet: d.aanestys,  max: 30, vari: '#27ae60' },
+    { label: 'Poissaolot', pisteet: d.poissaolo, max: 25, vari: '#00d4ff' },
+    { label: 'Aloitteet',  pisteet: d.aloite,    max: 25, vari: '#a855f7' },
+    { label: 'Media',      pisteet: d.media,     max: 20, vari: '#ff4d6d' },
+  ];
   return `
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;
                 padding:.85rem;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:6px">
@@ -2178,20 +2161,19 @@ function renderAktiivisuusTab(m) {
     <div style="display:flex;flex-direction:column;gap:.6rem">
       ${kategoriat.map(k => {
         const pct = Math.round(k.pisteet / k.max * 100);
-        return `
-        <div>
+        return `<div>
           <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
             <span style="font-size:.75rem;color:#8899aa">${k.label}</span>
             <span style="font-family:'Orbitron',monospace;font-size:.7rem;color:${k.vari}">${k.pisteet} / ${k.max}p</span>
           </div>
           <div style="background:rgba(255,255,255,.05);border-radius:3px;height:6px;overflow:hidden">
-            <div style="width:${pct}%;height:100%;background:${k.vari};border-radius:3px;transition:width .5s ease"></div>
+            <div style="width:${pct}%;height:100%;background:${k.vari};border-radius:3px"></div>
           </div>
         </div>`;
       }).join('')}
     </div>
     <div style="margin-top:1rem;font-size:.62rem;color:#3a5a77">
-      Pisteytys: äänestysosallistuminen, poissaolot, aloitteet ja mediamainintamäärä · Max 100 pistettä
+      Äänestysosallistuminen · Poissaolot · Aloitteet · Mediamainintamäärä · Max 100p
     </div>`;
 }
 
@@ -2209,7 +2191,7 @@ function renderModalSkeleton(m, vari) {
          background:#0b1128;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3">👤</div>`;
 
   const kuvaWrap = m.eduskunta
-    ? `<a href="${eduskuntaUrl(m.eduskunta)}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
+    ? `<a href="${m.eduskunta}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
     : `<div style="flex-shrink:0">${kuvaImg}</div>`;
 
   content.innerHTML = `
@@ -2253,6 +2235,8 @@ function renderModalSkeleton(m, vari) {
     { id: "perustiedot", icon: "🪪", label: "Perustiedot",    color: vari,      shadow: vari+"66",    bg: vari+"15" },
     { id: "poissaolot",  icon: "📋", label: "Poissaolot",     color: "#00d4ff", shadow: "rgba(0,212,255,.3)", bg: "rgba(0,212,255,.08)" },
     { id: "linkit",      icon: "🔗", label: "Linkit",          color: "#aaaaaa", shadow: "rgba(180,180,180,.3)", bg: "rgba(180,180,180,.06)" },
+    { id: "toiminta",    icon: "📣", label: "Aloitteet",       color: "#a855f7", shadow: "rgba(168,85,247,.3)", bg: "rgba(168,85,247,.08)" },
+    { id: "sidonnaisuudet", icon: "💼", label: "Sidonnaisuudet", color: "#ff9500", shadow: "rgba(255,149,0,.3)", bg: "rgba(255,149,0,.08)" },
     { id: "tyoura",      icon: "🏢", label: "Urahistoria",     color: "#3ec63e", shadow: "rgba(62,198,62,.3)",  bg: "rgba(62,198,62,.08)" },
     { id: "valiokunnat", icon: "⚖️", label: "Valiokunnat",     color: "#00f5ff", shadow: "rgba(0,245,255,.3)", bg: "rgba(0,245,255,.08)" },
     { id: "ministeriydet",icon:"⚡", label: "Hallitusjäs.",    color: "#ff4d6d", shadow: "rgba(255,77,109,.3)", bg: "rgba(255,77,109,.08)" },
@@ -2274,13 +2258,23 @@ function renderModalSkeleton(m, vari) {
     </div>`,
     poissaolot: `<div id="poissaolo-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     linkit: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(eduskuntaUrl(m.eduskunta),"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
+      ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
       ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
       ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER / X ↗","#1d9bf0") : ""}
       ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
     </div>`,
-
-        sidonnaisuudet2: `<div id="xml-sidonnaisuudet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+    toiminta: `<div style="display:flex;flex-direction:column;gap:.6rem">
+      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20(Asiakirjatyyppinimi:Lakialoite%20OR%20Asiakirjatyyppinimi:Toimenpidealoite)%22}","ALOITTEET ↗",vari)}
+      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22(EDKToimijaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi)+"%5C%22)%20Asiakirjatyyppinimi:%5C%22Kirjallinen%20kysymys%5C%22%22}","KIRJALLISET KYSYMYKSET ↗",vari)}
+      ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22EDKPuhujaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi.split(" ").reverse().join(" "))+"%5C%22%22}","PUHEENVUOROT ↗",vari)}
+    </div>`,
+    sidonnaisuudet: `<div style="display:flex;flex-direction:column;gap:.6rem">
+      ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
+    </div>`,
+    tyoura:          `<div id="xml-tyoura-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+    valiokunnat:     `<div id="xml-valiokunnat-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+    ministeriydet:   `<div id="xml-ministeriydet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+    sidonnaisuudet2: `<div id="xml-sidonnaisuudet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     aanestykset: `<div id="aanestykset-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     vaalikone:   `<div id="vaalikone-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     aktiivisuus: renderAktiivisuusTab(m),
@@ -2517,8 +2511,6 @@ document.getElementById("submodalOverlay").addEventListener("click", e => {
 document.addEventListener("keydown", function(e) {
   if (e.key !== "Escape") return;
   // Submodaali
-  var viewer = document.getElementById("ohjelmaViewer");
-  if (viewer && viewer.style.display === "flex") { suljeOhjelmaViewer(); return; }
   var sub = document.getElementById("submodalOverlay");
   if (sub && sub.classList.contains("open")) { suljeSubmodal(); return; }
   // Lobbauskortti
@@ -2542,16 +2534,6 @@ document.addEventListener("keydown", function(e) {
   // Muuten splash
   naytaSplash();
 });
-
-// Muunna vanha eduskunta.fi URL uudeksi
-function eduskuntaUrl(url) {
-  if (!url) return url;
-  // Vanha: https://www.eduskunta.fi/FI/kansanedustajat/Pages/1504.aspx
-  // Uusi:  https://www.eduskunta.fi/kansanedustajat-ja-toimielimet/kansanedustajat/1504
-  const m = url.match(/eduskunta\.fi.*?(\d{3,5})\.aspx/);
-  if (m) return 'https://www.eduskunta.fi/kansanedustajat-ja-toimielimet/kansanedustajat/' + m[1];
-  return url;
-}
 
 function lnk(url, teksti, vari) {
   return `<a href="${url}" target="_blank" rel="noopener"
@@ -5266,56 +5248,56 @@ const OHJELMAT_DATA = [
   {
     puolue: 'KOK', nimi: 'Kansallinen Kokoomus', vari: '#1565C0',
     ohjelmat: [
-      { id: 'kok_vaali2023', otsikko: 'Kokoomuksen eduskuntavaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/1473' },
-      { id: 'kok_periaate2018', otsikko: 'Avoin tulevaisuuspuolue — periaateohjelma', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/981' },
+      { otsikko: 'Kokoomuksen eduskuntavaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/1473' },
+      { otsikko: 'Avoin tulevaisuuspuolue — periaateohjelma', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KOK/981' },
     ]
   },
   {
     puolue: 'PS', nimi: 'Perussuomalaiset', vari: '#29B6F6',
     ohjelmat: [
-      { id: 'ps_periaate2018', otsikko: 'Periaateohjelma', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/PS/1302' },
+      { otsikko: 'Periaateohjelma', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/PS/1302' },
     ]
   },
   {
     puolue: 'SDP', nimi: 'Suomen Sosialidemokraattinen Puolue', vari: '#E53935',
     ohjelmat: [
-      { id: 'sdp_vaali2023', otsikko: 'Rohkeutta olla sinun puolellasi — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1474' },
-      { id: 'sdp_periaate2020', otsikko: 'Periaatejulistus: Yhdessä kestävään maailmaan', vuosi: 2020, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1388' },
+      { otsikko: 'Rohkeutta olla sinun puolellasi — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1474' },
+      { otsikko: 'Periaatejulistus: Yhdessä kestävään maailmaan', vuosi: 2020, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SDP/1388' },
     ]
   },
   {
     puolue: 'KESK', nimi: 'Suomen Keskusta', vari: '#43A047',
     ohjelmat: [
-      { id: 'kesk_vaali2023', otsikko: 'Eteenpäin! Vastuuta koko Suomesta — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1470' },
-      { id: 'kesk_periaate2018', otsikko: 'Tasapainossa, eteenpäin — Keskustan 101 periaatetta', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1189' },
+      { otsikko: 'Eteenpäin! Vastuuta koko Suomesta — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1470' },
+      { otsikko: 'Tasapainossa, eteenpäin — Keskustan 101 periaatetta', vuosi: 2018, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KESK/1189' },
     ]
   },
   {
     puolue: 'VIHR', nimi: 'Vihreä liitto', vari: '#7CB342',
     ohjelmat: [
-      { id: 'vihr_vaali2023', otsikko: 'Suojele elämää — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1485' },
-      { id: 'vihr_periaate2020', otsikko: 'Vihreiden periaateohjelma 2020–2028', vuosi: 2020, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1387' },
+      { otsikko: 'Suojele elämää — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1485' },
+      { otsikko: 'Vihreiden periaateohjelma 2020–2028', vuosi: 2020, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VIHR/1387' },
     ]
   },
   {
     puolue: 'VAS', nimi: 'Vasemmistoliitto', vari: '#880E4F',
     ohjelmat: [
-      { id: 'vas_vaali2023', otsikko: 'Reilumpi huominen kaikille — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1472' },
-      { id: 'vas_periaate2022', otsikko: 'Vasemmistoliitto rakentaa reilua yhteiskuntaa — periaateohjelma', vuosi: 2022, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1458' },
+      { otsikko: 'Reilumpi huominen kaikille — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1472' },
+      { otsikko: 'Vasemmistoliitto rakentaa reilua yhteiskuntaa — periaateohjelma', vuosi: 2022, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/VAS/1458' },
     ]
   },
   {
     puolue: 'RKP', nimi: 'Ruotsalainen kansanpuolue', vari: '#FFA726',
     ohjelmat: [
-      { id: 'rkp_vaali2023', otsikko: 'Yhdessä eteenpäin — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/1481' },
-      { id: 'rkp_periaate2016', otsikko: 'Inhimillinen ja menestyksekäs Suomi — puolueohjelma', vuosi: 2016, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/926' },
+      { otsikko: 'Yhdessä eteenpäin — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/1481' },
+      { otsikko: 'Inhimillinen ja menestyksekäs Suomi — puolueohjelma', vuosi: 2016, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/SFP/926' },
     ]
   },
   {
     puolue: 'KD', nimi: 'Kristillisdemokraatit', vari: '#7B1FA2',
     ohjelmat: [
-      { id: 'kd_vaali2023', otsikko: 'Järjen ääni — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1471' },
-      { id: 'kd_periaate2017', otsikko: 'Kristillisdemokraattien periaateohjelma', vuosi: 2017, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1185' },
+      { otsikko: 'Järjen ääni — vaaliohjelma 2023', vuosi: 2023, tyyppi: 'vaaliohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1471' },
+      { otsikko: 'Kristillisdemokraattien periaateohjelma', vuosi: 2017, tyyppi: 'periaateohjelma', url: 'https://www.fsd.tuni.fi/pohtiva/ohjelmalistat/KD/1185' },
     ]
   },
 ];
@@ -5451,6 +5433,7 @@ document.getElementById('btnOhjelmat').addEventListener('click', naytaOhjelmatNa
 
 lataaHakemisto();
 setTimeout(() => lataaLobbausIndex(), 5000);
+setTimeout(() => laskeAktiivisuusPisteet(), 8000); // tausta: ladataan aktiivisuusdata valmiiksi
 
 /* ================================================================
    OHJELMAVIEWER — Ohjelman lukeminen suoraan sivulla
@@ -5487,8 +5470,7 @@ async function avaaOhjelma(id, otsikko, vari) {
   }
 
   try {
-    const ghBase = 'https://kuusistot87-ctrl.github.io/politiikkaporssi';
-    const r = await fetch(ghBase + '/ohjelmat_json/' + id + '.json');
+    const r = await fetch('ohjelmat_json/' + id + '.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const data = await r.json();
     OHJELMA_CACHE[id] = data;
@@ -5505,20 +5487,13 @@ function renderOhjelmaViewer(data, vari) {
   const sisalto = document.getElementById('ohjelmaViewerSisalto');
   if (!sisalto) return;
 
-  // Suodata pois Pohtivan metatietolohkot ja toistuvat otsikot
-  const metaPattern = /^(Puolue|Otsikko|Vuosi|Ohjelmatyyppi|Kieli|Tulostettu Pohtiva|URL:|Pohtiva|Muut puolueen|Ohjelmalistat)[:\s]/i;
-  const dupOtsikot = new Set([data.otsikko, (data.otsikko||'').replace(/\s*[-–—].*$/, '').trim()].filter(Boolean));
-  const lohkot = (data.lohkot || [])
-    .filter(l => !metaPattern.test(l.teksti))
-    .filter(l => !l.teksti.match(/^(Puolue: |Otsikko: |Vuosi: [0-9]|Ohjelmatyyppi: )/))
-    .filter(l => !dupOtsikot.has(l.teksti.trim()))
-    .map(l => {
-      if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
-      if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
-      if (l.tag === 'h3' || l.tag === 'h4') return `<h4 style="font-size:.85rem;color:#c8d8e8;margin:.9rem 0 .35rem;font-weight:600">${l.teksti}</h4>`;
-      if (l.tag === 'li') return `<div style="font-size:.82rem;color:#8899aa;line-height:1.65;padding:.2rem 0 .2rem 1rem;border-left:2px solid ${vari}44">• ${l.teksti}</div>`;
-      return `<p style="font-size:.84rem;color:#8899aa;line-height:1.7;margin:.4rem 0">${l.teksti}</p>`;
-    }).join('');
+  const lohkot = (data.lohkot || []).map(l => {
+    if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
+    if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
+    if (l.tag === 'h3' || l.tag === 'h4') return `<h4 style="font-size:.85rem;color:#c8d8e8;margin:.9rem 0 .35rem;font-weight:600">${l.teksti}</h4>`;
+    if (l.tag === 'li') return `<div style="font-size:.82rem;color:#8899aa;line-height:1.65;padding:.2rem 0 .2rem 1rem;border-left:2px solid ${vari}44">• ${l.teksti}</div>`;
+    return `<p style="font-size:.84rem;color:#8899aa;line-height:1.7;margin:.4rem 0">${l.teksti}</p>`;
+  }).join('');
 
   sisalto.innerHTML =
     `<div style="font-size:.62rem;color:#3a5a77;margin-bottom:1.5rem;letter-spacing:.06em">` +
