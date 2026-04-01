@@ -2463,6 +2463,8 @@ document.getElementById("submodalOverlay").addEventListener("click", e => {
 document.addEventListener("keydown", function(e) {
   if (e.key !== "Escape") return;
   // Submodaali
+  var viewer = document.getElementById("ohjelmaViewer");
+  if (viewer && viewer.style.display === "flex") { suljeOhjelmaViewer(); return; }
   var sub = document.getElementById("submodalOverlay");
   if (sub && sub.classList.contains("open")) { suljeSubmodal(); return; }
   // Lobbauskortti
@@ -5421,8 +5423,8 @@ async function avaaOhjelma(id, otsikko, vari) {
   }
 
   try {
-    const base = window.location.pathname.replace(/\/[^\/]*$/, '');
-    const r = await fetch(base + '/ohjelmat_json/' + id + '.json');
+    const ghBase = 'https://kuusistot87-ctrl.github.io/politiikkaporssi';
+    const r = await fetch(ghBase + '/ohjelmat_json/' + id + '.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const data = await r.json();
     OHJELMA_CACHE[id] = data;
