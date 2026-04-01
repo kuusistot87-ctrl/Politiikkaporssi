@@ -262,6 +262,7 @@
       padding: .85rem 1.25rem;
       border-bottom: 1px solid var(--border);
       background: rgba(8,13,31,.8);
+      flex-shrink: 0;
     }
     #drawerHakuPalkki.vis { display: flex; }
     #drawerHakuInput {
@@ -335,9 +336,8 @@
       background: var(--bg-panel);
       border-left: 1px solid var(--border);
       z-index: 201;
-      display: grid;
-      grid-template-rows: auto auto auto 1fr;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       transform: translateX(100%);
       transition: transform .35s cubic-bezier(.22,1,.36,1);
       box-shadow: -12px 0 60px rgba(0,0,0,.7);
@@ -377,12 +377,23 @@
     }
     #drawerClose:hover { border-color: #ff007a; color: #ff007a; }
     #drawerContent {
+      flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       touch-action: pan-y;
-      min-height: 0;
+      /* Pakota kaikki piilossa olevat lapset olemaan 0-korkuisia */
+    }
+    #drawerContent > div[style*="display:none"],
+    #drawerContent > div[style*="display: none"],
+    #drawerContent > main[style*="display:none"],
+    #drawerContent > main[style*="display: none"] {
+      position: absolute;
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+      pointer-events: none;
     }
     @media (max-width: 600px) {
       #drawer { width: 100vw; }
