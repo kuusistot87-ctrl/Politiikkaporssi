@@ -4662,6 +4662,8 @@ let AKT_SORT        = 'yht';  // aktiivinen lajittelu
 let AKT_PUOLUE      = '';     // aktiivinen puoluesuodatin
 let AKT_MEDIA_COUNTS = {};    // {nimi: lkm} RSS-maininnoista
 let AKT_RENDERED    = false;
+let AKT_SIVU        = 0;     // aktiivinen sivunumero
+const AKT_SIVULLA   = 20;    // edustajaa per sivu
 
 async function naytaAktiivisuusNakyma() {
   piilotaKaikki();
@@ -4848,6 +4850,7 @@ function rakennaPuolueFilterit() {
 
 function aktSuodataPuolue(p, btn) {
   AKT_PUOLUE = p;
+  AKT_SIVU = 0;
   document.querySelectorAll('#aktPuolueFilterit .akt-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderAktiivisuus();
@@ -4855,9 +4858,18 @@ function aktSuodataPuolue(p, btn) {
 
 function aktLajittele(kentta, btn) {
   AKT_SORT = kentta;
+  AKT_SIVU = 0;
   document.querySelectorAll('[data-sort]').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderAktiivisuus();
+}
+
+function aktMeneSivulle(sivu) {
+  AKT_SIVU = sivu;
+  renderAktiivisuus();
+  // Scrollaa listan alkuun
+  const listEl = document.getElementById('aktLista');
+  if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderAktiivisuus() {
@@ -4879,11 +4891,30 @@ function renderAktiivisuus() {
   renderPodium(lista.slice(0, 3), 'aktPodiumTop', false, kentta);
   renderPodium(lista.slice(-3).reverse(), 'aktPodiumBottom', true, kentta);
 
+  // Sivutus
+  const sivujenMaara = Math.ceil(lista.length / AKT_SIVULLA);
+  if (AKT_SIVU >= sivujenMaara) AKT_SIVU = 0;
+  const sivunAlku = AKT_SIVU * AKT_SIVULLA;
+  const sivunLoppu = Math.min(sivunAlku + AKT_SIVULLA, lista.length);
+  const sivunLista = lista.slice(sivunAlku, sivunLoppu);
+
   // Lista
   const listEl = document.getElementById('aktLista');
   listEl.innerHTML = '';
 
-  lista.forEach((d, idx) => {
+  // Sivutuspalkki yläreunaan
+  if (sivujenMaara > 1) {
+    const ylapalkki = document.createElement('div');
+    ylapalkki.style.cssText = 'display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem;padding:.5rem .25rem';
+    ylapalkki.innerHTML =
+      `<span style="font-family:'Orbitron',monospace;font-size:.62rem;color:#5a7a99;letter-spacing:.1em">${sivunAlku+1}–${sivunLoppu} / ${lista.length}</span>` +
+      Array.from({length: sivujenMaara}, (_,i) =>
+        `<button onclick="aktMeneSivulle(${i})" style="background:${i===AKT_SIVU?'rgba(244,114,182,.12)':'transparent'};border:1px solid ${i===AKT_SIVU?'#f472b6':'#1a2a55'};border-radius:3px;color:${i===AKT_SIVU?'#f472b6':'#5a7a99'};font-family:'Rajdhani',sans-serif;font-size:.8rem;padding:.2rem .6rem;cursor:pointer;min-width:2rem">${i+1}</button>`
+      ).join('');
+    listEl.appendChild(ylapalkki);
+  }
+
+  sivunLista.forEach((d, idx) => {
     const sija     = d.nayttoSija;
     const vari     = puolueVari(d.m.puolue);
     const maxPts   = 100;
@@ -4952,6 +4983,17 @@ function renderAktiivisuus() {
     rivi.addEventListener('click', () => openTTLProfile(d.m));
     listEl.appendChild(rivi);
   });
+
+  // Sivutuspalkki alareunaan
+  if (sivujenMaara > 1) {
+    const alapalkki = document.createElement('div');
+    alapalkki.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;margin-top:.75rem;padding:.5rem .25rem';
+    alapalkki.innerHTML =
+      (AKT_SIVU > 0 ? `<button onclick="aktMeneSivulle(${AKT_SIVU-1})" style="background:transparent;border:1px solid #1a2a55;border-radius:3px;color:#5a7a99;font-family:'Rajdhani',sans-serif;font-size:.8rem;padding:.2rem .75rem;cursor:pointer">← Edellinen</button>` : '') +
+      `<span style="font-family:'Orbitron',monospace;font-size:.65rem;color:#3a5a77;padding:0 .5rem">Sivu ${AKT_SIVU+1} / ${sivujenMaara}</span>` +
+      (AKT_SIVU < sivujenMaara-1 ? `<button onclick="aktMeneSivulle(${AKT_SIVU+1})" style="background:transparent;border:1px solid #1a2a55;border-radius:3px;color:#5a7a99;font-family:'Rajdhani',sans-serif;font-size:.8rem;padding:.2rem .75rem;cursor:pointer">Seuraava →</button>` : '');
+    listEl.appendChild(alapalkki);
+  }
 }
 
 function renderPodium(top3, elementId, hanta, kentta) {
