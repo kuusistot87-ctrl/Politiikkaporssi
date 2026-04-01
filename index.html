@@ -2132,6 +2132,69 @@ function openTTLProfile(m) {
 
 
 
+function renderAktiivisuusTab(m) {
+  if (!AKT_DATA) {
+    return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0;text-align:center">
+      <div style="font-size:1.5rem;margin-bottom:.5rem">🏆</div>
+      Aktiivisuuspisteet ladataan kun avaat Aktiivisuus-näkymän ensin.
+      <br><br>
+      <button onclick="naytaAktiivisuusNakyma()" 
+        style="background:rgba(255,215,0,.1);border:1px solid #ffd70066;border-radius:4px;
+               color:#ffd700;font-family:Rajdhani,sans-serif;font-size:.8rem;
+               letter-spacing:.1em;padding:.35rem .9rem;cursor:pointer">
+        🏆 AVAA AKTIIVISUUSTAULU
+      </button>
+    </div>`;
+  }
+
+  const d = AKT_DATA.find(x => x.m.nimi === m.nimi);
+  if (!d) {
+    return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0">
+      Aktiivisuusdataa ei saatavilla tälle edustajalle.
+    </div>`;
+  }
+
+  const vari = puolueVari(m.puolue);
+  const maxPts = 100;
+  const kategoriat = [
+    { label: 'Äänestys',    pisteet: d.aanestys,  max: 30, vari: '#27ae60' },
+    { label: 'Poissaolot',  pisteet: d.poissaolo, max: 25, vari: '#00d4ff' },
+    { label: 'Aloitteet',   pisteet: d.aloite,    max: 25, vari: '#a855f7' },
+    { label: 'Media',       pisteet: d.media,     max: 20, vari: '#ff4d6d' },
+  ];
+
+  const sijaEmoji = d.sija === 1 ? '🥇' : d.sija === 2 ? '🥈' : d.sija === 3 ? '🥉' : '#' + d.sija;
+
+  return `
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;
+                padding:.85rem;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:6px">
+      <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;
+                  color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,.6);line-height:1">${d.yht}</div>
+      <div>
+        <div style="font-size:.65rem;color:#5a7a99;letter-spacing:.12em;margin-bottom:.2rem">KOKONAISPISTEET</div>
+        <div style="font-size:.85rem;color:#e8f4ff">Sijoitus: <strong style="color:#ffd700">${sijaEmoji}</strong> / ${AKT_DATA.length}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.6rem">
+      ${kategoriat.map(k => {
+        const pct = Math.round(k.pisteet / k.max * 100);
+        return `
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.75rem;color:#8899aa">${k.label}</span>
+            <span style="font-family:'Orbitron',monospace;font-size:.7rem;color:${k.vari}">${k.pisteet} / ${k.max}p</span>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border-radius:3px;height:6px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${k.vari};border-radius:3px;transition:width .5s ease"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="margin-top:1rem;font-size:.62rem;color:#3a5a77">
+      Pisteytys: äänestysosallistuminen, poissaolot, aloitteet ja mediamainintamäärä · Max 100 pistettä
+    </div>`;
+}
+
 /* ── Skeleton: näytetään heti index.json:n tiedot ── */
 function renderModalSkeleton(m, vari) {
   const content = document.getElementById("modalContent");
@@ -2146,7 +2209,7 @@ function renderModalSkeleton(m, vari) {
          background:#0b1128;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3">👤</div>`;
 
   const kuvaWrap = m.eduskunta
-    ? `<a href="${m.eduskunta}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
+    ? `<a href="${eduskuntaUrl(m.eduskunta)}" target="_blank" rel="noopener" title="Avaa eduskunta.fi-profiili" style="display:block;cursor:pointer;flex-shrink:0">${kuvaImg}</a>`
     : `<div style="flex-shrink:0">${kuvaImg}</div>`;
 
   content.innerHTML = `
@@ -2198,6 +2261,7 @@ function renderModalSkeleton(m, vari) {
     { id: "sidonnaisuudet2",icon:"💰",label:"Tulot & sidot.",  color: "#ffd700", shadow: "rgba(255,215,0,.3)",  bg: "rgba(255,215,0,.08)" },
     { id: "aanestykset",   icon: "🗳️", label: "Äänestykset",  color: "#22d3ee", shadow: "rgba(34,211,238,.3)", bg: "rgba(34,211,238,.08)" },
     { id: "vaalikone",     icon: "🎯", label: "Vaalikone",     color: "#ff6b35", shadow: "rgba(255,107,53,.3)",  bg: "rgba(255,107,53,.08)"  },
+    { id: "aktiivisuus",  icon: "🏆", label: "Aktiivisuus",   color: "#ffd700", shadow: "rgba(255,215,0,.3)",   bg: "rgba(255,215,0,.08)"   },
   ];
 
   // Piilotettu sisältö per tab
@@ -2212,7 +2276,7 @@ function renderModalSkeleton(m, vari) {
     </div>`,
     poissaolot: `<div id="poissaolo-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     linkit: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(m.eduskunta,"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
+      ${m.eduskunta ? lnk(eduskuntaUrl(m.eduskunta),"PROFIILI EDUSKUNTA.FI ↗",vari) : ""}
       ${m.wiki      ? lnk(m.wiki,"WIKIPEDIA ↗","#aaa") : ""}
       ${m.twitter   ? lnk("https://twitter.com/"+m.twitter,"TWITTER / X ↗","#1d9bf0") : ""}
       ${!m.eduskunta && !m.wiki && !m.twitter ? '<span style="color:#5a7a99;font-size:.82rem">Ei linkkejä saatavilla</span>' : ""}
@@ -2223,7 +2287,7 @@ function renderModalSkeleton(m, vari) {
       ${lnk("https://www.eduskunta.fi/FI/search/Sivut/Vaskiresults.aspx#Default={%22k%22:%22EDKPuhujaCompleteMatching:%5C%22"+encodeURIComponent(m.nimi.split(" ").reverse().join(" "))+"%5C%22%22}","PUHEENVUOROT ↗",vari)}
     </div>`,
     sidonnaisuudet: `<div style="display:flex;flex-direction:column;gap:.6rem">
-      ${m.eduskunta ? lnk(m.eduskunta,"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
+      ${m.eduskunta ? lnk(eduskuntaUrl(m.eduskunta),"SIDONNAISUUDET EDUSKUNTA.FI ↗",vari) : '<span style="color:#5a7a99;font-size:.82rem">Ei saatavilla</span>'}
     </div>`,
     tyoura:          `<div id="xml-tyoura-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     valiokunnat:     `<div id="xml-valiokunnat-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
@@ -2231,6 +2295,7 @@ function renderModalSkeleton(m, vari) {
     sidonnaisuudet2: `<div id="xml-sidonnaisuudet-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     aanestykset: `<div id="aanestykset-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
     vaalikone:   `<div id="vaalikone-${slug}" class="xml-osio"><div class="spinner" style="margin:.5rem auto"></div></div>`,
+    aktiivisuus: renderAktiivisuusTab(m),
   };
 
   // Rakenna grid
@@ -2489,6 +2554,16 @@ document.addEventListener("keydown", function(e) {
   // Muuten splash
   naytaSplash();
 });
+
+// Muunna vanha eduskunta.fi URL uudeksi
+function eduskuntaUrl(url) {
+  if (!url) return url;
+  // Vanha: https://www.eduskunta.fi/FI/kansanedustajat/Pages/1504.aspx
+  // Uusi:  https://www.eduskunta.fi/kansanedustajat-ja-toimielimet/kansanedustajat/1504
+  const m = url.match(/eduskunta\.fi.*?(\d{3,5})\.aspx/);
+  if (m) return 'https://www.eduskunta.fi/kansanedustajat-ja-toimielimet/kansanedustajat/' + m[1];
+  return url;
+}
 
 function lnk(url, teksti, vari) {
   return `<a href="${url}" target="_blank" rel="noopener"
@@ -5442,11 +5517,13 @@ function renderOhjelmaViewer(data, vari) {
   const sisalto = document.getElementById('ohjelmaViewerSisalto');
   if (!sisalto) return;
 
-  // Suodata pois Pohtivan metatietolohkot
-  const metaPattern = /^(Puolue|Otsikko|Vuosi|Ohjelmatyyppi|Kieli|Tulostettu Pohtiva|URL:)[:\s]/i;
+  // Suodata pois Pohtivan metatietolohkot ja toistuvat otsikot
+  const metaPattern = /^(Puolue|Otsikko|Vuosi|Ohjelmatyyppi|Kieli|Tulostettu Pohtiva|URL:|Pohtiva|Muut puolueen|Ohjelmalistat)[:\s]/i;
+  const dupOtsikot = new Set([data.otsikko, (data.otsikko||'').replace(/\s*[-–—].*$/, '').trim()].filter(Boolean));
   const lohkot = (data.lohkot || [])
     .filter(l => !metaPattern.test(l.teksti))
     .filter(l => !l.teksti.match(/^(Puolue: |Otsikko: |Vuosi: [0-9]|Ohjelmatyyppi: )/))
+    .filter(l => !dupOtsikot.has(l.teksti.trim()))
     .map(l => {
       if (l.tag === 'h1') return `<h2 style="font-family:'Orbitron',monospace;font-size:1rem;color:${vari};margin:1.5rem 0 .75rem;letter-spacing:.08em">${l.teksti}</h2>`;
       if (l.tag === 'h2') return `<h3 style="font-family:'Orbitron',monospace;font-size:.82rem;color:${vari}bb;margin:1.25rem 0 .5rem;letter-spacing:.06em">${l.teksti}</h3>`;
