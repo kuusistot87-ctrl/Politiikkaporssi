@@ -2,6 +2,7 @@ name: Päivitä rahoitusdata
 
 on:
   schedule:
+    # Joka päivä klo 06:00 UTC (= 08:00 Helsinki-aikaa)
     - cron: '0 6 * * *'
   workflow_dispatch:
 
