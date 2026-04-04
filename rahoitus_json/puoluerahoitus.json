@@ -1,5 +1,5 @@
 {
-  "paivitetty": "2026-04-04T05:46:06Z",
+  "paivitetty": "2026-04-04T05:51:32Z",
   "lahde": "vaalirahoitusvalvonta.fi",
   "puolueet": [
     {
@@ -15,17 +15,12 @@
           "ilmoittaja": "Helsingin Kokoomus ry",
           "tuet": [
             {
-              "nimi": "Helsingin Kokoomus ry",
-              "ytunnus": null,
-              "maara": 136135.0
-            },
-            {
               "nimi": "HOK-Elanto Liiketoiminta Oy",
               "ytunnus": "1837957-3",
-              "maara": 18379573.0
+              "maara": 10833.0
             }
           ],
-          "summa_yhteensa": 18515708.0
+          "summa_yhteensa": 10833.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/P_AI_202603.html",
@@ -35,17 +30,12 @@
           "ilmoittaja": "Kansallinen Kokoomus r.p.",
           "tuet": [
             {
-              "nimi": "Kansallinen Kokoomus r.p.",
-              "ytunnus": "0213498-5",
-              "maara": 2134985.0
-            },
-            {
               "nimi": "Kansallisen Kokoomuspuolueen Säätiö sr",
               "ytunnus": "1491706-3",
-              "maara": 14917063.0
+              "maara": 100000.0
             }
           ],
-          "summa_yhteensa": 17052048.0
+          "summa_yhteensa": 100000.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/1491706-3/P_AI_202602.html",
@@ -55,17 +45,12 @@
           "ilmoittaja": "Kansallisen Kokoomuspuolueen Säätiö",
           "tuet": [
             {
-              "nimi": "Kansallisen Kokoomuspuolueen Säätiö",
-              "ytunnus": "1491706-3",
-              "maara": 14917063.0
-            },
-            {
               "nimi": "Yksityisyrittäjäin Säätiö sr",
               "ytunnus": "0221903-0",
-              "maara": 2219030.0
+              "maara": 30000.0
             }
           ],
-          "summa_yhteensa": 17136093.0
+          "summa_yhteensa": 30000.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/97.251/P_AI_202601.html",
@@ -75,17 +60,12 @@
           "ilmoittaja": "Uudenmaan Kokoomus ry",
           "tuet": [
             {
-              "nimi": "Uudenmaan Kokoomus ry",
-              "ytunnus": null,
-              "maara": 97251.0
-            },
-            {
               "nimi": "Helsingin Kokoomus ry, ruotsiksi Samlingspartiet i Helsingfo...",
               "ytunnus": "1003907-2",
-              "maara": 10039072.0
+              "maara": 5200.0
             }
           ],
-          "summa_yhteensa": 10136323.0
+          "summa_yhteensa": 5200.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/0808191-7/P_AI_202602.html",
@@ -95,22 +75,12 @@
           "ilmoittaja": "Varsinais-Suomen Kansallissäätiö",
           "tuet": [
             {
-              "nimi": "Varsinais-Suomen Kansallissäätiö",
-              "ytunnus": "0808191-7",
-              "maara": 8081917.0
-            },
-            {
               "nimi": "Oy Lunden Ab",
               "ytunnus": "1992388-4",
-              "maara": 19923884.0
-            },
-            {
-              "nimi": "Heikki",
-              "ytunnus": null,
               "maara": 5000.0
             }
           ],
-          "summa_yhteensa": 28010801.0
+          "summa_yhteensa": 5000.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/0808191-7/P_AI_202603.html",
@@ -120,17 +90,12 @@
           "ilmoittaja": "Varsinais-Suomen Kansallissäätiö",
           "tuet": [
             {
-              "nimi": "Varsinais-Suomen Kansallissäätiö",
-              "ytunnus": "0808191-7",
-              "maara": 8081917.0
-            },
-            {
               "nimi": "Sarcodon Oy",
               "ytunnus": "2993143-1",
-              "maara": 29931431.0
+              "maara": 2500.0
             }
           ],
-          "summa_yhteensa": 38013348.0
+          "summa_yhteensa": 2500.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0213498-5/97.589/P_AI_202603.html",
@@ -140,21 +105,16 @@
           "ilmoittaja": "Varsinais-Suomen Kokoomus ry",
           "tuet": [
             {
-              "nimi": "Varsinais-Suomen Kokoomus ry",
-              "ytunnus": null,
-              "maara": 97589.0
-            },
-            {
               "nimi": "Sarcodon Oy",
               "ytunnus": "2993143-1",
-              "maara": 29931431.0
+              "maara": 2500.0
             }
           ],
-          "summa_yhteensa": 30029020.0
+          "summa_yhteensa": 2500.0
         }
       ],
       "summa_per_vuosi": {
-        "2026": 158893341.0
+        "2026": 156033.0
       }
     },
     {
@@ -177,17 +137,12 @@
           "ilmoittaja": "Suomen Sosialidemokraattinen Puolue r.p.",
           "tuet": [
             {
-              "nimi": "Suomen Sosialidemokraattinen Puolue r.p.",
-              "ytunnus": "0117005-2",
-              "maara": 1170052.0
-            },
-            {
               "nimi": "Paperiliitto r.y.",
               "ytunnus": "0201825-5",
-              "maara": 2018255.0
+              "maara": 13853.63
             }
           ],
-          "summa_yhteensa": 3188307.0
+          "summa_yhteensa": 13853.63
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0117005-2/328/P_AI_202601.html",
@@ -199,10 +154,10 @@
             {
               "nimi": "Tikkurila Säätiö sr",
               "ytunnus": "1015723-9",
-              "maara": 10157239.0
+              "maara": 3500.0
             }
           ],
-          "summa_yhteensa": 10157239.0
+          "summa_yhteensa": 3500.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0117005-2/328/P_AI_202602.html",
@@ -214,10 +169,10 @@
             {
               "nimi": "Tikkurila Säätiö sr",
               "ytunnus": "1015723-9",
-              "maara": 10157239.0
+              "maara": 3500.0
             }
           ],
-          "summa_yhteensa": 10157239.0
+          "summa_yhteensa": 3500.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0117005-2/328/P_AI_202603.html",
@@ -229,14 +184,14 @@
             {
               "nimi": "Tikkurila Säätiö sr",
               "ytunnus": "1015723-9",
-              "maara": 10157239.0
+              "maara": 3500.0
             }
           ],
-          "summa_yhteensa": 10157239.0
+          "summa_yhteensa": 3500.0
         }
       ],
       "summa_per_vuosi": {
-        "2026": 33660024.0
+        "2026": 24353.63
       }
     },
     {
@@ -266,17 +221,12 @@
           "ilmoittaja": "Helsingin Vasemmistoliitto ry",
           "tuet": [
             {
-              "nimi": "Helsingin Vasemmistoliitto ry",
-              "ytunnus": null,
-              "maara": 154357.0
-            },
-            {
               "nimi": "Helsingin Osuuskauppa Elanto",
               "ytunnus": "1837954-9",
-              "maara": 18379549.0
+              "maara": 3683.33
             }
           ],
-          "summa_yhteensa": 18533906.0
+          "summa_yhteensa": 3683.33
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0802437-3/39.883/P_AI_202602.html",
@@ -286,17 +236,12 @@
           "ilmoittaja": "Pirkanmaan Vasemmistoliitto ry",
           "tuet": [
             {
-              "nimi": "Pirkanmaan Vasemmistoliitto ry",
-              "ytunnus": null,
-              "maara": 39883.0
-            },
-            {
               "nimi": "Ylöjärven Työväenyhdistys r.y.",
               "ytunnus": "1059625-8",
-              "maara": 10596258.0
+              "maara": 6000.0
             }
           ],
-          "summa_yhteensa": 10636141.0
+          "summa_yhteensa": 6000.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0802437-3/P_AI_202601.html",
@@ -304,23 +249,12 @@
           "kuukausi": 1,
           "vuosi": 2026,
           "ilmoittaja": "Vasemmistoliitto r.p.",
-          "tuet": [
-            {
-              "nimi": "Vasemmistoliitto r.p.",
-              "ytunnus": "0802437-3",
-              "maara": 8024373.0
-            },
-            {
-              "nimi": "Pasi Antero",
-              "ytunnus": null,
-              "maara": 2000.0
-            }
-          ],
-          "summa_yhteensa": 8026373.0
+          "tuet": [],
+          "summa_yhteensa": 0.0
         }
       ],
       "summa_per_vuosi": {
-        "2026": 37196420.0
+        "2026": 9683.33
       }
     },
     {
@@ -336,17 +270,12 @@
           "ilmoittaja": "Svenska folkpartiet i Egentliga Finland r.f.",
           "tuet": [
             {
-              "nimi": "Svenska folkpartiet i Egentliga Finland r.f.",
-              "ytunnus": "2290015-7",
-              "maara": 22900157.0
-            },
-            {
               "nimi": "Svenska litteratursällskapet i Finland rf",
               "ytunnus": "0200138-1",
-              "maara": 2001381.0
+              "maara": 30000.0
             }
           ],
-          "summa_yhteensa": 24901538.0
+          "summa_yhteensa": 30000.0
         },
         {
           "url": "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/Puoluerahoitusvalvonnanilmoitukset/ajantasaisetilmoitukset/2026/0215325-4/2282048-0/P_AI_202601.html",
@@ -356,21 +285,16 @@
           "ilmoittaja": "Svenska folkpartiet i Nyland r.f.",
           "tuet": [
             {
-              "nimi": "Svenska folkpartiet i Nyland r.f.",
-              "ytunnus": "2282048-0",
-              "maara": 22820480.0
-            },
-            {
               "nimi": "Svenska litteratursällskapet i Finland rf",
               "ytunnus": "0200138-1",
-              "maara": 2001381.0
+              "maara": 30000.0
             }
           ],
-          "summa_yhteensa": 24821861.0
+          "summa_yhteensa": 30000.0
         }
       ],
       "summa_per_vuosi": {
-        "2026": 49723399.0
+        "2026": 60000.0
       }
     },
     {
