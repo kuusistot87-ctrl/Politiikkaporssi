@@ -628,37 +628,81 @@
     }
     .nav-dropdown-wrap.open .nav-dropdown-arrow { transform: rotate(180deg); }
 
+    /* Overlay-tausta */
+    .nav-panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 498;
+      background: rgba(3,5,15,.7);
+      backdrop-filter: blur(2px);
+    }
+    .nav-panel-overlay.open { display: block; }
+
+    /* Paneeli — kiinnittyy headerin alle, ei leikkaudu */
     .nav-dropdown-menu {
       display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0; right: 0;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      width: min(480px, 92vw);
       background: #080d1f;
       border: 1px solid var(--nb-color, #1a2a55);
-      border-radius: 6px;
+      border-radius: 12px;
       overflow: hidden;
-      z-index: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,.6);
-      animation: dropIn .15s ease;
+      z-index: 499;
+      box-shadow: 0 16px 48px rgba(0,0,0,.8), 0 0 60px color-mix(in srgb, var(--nb-color,#1a2a55) 20%, transparent);
+      opacity: 0;
+      transition: opacity .18s ease, transform .18s ease;
     }
-    @keyframes dropIn {
-      from { opacity:0; transform: translateY(-6px); }
-      to   { opacity:1; transform: translateY(0); }
+    .nav-dropdown-wrap.open .nav-dropdown-menu {
+      display: block;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      animation: panelIn .18s ease forwards;
     }
-    .nav-dropdown-wrap.open .nav-dropdown-menu { display: block; }
+    @keyframes panelIn {
+      from { opacity:0; transform: translateX(-50%) translateY(-16px) scale(.97); }
+      to   { opacity:1; transform: translateX(-50%) translateY(0) scale(1); }
+    }
 
+    /* Paneelin yläotsikko */
+    .nav-panel-header {
+      padding: .9rem 1.2rem .7rem;
+      border-bottom: 1px solid #1a2a55;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-panel-title {
+      font-family: 'Orbitron', monospace;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      color: var(--nb-color, #00f5ff);
+      text-shadow: 0 0 12px var(--nb-color, #00f5ff);
+    }
+    .nav-panel-close {
+      background: none; border: none; color: #3a5a77; cursor: pointer;
+      font-size: 1.1rem; line-height: 1; padding: .2rem .4rem;
+      border-radius: 4px; transition: color .15s;
+    }
+    .nav-panel-close:hover { color: #e8f4ff; }
+
+    /* Itemit paneelissa */
     .nav-dropdown-item {
       display: flex;
       align-items: center;
-      gap: .7rem;
+      gap: .9rem;
       width: 100%;
-      padding: .65rem .9rem;
+      padding: .9rem 1.2rem;
       background: transparent;
       border: none;
       border-bottom: 1px solid #0d1530;
       color: #a0b4c8;
       font-family: 'Rajdhani', sans-serif;
-      font-size: .82rem;
+      font-size: .9rem;
       font-weight: 600;
       letter-spacing: .06em;
       cursor: pointer;
@@ -668,12 +712,12 @@
     .nav-dropdown-item:last-child { border-bottom: none; }
     .nav-dropdown-item:hover { background: rgba(255,255,255,.05); color: #e8f4ff; }
     .nav-dropdown-item.active { background: rgba(255,255,255,.07); color: #e8f4ff; }
-    .nav-dropdown-item > span:first-child { font-size: 1rem; flex-shrink: 0; }
+    .nav-dropdown-item > span:first-child { font-size: 1.3rem; flex-shrink: 0; }
     .nav-dropdown-item > span:last-child {
-      display: flex; flex-direction: column; gap: .1rem;
+      display: flex; flex-direction: column; gap: .15rem;
     }
     .nav-dropdown-item small {
-      font-size: .62rem; color: #3a5a77; letter-spacing: .08em;
+      font-size: .65rem; color: #3a5a77; letter-spacing: .08em;
       font-weight: 400; display: block;
     }
     .nav-dropdown-item:hover small { color: #5a7a99; }
@@ -1477,6 +1521,9 @@
   <!-- ISO NAVIGAATIORIVI -->
   <div class="nav-btn-row">
 
+    <!-- Overlay-tausta paneelimodaaleille -->
+    <div class="nav-panel-overlay" id="navPanelOverlay" onclick="suljeKaikkiDropdownit()"></div>
+
     <!-- VALLANPITÄJÄT dropdown -->
     <div class="nav-dropdown-wrap" id="dropValta">
       <button class="nav-btn nav-btn-group" id="btnValta"
@@ -1487,7 +1534,11 @@
         <span class="nav-btn-sub">Hallitus · Edustajat · Ohjelmat</span>
         <span class="nav-dropdown-arrow">▾</span>
       </button>
-      <div class="nav-dropdown-menu" id="menuValta">
+      <div class="nav-dropdown-menu" id="menuValta" style="--nb-color:#00d4ff">
+        <div class="nav-panel-header">
+          <span class="nav-panel-title">👑 VALLANPITÄJÄT</span>
+          <button class="nav-panel-close" onclick="suljeKaikkiDropdownit()">✕</button>
+        </div>
         <button class="nav-dropdown-item" id="btnHallitus" onclick="suljeDropdownJaAja(naytaHallitusNakyma,'dropValta')">
           <span>⚡</span><span>Hallitus<small>Orpon hallitus 2023–</small></span>
         </button>
@@ -1510,7 +1561,11 @@
         <span class="nav-btn-sub">Lobbaus · Rahoitus · Vertaile</span>
         <span class="nav-dropdown-arrow">▾</span>
       </button>
-      <div class="nav-dropdown-menu" id="menuValvonta">
+      <div class="nav-dropdown-menu" id="menuValvonta" style="--nb-color:#ff4d6d">
+        <div class="nav-panel-header">
+          <span class="nav-panel-title">🔍 VALVONTAMODUULI</span>
+          <button class="nav-panel-close" onclick="suljeKaikkiDropdownit()">✕</button>
+        </div>
         <button class="nav-dropdown-item" id="btnLobbaus" onclick="suljeDropdownJaAja(naytaLobbausNakyma,'dropValvonta')">
           <span>🤝</span><span>Lobbaus<small>Avoimuusrekisteri</small></span>
         </button>
