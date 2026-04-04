@@ -1736,7 +1736,7 @@
   <!-- sisältö täytetään JS:llä -->
 </div>
 
-<div id="vertaileNakyma" style="display:none;padding:1.5rem 2rem 3rem">
+<div id="vertaileNakyma" style="display:none;padding:1.5rem 2rem 3rem;overflow-y:auto">
   <div style="font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.2em;color:#ff007a;margin-bottom:.3rem">
     ⚔️ VERTAILE — KAHDEN EDUSTAJAN ANALYYSI
   </div>
@@ -6465,6 +6465,59 @@ function renderVertTulos(m1, m2, d1, d2) {
           Math.max(d1.lobbYht||0, d2.lobbYht||0, 1), d1.lobbYht||0, d2.lobbYht||0)}
 
       ${renderVertVoittaja(m1, m2, pct1, pct2, poiss1, poiss2, akt1, akt2, d1, d2)}
+
+      ${renderVertVaalirahoitus(m1, m2, pv1, pv2)}
+    </div>`;
+}
+
+function renderVertVaalirahoitus(m1, m2, pv1, pv2) {
+  if (!VAALIRAHOITUS_DATA) return '';
+
+  function haeEhd(m) {
+    const osat = m.nimi.trim().split(' ');
+    const avain = osat.slice(0,-1).join(' ').toLowerCase() + ' ' + osat[osat.length-1].toLowerCase();
+    return VAALIRAHOITUS_DATA.ehdokkaat.find(e => e.nimi_avain === avain) || null;
+  }
+
+  const e1 = haeEhd(m1), e2 = haeEhd(m2);
+  if (!e1 && !e2) return '';
+
+  const r1 = e1 ? e1.rahoitus_yhteensa : 0;
+  const r2 = e2 ? e2.rahoitus_yhteensa : 0;
+  const maxR = Math.max(r1, r2, 1);
+
+  return `
+    <div style="border-top:1px solid #1a2a55;padding-top:.75rem">
+      <div style="font-family:'Orbitron',monospace;font-size:.58rem;letter-spacing:.2em;color:#00f5a0;margin-bottom:.75rem">
+        💶 VAALIRAHOITUS 2023
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center;margin-bottom:.6rem">
+        <div style="text-align:right">
+          <div style="font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;color:${pv1}">${e1 ? (r1/1000).toFixed(1)+'k€' : '–'}</div>
+          <div style="background:#0b1128;border-radius:3px;height:6px;overflow:hidden;margin-top:.2rem">
+            <div style="height:100%;width:${Math.round((r1/maxR)*100)}%;background:${pv1};float:right;border-radius:3px"></div>
+          </div>
+          ${e1 ? `<div style="font-size:.58rem;color:#5a7a99;margin-top:.15rem">${e1.tukijat_lkm} tukijaa</div>` : ''}
+        </div>
+        <div style="font-family:'Orbitron',monospace;font-size:.6rem;color:#3a5a77;text-align:center">VS</div>
+        <div style="text-align:left">
+          <div style="font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;color:${pv2}">${e2 ? (r2/1000).toFixed(1)+'k€' : '–'}</div>
+          <div style="background:#0b1128;border-radius:3px;height:6px;overflow:hidden;margin-top:.2rem">
+            <div style="height:100%;width:${Math.round((r2/maxR)*100)}%;background:${pv2};border-radius:3px"></div>
+          </div>
+          ${e2 ? `<div style="font-size:.58rem;color:#5a7a99;margin-top:.15rem">${e2.tukijat_lkm} tukijaa</div>` : ''}
+        </div>
+      </div>
+      ${e1 && e1.top_tukijat && e1.top_tukijat.length > 0 ? `
+      <div style="font-size:.6rem;color:#5a7a99;margin-bottom:.25rem">Suurin tukija (${m1.nimi.split(' ').pop()}):
+        <span style="color:${pv1}">${(e1.top_tukijat[0].tukija || e1.top_tukijat[0].etunimi+' '+e1.top_tukijat[0].sukunimi).trim()}</span>
+        <span style="color:#a0b4c8"> ${e1.top_tukijat[0].summa.toLocaleString('fi-FI')} €</span>
+      </div>` : ''}
+      ${e2 && e2.top_tukijat && e2.top_tukijat.length > 0 ? `
+      <div style="font-size:.6rem;color:#5a7a99">Suurin tukija (${m2.nimi.split(' ').pop()}):
+        <span style="color:${pv2}">${(e2.top_tukijat[0].tukija || e2.top_tukijat[0].etunimi+' '+e2.top_tukijat[0].sukunimi).trim()}</span>
+        <span style="color:#a0b4c8"> ${e2.top_tukijat[0].summa.toLocaleString('fi-FI')} €</span>
+      </div>` : ''}
     </div>`;
 }
 
