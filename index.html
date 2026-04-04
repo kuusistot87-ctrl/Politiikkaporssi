@@ -5519,6 +5519,10 @@ const RAH_VARIT = {
 
 // ── Tila ────────────────────────────────────────────────────────
 let rahOsio   = 'valtio';   // 'valtio' | 'yksityinen' | 'vaalirahoitus'
+let rahVaaliHaku = '';
+let rahVaaliJarjestys = 'rahoitus';
+let VAALIRAHOITUS_DATA = null;
+let VAALIRAHOITUS_LADATTU = false;
 let rahValtioVuosi = 2025;
 let rahValtioTab   = 'palkki';
 let rahYksiTab     = 'yhteenveto';
@@ -5923,13 +5927,21 @@ async function renderVaaliRahoitusOsio() {
     sisalto.innerHTML = '<div class="spinner" style="margin:3rem auto"></div>';
     try {
       const r = await fetch('https://kuusistot87-ctrl.github.io/politiikkaporssi/vaalirahoitus_json/eduskuntavaalit2023.json');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
       VAALIRAHOITUS_DATA = await r.json();
       VAALIRAHOITUS_LADATTU = true;
     } catch(e) {
-      sisalto.innerHTML = `<div style="color:#ff4d6d;padding:2rem;font-size:.85rem">
-        Kampanjarahoitusdataa ei saatavilla.<br>
-        <small style="color:#5a7a99">Tarkista että vaalirahoitus_json/eduskuntavaalit2023.json on GitHubissa.</small>
-      </div>`;
+      sisalto.innerHTML = `
+        <div style="margin:2rem 0;padding:1.2rem;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.3);border-radius:8px">
+          <div style="font-family:'Orbitron',monospace;font-size:.65rem;color:#ff4d6d;margin-bottom:.5rem">⚠️ DATA EI SAATAVILLA</div>
+          <div style="font-size:.8rem;color:#a0b4c8;line-height:1.6">
+            Kampanjarahoitusdatan lataus epäonnistui.<br>
+            Tiedosto <code style="color:#ff4d6d;font-size:.75rem">vaalirahoitus_json/eduskuntavaalit2023.json</code>
+            ei löydy GitHubista tai scraperia ei ole vielä ajettu.<br><br>
+            <strong style="color:#e8f4ff">Ratkaisu:</strong> Aja <code style="color:#00f5a0">hae_vaalirahoitus.py</code>
+            ja pushaa JSON GitHubiin.
+          </div>
+        </div>`;
       return;
     }
   }
@@ -6094,8 +6106,6 @@ function renderVaaliLista() {
 /* ================================================================
    VAALIRAHOITUS — Eduskuntavaalit 2023 ehdokaskohtainen data
    ================================================================ */
-let VAALIRAHOITUS_DATA = null;
-let VAALIRAHOITUS_LADATTU = false;
 
 async function lataaVaalirahoitusKortti(m, vari) {
   const slug = asciiSlug(m.nimi);
