@@ -1,0 +1,69 @@
+{
+  "paivitetty": "2026-04-04T05:39:04Z",
+  "lahde": "vaalirahoitusvalvonta.fi",
+  "puolueet": [
+    {
+      "nimi": "Kansallinen Kokoomus",
+      "lyhenne": "KOK",
+      "ytunnus": "0201810-9",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Perussuomalaiset",
+      "lyhenne": "PS",
+      "ytunnus": "0699608-4",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Suomen Sosialidemokraattinen Puolue",
+      "lyhenne": "SDP",
+      "ytunnus": "0117005-2",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Suomen Keskusta",
+      "lyhenne": "KESK",
+      "ytunnus": "0179288-7",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Vihreä liitto",
+      "lyhenne": "VIHR",
+      "ytunnus": "0202918-5",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Vasemmistoliitto",
+      "lyhenne": "VAS",
+      "ytunnus": "0202115-1",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Suomen ruotsalainen kansanpuolue",
+      "lyhenne": "RKP",
+      "ytunnus": "0116822-0",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Kristillisdemokraatit",
+      "lyhenne": "KD",
+      "ytunnus": "0117098-5",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    },
+    {
+      "nimi": "Liike Nyt",
+      "lyhenne": "LIIK",
+      "ytunnus": "3046798-7",
+      "ilmoitukset": [],
+      "summa_per_vuosi": {}
+    }
+  ]
+}
