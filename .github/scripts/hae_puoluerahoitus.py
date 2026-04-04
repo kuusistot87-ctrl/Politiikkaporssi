@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 BASE = "https://www.vaalirahoitusvalvonta.fi/fi/index/puoluerahoitus/haetietoailmoituksista/tietoaineistot"
 
 # Vuodet joilta haetaan data
-VUODET = [2022, 2023, 2024, 2025, 2026]
+VUODET = list(range(2010, 2027))
 
 # Tunnistetaan pääpuolueet nimen perusteella
 PUOLUEET_MAP = {
