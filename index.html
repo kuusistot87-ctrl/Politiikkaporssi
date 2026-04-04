@@ -6057,6 +6057,10 @@ function renderVaaliLista() {
     const ylijaamaArvo = rah - kul;
     const ylijaamaVari = ylijaamaArvo >= 0 ? '#4ade80' : '#ff4d6d';
     const top3 = (e.top_tukijat || []).slice(0, 3);
+    // Rakenna ehdokkaan koko nimi nimi_avain-kentästä tai etunimi+sukunimi
+    const ehdNimi = e.nimi_avain
+      ? e.nimi_avain.split(' ').map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(' ')
+      : (e.etunimet||'') + ' ' + (e.sukunimi||'');
 
     return `
     <div style="margin-bottom:.65rem;background:rgba(8,13,31,.6);border:1px solid #1a2a55;border-radius:8px;padding:.85rem 1rem"
@@ -6069,7 +6073,7 @@ function renderVaaliLista() {
             <span style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;
                          color:${vari};background:${vari}18;border:1px solid ${vari}55;
                          padding:.1rem .4rem;border-radius:3px">${e.puolue||'–'}</span>
-            <span style="font-size:.82rem;font-weight:600;color:#e8f4ff">${e.nimi||'–'}</span>
+            <span style="font-size:.82rem;font-weight:600;color:#e8f4ff">${ehdNimi||'–'}</span>
             ${e.vaalipiiri ? `<span style="font-size:.62rem;color:#5a7a99">${e.vaalipiiri}</span>` : ''}
           </div>
           ${e.tukijat_lkm ? `<div style="font-size:.6rem;color:#5a7a99;margin-top:.2rem">${e.tukijat_lkm} ilmoitettua tukijaa</div>` : ''}
@@ -6094,8 +6098,8 @@ function renderVaaliLista() {
         ${top3.map(t=>`
           <div style="font-size:.6rem;background:rgba(0,245,160,.06);border:1px solid rgba(0,245,160,.15);
                border-radius:4px;padding:.2rem .5rem;color:#a0b4c8;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
-               title="${t.nimi} — ${(t.summa/1000).toFixed(0)} k€">
-            <span style="color:#00f5a0">${(t.summa/1000).toFixed(0)} k€</span> ${t.nimi}
+               title="${t.tukija||((t.etunimi||'')+(t.sukunimi?' '+t.sukunimi:''))||'–'} — ${(t.summa/1000).toFixed(0)} k€">
+            <span style="color:#00f5a0">${(t.summa/1000).toFixed(0)} k€</span> ${t.tukija||((t.etunimi||'')+(t.sukunimi?' '+t.sukunimi:''))||'–'}
           </div>`).join('')}
         ${(e.top_tukijat||[]).length > 3 ? `<div style="font-size:.6rem;color:#3a5a77;padding:.2rem .4rem">+${(e.top_tukijat||[]).length-3} muuta</div>` : ''}
       </div>` : ''}
