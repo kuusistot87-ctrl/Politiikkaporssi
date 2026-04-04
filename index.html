@@ -2295,11 +2295,12 @@ function renderAktiivisuusTab(m) {
   if (!d) return `<div style="color:#5a7a99;font-size:.82rem;padding:1rem 0">Aktiivisuusdataa ei saatavilla.</div>`;
 
   const sijaEmoji = d.sija === 1 ? '🥇' : d.sija === 2 ? '🥈' : d.sija === 3 ? '🥉' : '#' + d.sija;
+  const mSlug = JSON.stringify(m).replace(/'/g,"\\'");
   const kategoriat = [
-    { label: 'Äänestys',   pisteet: d.aanestys,  max: 30, vari: '#27ae60' },
-    { label: 'Poissaolot', pisteet: d.poissaolo, max: 25, vari: '#00d4ff' },
-    { label: 'Aloitteet',  pisteet: d.aloite,    max: 25, vari: '#a855f7' },
-    { label: 'Media',      pisteet: d.media,     max: 20, vari: '#ff4d6d' },
+    { label: 'Äänestys',   pisteet: d.aanestys,  max: 30, vari: '#27ae60', tab: 'aanestys',   tooltip: 'Näytä äänestyshistoria' },
+    { label: 'Poissaolot', pisteet: d.poissaolo, max: 25, vari: '#00d4ff', tab: 'poissaolot', tooltip: 'Näytä poissaolot' },
+    { label: 'Aloitteet',  pisteet: d.aloite,    max: 25, vari: '#a855f7', tab: 'aloitteet',  tooltip: 'Näytä aloitteet' },
+    { label: 'Media',      pisteet: d.media,     max: 20, vari: '#ff4d6d', tab: 'signaali',   tooltip: 'Näytä mediamaininnat' },
   ];
   return `
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;
@@ -2311,16 +2312,26 @@ function renderAktiivisuusTab(m) {
         <div style="font-size:.85rem;color:#e8f4ff">Sijoitus: <strong style="color:#ffd700">${sijaEmoji}</strong> / ${AKT_DATA.length}</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:.6rem">
+    <div style="display:flex;flex-direction:column;gap:.5rem">
       ${kategoriat.map(k => {
         const pct = Math.round(k.pisteet / k.max * 100);
-        return `<div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
-            <span style="font-size:.75rem;color:#8899aa">${k.label}</span>
-            <span style="font-family:'Orbitron',monospace;font-size:.7rem;color:${k.vari}">${k.pisteet} / ${k.max}p</span>
+        return `
+        <div onclick="vaihdaTabKortissa('${k.tab}')"
+             title="${k.tooltip}"
+             style="cursor:pointer;padding:.6rem .7rem;border-radius:6px;border:1px solid transparent;
+                    transition:all .18s;background:rgba(255,255,255,.02)"
+             onmouseover="this.style.background='${k.vari}11';this.style.borderColor='${k.vari}44'"
+             onmouseout="this.style.background='rgba(255,255,255,.02)';this.style.borderColor='transparent'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">
+            <span style="font-size:.78rem;color:#a0b4c8;display:flex;align-items:center;gap:.4rem">
+              ${k.label}
+              <span style="font-size:.58rem;color:${k.vari};opacity:.7;letter-spacing:.05em">▶ avaa</span>
+            </span>
+            <span style="font-family:'Orbitron',monospace;font-size:.72rem;color:${k.vari};font-weight:700">${k.pisteet} / ${k.max}p</span>
           </div>
-          <div style="background:rgba(255,255,255,.05);border-radius:3px;height:6px;overflow:hidden">
-            <div style="width:${pct}%;height:100%;background:${k.vari};border-radius:3px"></div>
+          <div style="background:rgba(255,255,255,.05);border-radius:3px;height:7px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${k.vari};border-radius:3px;
+                        box-shadow:0 0 8px ${k.vari}88;transition:width .4s ease"></div>
           </div>
         </div>`;
       }).join('')}
@@ -5597,6 +5608,33 @@ function toggleOhjelmaPuolue(puolue) {
 
 document.getElementById('btnOhjelmat').addEventListener('click', naytaOhjelmatNakyma);
 // ── DROPDOWN NAV LOGIIKKA ─────────────────────────────────────────
+// Vaihda profiilikortin välilehti aktiivisuuspalkista
+function vaihdaTabKortissa(tabId) {
+  // Kartoita aktiivisuus-aliasit oikeisiin tab-id:ihin
+  const aliasMap = { 'aanestys': 'aanestykset', 'signaali': 'signaali' };
+  const oikeaId = aliasMap[tabId] || tabId;
+  // Etsi profnav-btn jolla on oikea label/id
+  const kaikki = document.querySelectorAll('.profnav-btn');
+  let loydetty = null;
+  kaikki.forEach(btn => {
+    const label = btn.querySelector('.profnav-label');
+    if (!label) return;
+    const teksti = label.textContent.toLowerCase();
+    if (oikeaId === 'aanestykset' && (teksti.includes('äänes') || teksti.includes('aanes'))) loydetty = btn;
+    else if (oikeaId === 'poissaolot' && teksti.includes('poissaolo')) loydetty = btn;
+    else if (oikeaId === 'aloitteet' && teksti.includes('aloite')) loydetty = btn;
+    else if (oikeaId === 'signaali' && (teksti.includes('media') || teksti.includes('signaali'))) loydetty = btn;
+  });
+  if (loydetty) {
+    loydetty.click();
+    // Skrollaa submodaalin alkuun
+    setTimeout(() => {
+      const body = document.getElementById('submodalBody');
+      if (body) body.scrollTop = 0;
+    }, 100);
+  }
+}
+
 function toggleNavDropdown(wrapId) {
   const wrap = document.getElementById(wrapId);
   const isOpen = wrap.classList.contains('open');
