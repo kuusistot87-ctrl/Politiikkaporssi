@@ -1,18 +1,15 @@
-name: Päivitä puoluerahoitusdata
+name: Päivitä rahoitusdata
 
 on:
   schedule:
-    # Joka päivä klo 06:00 UTC (= 08:00 Helsinki-aikaa)
     - cron: '0 6 * * *'
   workflow_dispatch:
-    # Mahdollistaa myös manuaalisen ajon GitHubista
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write  # Tarvitaan git push:iin
+      contents: write
 
     steps:
       - name: Checkout repo
@@ -28,19 +25,15 @@ jobs:
       - name: Asenna riippuvuudet
         run: pip install requests beautifulsoup4 lxml
 
-      - name: Aja scraper
+      - name: Aja puoluerahoitusscraper
         run: python .github/scripts/hae_puoluerahoitus.py
 
-      - name: Tarkista muutokset
-        id: check
-        run: |
-          git diff --quiet rahoitus_json/puoluerahoitus.json || echo "changed=true" >> $GITHUB_OUTPUT
+      - name: Aja vaalirahoitusscraper
+        run: python .github/scripts/hae_vaalirahoitus.py
 
       - name: Commitoi ja pushaa jos muutoksia
-        if: steps.check.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add rahoitus_json/puoluerahoitus.json
-          git commit -m "Auto: päivitä puoluerahoitusdata $(date +'%d.%m.%Y')"
-          git push
+          git add rahoitus_json/puoluerahoitus.json vaalirahoitus_json/eduskuntavaalit2023.json
+          git diff --cached --quiet || (git commit -m "Auto: päivitä rahoitusdata $(date +'%d.%m.%Y')" && git push)
